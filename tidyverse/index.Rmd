@@ -4,6 +4,12 @@ author: "Material del Curso Epidemiología Nivel Avanzado"
 output:
   html_document:
     css: style.css
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+number_sections: true
+anchor_sections: true
+theme: lumen
 ---
 
 ```{r setup, include=FALSE}
@@ -12,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introducción
 
-Tidyverse es el nombre que se ha dado al conjunto de paquetes desarrollados o apoyados por *Hadley Wickham* (jefe científico de RStudio) y su equipo, para ciencia de datos con R. 
+Tidyverse es el nombre que se ha dado al conjunto de paquetes desarrollados o apoyados por [Hadley Wickham](https://en.wikipedia.org/wiki/Hadley_Wickham) (jefe científico de RStudio) y su equipo, para ciencia de datos con R. 
 
 Todos estos paquetes están diseñados para funcionar juntos y comparten una misma filosofía, que se puede consultar en [The tidy tools manifesto](https://cran.r-project.org/web/packages/tidyverse/vignettes/manifesto.html). 
 
@@ -24,6 +30,16 @@ Los cuatro principios básicos en los que se basa son:
 - Diseño para humanos
 
 Los paquetes incluidos en el tidyverse tienen como objetivo cubrir todas las fases del análisis de datos dentro de R:  importar datos, ponerlos en formato ordenado (tidy data), buscar relaciones entre ellos (mediante su transformación, visualización y creación de modelos) y comunicar los resultados. 
+
+La palabra "tidy" se puede traducir como "ordenado" y refiere a que los datos deben cumplir con una estructura determinada donde:
+
+- Cada **_variable_** es una *columna* de la tabla de datos.
+- Cada **_observación_** es una *fila* de la tabla de datos.
+- Cada **_tabla_** responde a una *unidad de observación o análisis*.
+
+```{r,echo=F,  fig.align='center', out.width = "60%"}
+knitr::include_graphics("tidy.PNG")
+```
 
 Además de los paquetes principales que realizan estas funciones, al instalar el tidyverse también se proporcionan otros que ayudan a trabajar con fechas, cadenas de caracteres o factores siguiendo los mismos principios.
 
@@ -101,6 +117,7 @@ tidyverse_packages()
 
 Existen otros paquetes (la cantidad crece mes a mes) que son creados bajo la misma filosofía pero no están incluidos. En esos casos hay que instalarlos y activarlos individualmente.
 
+Para profundizar sobre **tidyverse** se puede visitar el sitio  https://www.tidyverse.org/ y el libro traducido al español [r4ds](https://es.r4ds.hadley.nz/index.html).
 
 ## Lectura y escritura de datos
 
