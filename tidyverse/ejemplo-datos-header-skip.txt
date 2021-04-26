@@ -1,0 +1,15 @@
+====================================================
+Variables del dataset: 
+====================================================
+
+===============================================================
+Datos proveidos por: Christian Ballejo
+                     INE, Departamento de Investigación
+===============================================================
+Iden|Apellido|Nombre|Sexo|FNac
+9|Leone|Fernando|M|24/12/1958
+26|Salem|Esteban|M|21/01/1954
+35|Orduna|Nicolas|M|27/06/1993
+48|Manueli|Viviana|F|21/06/1965
+49|Orozco|Laura|F|15/08/1993
+55|Umpier|Leopoldo|M|11/10/1952

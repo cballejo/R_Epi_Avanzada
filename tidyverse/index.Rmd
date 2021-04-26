@@ -1,0 +1,998 @@
+---
+title: "Tidyverse"
+author: "Material del Curso Epidemiología Nivel Avanzado"
+output:
+  html_document:
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introducción
+
+Tidyverse es el nombre que se ha dado al conjunto de paquetes desarrollados o apoyados por *Hadley Wickham* (jefe científico de RStudio) y su equipo, para ciencia de datos con R. 
+
+Todos estos paquetes están diseñados para funcionar juntos y comparten una misma filosofía, que se puede consultar en [The tidy tools manifesto](https://cran.r-project.org/web/packages/tidyverse/vignettes/manifesto.html). 
+
+Los cuatro principios básicos en los que se basa son:
+
+- Reutilizar las estructuras de datos
+- Resolver problemas complejos combinando varias piezas sencillas
+- Utilizar programación funcional
+- Diseño para humanos
+
+Los paquetes incluidos en el tidyverse tienen como objetivo cubrir todas las fases del análisis de datos dentro de R:  importar datos, ponerlos en formato ordenado (tidy data), buscar relaciones entre ellos (mediante su transformación, visualización y creación de modelos) y comunicar los resultados. 
+
+Además de los paquetes principales que realizan estas funciones, al instalar el tidyverse también se proporcionan otros que ayudan a trabajar con fechas, cadenas de caracteres o factores siguiendo los mismos principios.
+
+Una de las interesantes incorporaciones transversales en el ambiente tidyverse es el uso de tuberías (del inglés pipe).
+
+Una tubería conecta un trozo de código con otro mediante el conector `%>%` que surge del paquete __magrittr__ que permite transformar llamadas de funciones anidadas (con muchos paréntesis) en una simple serie de operaciones que son más fáciles de escribir y comprender.
+
+Responde al principio donde cada función es un paso y la forma de trabajar se puede ver en el siguiente esquema general:
+
+```{r,echo=F,  fig.align='center', out.width = "40%"}
+knitr::include_graphics("pipe.png")
+```
+
+Mostramos el funcionamiento básico comparativo en la siguiente porción de código:
+
+
+```{r, message=F, warning=F, echo=F}
+library(tibble)
+x <- tibble(numeros = 1:10)
+```
+
+
+```{r, message=F, warning=F}
+library(magrittr)
+
+x # contiene números del 1 al 10
+
+subset(x, subset = numeros > 7)  # seleccionamos los números mayores a 7
+
+x %>% subset(numeros > 7) # idem anterior pero con tubería
+```
+
+Este desarrollo es tan relevante que la próxima versión de R (4.1.0), con fecha de lanzamiento programada para el 18/05/2021, la trae incorporada dentro de la instalación base. 
+
+__Base gramatical__
+
+La intención de los desarrolladores para este conjunto de paquetes es lograr incorporar una gramática a la sintaxis de las funciones y sus argumentos buscando un entendimiento semántico más claro.
+
+Una prueba de ello, es que la mayoría de las funciones son verbos (en ingles) que se entrelazan con objetos y argumentos que permiten construir "frases". Ejemplo de ello se muestra en paquetes como dplyr.
+
+
+## Paquete **tidyverse**
+
+El paquete tidyverse base actual (versión 1.3.0) se puede descargar del repositorio oficial CRAN mediante menú **Packages** de **RStudio** o ejecutando:
+
+```{r, eval=F}
+install.packages("tidyverse")
+```
+
+Se activa mediante:
+
+```{r, warning=FALSE}
+library(tidyverse)
+```
+
+observamos que nos informa sobre la versión del paquete, el listado de paquetes que acabamos de activar sólo llamando a tidyverse y una serie de conflictos de nombres de funciones.
+
+Esto es muy habitual cuando activamos varios paquetes, dado que las funciones que se encuentran dentro de ellos pueden llamarse iguales.
+
+Por ejemplo, existe en el paquete base stats y en el paquete dplyr (que es parte de tidyverse) una función llamada filter(), por lo tanto al activar tidyverse nos informa de esta manera: **dplyr::filter()    masks stats::filter()**
+
+En este caso, cuando necesitemos asegurarnos que la función que deseamos ejecutar pertenece a determinado paquete, es recomendable escribirla de la siguiente forma:
+
+> nombre_paquete::nombre_función
+
+**stats:filter()** para la función **filter()** del paquete **stats**
+
+**dplyr:filter()** para la función **filter()** del paquete **dplyr**
+
+Los paquetes incluidos que se instalan en esta versión son:
+
+```{r}
+tidyverse_packages()
+```
+
+Existen otros paquetes (la cantidad crece mes a mes) que son creados bajo la misma filosofía pero no están incluidos. En esos casos hay que instalarlos y activarlos individualmente.
+
+
+## Lectura y escritura de datos
+
+### Paquete **readr**
+
+**readr** contiene funciones similares a las de la familia **read.table()** de **R base** pero desarrollados bajo el ecosistema **tidyverse**.
+
+Loa archivos de texto plano (**ASCII**) son universalmente utilizados por la mayoría de los gestores de bases de datos y/o planillas de cálculo. Generalmente encontrados con extensiones **.txt** o **.csv** (por comma-separated values) son el tipo de archivo de datos más habitual dentro del lenguaje R.
+
+Estos datos planos o ASCII tienen dos peculiaridades:
+
+- La cabecera (en inglés **header**) 
+- El caracter o símbolo **separador** que indica la separación de columnas: pueden estar separadas por comas, puntos y comas, por tabulación, etc…
+
+La cabecera puede existir o no, y de existir puede ser simple o compleja. La inclusión o no de la cabecera se maneja desde los argumentos `col_names` y `skip`. 
+
+Con `col_names = TRUE` incluimos la primer fila como cabecera (nombre de las columnas) y en FALSE la salteamos.
+
+Con `skip = 0` la lectura de produce desde la primer fila (se puede omitir), pero si la cabecera fuese compleja con varias filas entre títulos y subtítulos, debemos indicar cuantas filas iniciales se "saltea". Por ejemplo con `skip = 5` se saltea las primeras 5 filas del archivo.
+
+El otro elemento a tener en cuenta es el caracter separador que utiliza el archivo para indicar cuando comienza una nueva columna (variable).
+
+Generalmente los separadores más comunes son: la coma (,), el punto y coma (;), el tabulador (TAB), el espacio ( ), el caracter pipe (|), entre otros posibles.
+
+Algunas de las funciones del paquete asumen un separador particular. Por caso `read_csv()` lee separados por coma y `read_tsv()` separado por tabulaciones, pero la función `read_delim()` permite que definamos el separador a través del argumento *delim*.
+
+En forma detallada el paquete __readr__ soporta siete formatos de archivo a partir de siete funciones:
+
+- **read_csv()**: archivos separados por comas (CSV) 
+- **read_tsv()**: archivos separados por tabulaciones 
+- **read_delim()**: archivos separados con delimitadores generales 
+- **read_fwf()**: archivos con columnas de ancho fijo
+- **read_table()**: archivos formato tabla con columnas separadas por espacios
+- **read_log()**: archivos log web
+
+
+En comparación con las funciones base de R, las funciones de __readr__:
+
+- Usan un esquema de nombres consistente de parámetros 
+- Son más rápida. 
+- Analizan eficientemente los formatos de datos comunes, incluyendo fecha/hora. 
+- Muestran una barra de progreso si la carga va a llevar un tiempo. (para archivos grandes) 
+
+
+Viene incluida dentro de la instalación de tidyverse y se activa con él, pero también permite activarse solo:
+
+```{r, message=F}
+library(readr)
+```
+
+Algunos ejemplos de sintaxis:
+
+- Leemos un archivo sin cabecera separado por comas
+
+```{r, message=F, warning=F}
+read_csv("ejemplo-datos.csv", col_names = F)
+```
+
+
+- Leemos el mismo archivo con cabecera y separado por punto y comas
+
+```{r, message=F, warning=F}
+read_csv2("ejemplo-datos-header.csv", col_names = T)
+```
+
+- Leemos el archivo con cabecera separado por tabulaciones 
+
+
+```{r}
+read_tsv("ejemplo-datos-header2.csv", col_names = T)
+```
+
+Observemos que cada vez que hacemos una lectura la función se encarga de analizar (*parse*) el tipo de dato que hay en cada columna. En esta última ocasión además, devuelve un listado con el resultado del análisis antes de mostrar la tabla importada.
+
+Los posibles tipos de datos son los atómicos del lenguaje más algún agregado: character, integer, numeric, double, logical y date/time.
+
+Por ejemplo, en la tabla leída anteriormente las columnas donde hay números enteros fueron reconocidos como double (**\<dbl\>**), los que tienen algún caracter como character (**\<chr\>**) y las fechas como date (**\<date\>**). 
+
+Ahora escribimos la sintaxis para leer un archivo con cabecera compleja (la tabla comienza en la fila 9) separado por pipes.
+
+```{r, message=F, warning=F}
+read_delim("ejemplo-datos-header-skip.txt", 
+           col_names = T, 
+           skip = 8, 
+           delim = "|")
+```
+
+Otro argumento útil cuando no recordamos el nombre del archivo a leer es `file.choose()` que nos abre una ventana del *Explorador de Windows* para buscar y seleccionar el archivo con los datos.
+
+```{r, eval=FALSE}
+read_csv(file.choose())
+```
+
+Al ejecutarlo se despliega la ventana para que podamos seleccionar el archivo.
+
+
+#### Funciones de escritura
+
+Dentro del paquete coexisten funciones espejo de escritura para las posibilidades de lectura más relevantes. Así encontramos estos tres:
+
+- write_csv(): escribe archivos separados por comas (csv) 
+- write_csv2(): escribe archivos separados por punto y comas (csv) 
+- write_tsv(): escribe archivos separados por tabulaciones 
+- write_delim(): escribe archivos separados con delimitadores definidos por el usuario
+
+Los argumentos son generales y para el caso del último más extensos, dado que hay que definir cual es el separador que deseamos en el archivo.
+
+```{r}
+args(write_delim)
+```
+
+
+Por ejemplo para exportar un conjunto de datos en texto plano al que denominaremos **ejemplo.csv** con separador **punto y coma** y **cabecera incluida** podemos hacer:
+
+```{r, eval=F}
+write_delim(x = datos, file = "ejemplo.csv", delim = ";")
+```
+
+o más sencillo:
+
+```{r, eval=F}
+write_csv2(datos, "ejemplo.csv")
+```
+
+
+### Paquete **readxl**
+
+Uno de los formatos de documentos más comunes en los que se almacenan datos son las hojas de cálculo, en particular, las creadas con el programa **Excel** de Microsoft Office.
+
+El paquete `readxl` es parte del ecosistema tidyverse y permite leer este tipo de archivos.
+
+Posee compatibilidad con hojas de cálculo de Excel 97-03, de extensión __.xls__, y con hojas de cálculo de las versiones más recientes de Excel, de extensión, __.xlsx__
+
+La primera función interesante es `excel_sheets()`, útil para conocer y listar los nombre de las hojas contenidas dentro de un archivo (libro) Excel.
+
+Por ejemplo, supongamos que tenemos un archivo denominado __datos.xlsx__ y queremos saber por cuantas hojas está compuesto y que nombre tienen.
+
+```{r}
+library(readxl)
+
+excel_sheets("datos.xlsx")
+```
+
+Obtenemos de esta manera información sobre el archivo. Hay tres hojas llamadas diabetes, vigilancia y mortalidad.
+
+Para poder leer cada una de estas hojas de datos debemos usar la función `read_excel()`, que tiene los siguientes argumentos:
+
+```{r}
+args(read_excel)
+```
+
+Donde los más relevantes son:
+
+__path__: nombre del archivo y la ubicación (si fuese necesaria) entre comillas
+
+__sheet__: nombre de la hoja o número de ubicación
+
+__col_names__: si se activa toma la primer fila como nombres de columnas (variables)
+
+__skip__: permite saltear una cantidad determinada de filas antes de comenzar la lectura
+
+En primer lugar, cuando ejecutamos esta función, llama a otra denominada `excel_format()` que determina frente a que formato de archivo estamos. Si es un Excel tipo .xsl o tipo .xlsx. En relación a esta respuesta, luego aplica la función específica para cada caso - `read_xls()` o `readxlsx()`. 
+
+Todas estas funciones mencionadas en el procedimiento que sigue `read_excel()` se pueden utilizar en forma específica.
+
+Continuemos con el archivo __datos.xlsx__ y procedamos a leer los datos de su primer hoja, llamada *diabetes*.
+
+```{r}
+diabetes <- read_excel(path = "datos.xlsx", 
+                       sheet = "diabetes",
+                       col_names = T)
+
+head(diabetes) # mostramos las 6 primeras observaciones
+```
+
+Observemos que en los argumentos escribimos el nombre del archivo (sin la ruta de directorios porque el archivo se encuentra en nuestro proyecto y por lo tanto en nuestro directorio activo), el nombre de la hoja y nos aseguramos que la primer fila representa a la cabecera de la tabla (sus nombres de variables).
+
+Como el paquete `readxl` se inscribe dentro del universo tidyverse el formato de salida no es un dataframe, sino un tibble. En este caso de 23 observaciones por 8 variables.
+
+Ahora leamos la segunda hoja de nombre *vigilancia*.
+
+```{r}
+vigilancia <- read_excel(path = "datos.xlsx", 
+                         sheet = 2, 
+                         col_names = F)
+
+head(vigilancia) # mostramos las 6 primeras observaciones
+```
+
+Centremos nuestra mirada en los argumentos anteriores: en lugar del nombre de la hoja usamos un **2** que es su ubicación (la segunda hoja del archivo Excel) y configuramos a **col_names** con **F** (false) porque el conjunto de datos no tiene cabecera. 
+
+Cuando ocurre esta situación donde la tabla no tiene nombre de columnas readxl le asigna nombres del tipo `...1`, `...2`, `...x`
+
+Finalmente leemos la última hoja disponible del archivo.
+
+```{r}
+mortalidad <- read_excel(path = "datos.xlsx", 
+                         sheet = "mortalidad",
+                         col_names = T, 
+                         skip = 1)
+
+head(mortalidad) # mostramos las 6 primeras observaciones
+```
+
+Lo novedoso de esta lectura es el argumento `skip = 1` que debimos incorporar dado que, en este caso, la hoja de Excel comienza con una línea de título que no pertenece al conjunto de datos. También que el argumento sheet permite el nombre de la hoja elegida entre comillas.
+
+Retomando los argumentos generales de la función podemos mencionar estos otros:
+
+__n_max__: número máximo de filas leídas 
+
+__range__: rango de celdas a leer (definidas como se suele usar en Excel, por ej: B3:D87)
+
+__col_types__: especificación del tipo de dato para cada columna leída. Se pueden utilizar los tipos habituales "numeric", "logical", "text", "date", etc. Existen dos tipos específicos más: "skip" que saltea la lectura de la columna y "guess" que permite que la función decida cual es el formato adecuado de importación. Este último es el modo predeterminado cuando no especificamos el argumento.
+
+__na__: caracter o vector que deseamos se interprete como valor perdido (missing). Por defecto las celdas vacías se interpretan de esta forma y se le asigna `NA`
+
+
+## Gestión de datos con el Paquete **dplyr**
+
+El paquete __dplyr__ es parte del universo tidyverse que fue desarrollado por *Hadley Wickham* a partir de optimizar una versión del paquete plyr. 
+
+La contribución significativa del paquete es proporcionar una "gramática" (funciones-verbos) para la manipulación y operaciones de datos que lo hace más fácil de entender.
+
+Las funciones clave del paquete, responden a las siguientes acciones (verbos):
+
+- `select()`: devuelve un conjunto de columnas (variables)
+- `rename()`: renombra variables en una conjunto de datos
+- `filter()`: devuelve un conjunto de filas (observaciones) según una o varias condiciones lógicas
+- `arrange()`: reordena filas de un conjunto de datos
+- `mutate()`: añade nuevas variables/columnas o transforma variables existentes
+- `summarise()`/`summarize()`: genera resúmenes estadísticos de diferentes variables en el conjunto de datos.
+-  `group_by()`:  agrupa un conjunto de filas seleccionado, en un conjunto de filas de resumen de acuerdo con los valores de una o más columnas o expresiones.
+- `count()`: contabiliza valores que se repiten, es decir genera tabla de frecuencias.
+
+Además como todos los paquetes del tidyverse integra al operador %>% (pipe) logrando una única tubería ("pipeline").
+
+### Argumentos comúnes en las funciones dplyr
+
+Todas las funciones, básicamente, tienen en común una serie de argumentos. 
+
+1- El primer argumento es el nombre del conjunto de datos (objeto donde esta nuestra tabla de datos)
+2- Los otros argumentos describen que hacer con el conjunto de datos especificado en el primer argumento, podemos referirnos a las columnas en el objeto directamente sin utilizar el operador $, es decir sólo con el nombre de la columna/variable.
+3- El valor de retorno es un nuevo conjunto de datos.
+4- Los conjunto de datos deben estar bien organizados/estructurados, es decir debe existir una observación por columna y, cada columna representar una variable, medida o característica de esa observación. Es decir, debe cumplir con *tidy data*.
+
+
+### Activación del paquete
+
+__dplyr__ está incluído en el paquete __tidyverse__, por lo que se encuentra disponible si tenemos activado a este último.
+
+También se puede activar en forma independiente:
+
+```{r, message=F, warning=F}
+library(dplyr)
+```
+
+
+### Conjunto de datos para ejemplo
+
+Visualizar y entender el funcionamiento de estos "verbos" de manipulación es posible si ejemplificamos su aplicación. Por este motivo vamos a leer un conjunto de datos que servirá para ejercitar las funciones del paquete.
+
+```{r}
+datos <- read_csv("noti-vih.csv")
+
+head(datos) # mostramos las 6 primeras observaciones
+```
+
+La tabla de datos "noti-vih.csv" contiene datos de notificación de vih por jurisdicción de Argentina para los años 2015 y 2016.
+
+
+### Función **select()**
+
+Esta función selecciona las variables que especificamos devolviendo un conjunto de datos "recortado por columna". 
+
+Veamos algunas variaciones de ayuda para hacer estas selecciones.
+
+Todas las variables menos *pob*
+
+```{r}
+datos %>%  select(-pob)
+```
+
+Otra forma para el mismo resultado anterior (mediante el operador rango :)
+
+```{r}
+datos %>%  select(jurisdiccion:casos)
+```
+
+
+Las variables *jurisdiccion* y *casos*
+
+```{r}
+datos %>%  select(jurisdiccion, casos)
+```
+
+Otra forma para el mismo resultado anterior (mediante números de columna):
+
+```{r}
+datos %>%  select(1,3)
+```
+
+
+Todas las variables pasando *año* a la primera columna
+
+```{r}
+datos %>%  select("año", everything())
+```
+
+Otros posibles argumentos son:
+
+- __starts_with()__: selecciona todas las columnas que comiencen con el patrón indicado.
+
+- __ends_with()__: selecciona todas las columnas que terminen con el patrón indicado.
+
+- __contains()__: selecciona las columnas que posean el patrón indicado.
+
+- __matches()__: similar a contains, pero permite poner una expresión regular.
+
+- __one_of()__: selecciona las variables pasadas en un vector.
+
+- __num_range()__: selecciona variables con nombre combinados con caracteres y números (ejemplo: num_range("x", 1:3) selecciona las variables x1, x2 y x3.
+
+
+### Función **rename()**
+
+Esta función es una extensión de `select()`, dado que esta última permite cambiar el nombre de variables pero no es muy útil porque descarta todas las variables que no se mencionan explícitamente. En cambio `rename()` renombra variables mientras que mantiene las demás no mencionadas.
+
+Por ejemplo, cambiamos el nombre de la variable *pob* por *población*.
+
+```{r}
+datos %>% rename('población' = pob)
+```
+
+### Función **filter()**
+
+Así como la función `select()` es utilizada para seleccionar columnas, la función `filter()` hace lo propio con las filas del conjunto de datos, produciendo un subconjunto de observaciones. 
+
+Es similar a la función R base `subset()` y su estructura básica es:
+
+- El primer argumento es el nombre de la tabla. 
+- El segundo y siguientes argumentos son las condiciones que filtran ese conjunto de datos.
+
+Veamos un ejemplo sencillo sobre nuestros datos:
+
+```{r}
+datos %>% filter(jurisdiccion == "Tucuman")
+```
+
+Utiliza los mismos operadores de comparación propios del lenguaje R
+
+| Comparación |                 |
+|:-----------:|-----------------|
+| <           | menor a         |
+| >           | mayor a         |
+| ==          | igual a         |
+| <=          | menor o igual a |
+| >=          | mayor o igual a |
+| !=          | no igual a      |
+| %in%        | es parte de     |
+| is.na       | es NA           |
+| !is.na      | no es NA        |
+
+Lo mismo con los operadores lógicos que se utilizan como conectores entre las expresiones.
+
+| Lógicos |                |
+|:-------:|----------------|
+|    &    | AND booleano   |
+|    \|    | OR booleano    |
+|   xor   | OR exclusivo   |
+|    !    | NOT            |
+|   any   | cualquier TRUE |
+|   all   | todos TRUE     |
+
+Cuando usamos múltiples argumentos separados por coma dentro de `filter()` se combinan con un conector **AND**, es decir cada expresión debe ser verdadera para que una fila sea incluida en la salida.
+
+Por ejemplo:
+
+Filtramos a las observaciones que cumplan con la condición que casos sea mayor a 100 y población sea menor a 1000000
+
+
+```{r}
+datos %>% filter(casos > 100, pob < 1000000)
+```
+
+Para combinaciones dentro de una misma variable debemos utilizar el conector OR (|) o más útil el operador %in%.
+
+Filtramos a las jurisdicciones "Buenos Aires" y "La Pampa"
+
+```{r}
+datos %>% filter(jurisdiccion == "Buenos Aires" | jurisdiccion == "La Pampa")
+```
+
+```{r}
+datos %>% filter(jurisdiccion %in% c("Buenos Aires", "La Pampa"))
+```
+
+Filtramos las observaciones de 2016 con casos mayores a 200 utilizando el conector AND (&). Es el mismo resultado que si utilizamos una coma. 
+
+```{r}
+datos %>% filter(año == "2016" & casos > 200)
+```
+
+Filtramos las observaciones inversas a la anterior mediante xor(), que selecciona los valores de año y casos exclusivos (es decir que no se den ambos en TRUE).
+
+```{r}
+datos %>% filter(xor(año == "2016", casos > 200))
+```
+
+### Función **arrange()**
+
+La función `arrange()` se utiliza para ordenar las filas de un conjunto de datos de acuerdo a una o varias columnas/variables. Por defecto, el ordenamiento es ascendente.
+
+Ordenamos la tabla __datos__ por la variable *pob* (forma ascendente predeterminada):
+
+```{r}
+datos %>% arrange(pob)
+```
+
+Para ordenar en forma descendente podemos utilizar `desc()` dentro de los argumentos de `arrange()`:
+
+```{r}
+datos %>% arrange(desc(pob))
+```
+
+Podemos combinar ordenamientos. Por ejemplo, en forma alfabética ascendente para *jusrisdiccion* y luego numérica descendente para *casos*.
+
+```{r}
+datos %>% arrange(jurisdiccion, desc(casos))
+```
+
+
+### Función **mutate()**
+
+Esta función nos proporciona computar tranformaciones de variables en un conjunto de datos. A menudo, tendremos la necesidad de crear nuevas variables que se calculan a partir de variables existentes, `mutate()` nos ofrece una interface clara para realizar este tipo de operaciones.
+
+Por ejemplo, nos puede interesar calcular tasas crudas para cada jurisdicción y año, en función de los casos y el total de población.
+
+```{r}
+datos %>% mutate(tasa = casos/pob*100000)
+```
+
+Observemos que la función realiza el cálculo (en este caso tasas crudas por 100000 habitantes) e incorpora una nueva variable por cada observación con el resultado.
+
+También se pueden construir múltiples variables en la misma expresión, solamente separadas por comas.
+
+```{r}
+datos %>% mutate(tasaxcien_mil = casos/pob*100000, 
+                 tasaxdiez_mil = casos/pob*10000)
+```
+
+Hay muchas funciones para crear nuevas variables que se pueden usar con `mutate()`. 
+
+La propiedad imprescindible es que la función debe poder vectorizar: debe tomar un vector de valores como entrada, y devolver un vector con el mismo número de valores que la salida. 
+
+No hay forma de enumerar todas las funciones posibles que se podría usar, pero mencionaremos algunas que pueden ser útiles:
+
+- Operadores aritméticos: +, -, \*, \/, \^.  
+
+- Aritmética modular: \%\/\% (división entera) y \%\% (resto), donde $x == y * (x \ \%/\% \ y) + (x\ \%\% \ y)$. La aritmética modular es una herramienta útil porque te permite dividir números enteros en porciones.
+
+- Logaritmos: `log()`, `log2()`, `log10()`. 
+
+- Valores acumulados: R proporciona funciones para ejecutar sumas, productos, mínimos y máximos acumulados: `cumsum()`, `cumprod()`, `cummin()`, `cummax()`; y __dplyr__ proporciona `cummean()` para promedios acumulados.
+
+- Clasificaciones (ranking): hay una serie de funciones de clasificación, por ejemplo `min_rank()`. Genera el tipo de clasificación habitual (1º, 2º, etc). El valor predeterminado relaciona los valores más pequeños a rangos pequeños; podemos usar `desc(x)` para invertir la relación (valores más grandes a rangos más pequeños)
+
+
+
+### Función **summarise()** 
+
+La función `summarise()` (se puede escribir también `summarize()`) resume variables de un conjunto de datos. 
+
+```{r}
+datos %>% summarise(promedio_casos = mean(casos), 
+                    casos_totales = sum(casos))
+```
+
+Su uso es muy interesante cuando la combinamos con `group_by()` (función que veremos luego). Esta situación permite estratificar los resultados por grupos específicos. 
+
+Por ejemplo, podemos agrupar el por año y simultáneamente aplicar el mismo `summarise()` anterior.
+
+```{r}
+datos %>%  group_by(año) %>%  
+  summarise(promedio_casos = mean(casos), 
+            casos_totales = sum(casos))
+```
+
+El resultado es una tabla con dos filas, una para cada grupo (año 2015 y año 2016) con los valores promedio y casos totales respectivos.
+
+Algunas de las funciones del R base que se pueden utilizar dentro de los argumentos de esta función son:
+
+- `min()`  mínimo 
+- `max()`  máximo 
+- `mean()` media 
+- `median()` mediana 
+- `var()` varianza 
+- `sd()` desvío 
+- `sum()` sumatoria 
+
+Otras funciones que se pueden incorporar las provee el mismo paquete __dplyr__, por ejemplo:
+
+- `first()`  primer valor en el vector
+- `last()`  último valor en el vector
+- `n()` número de valores en el vector
+- `n_distinct()` números de valores distintos en el vector
+
+
+### Función **group_by()**
+
+Decíamos recién que la función `group_by()` es útil cuando trabaja conjuntamente con `summarise()` dado que agrupa un conjunto de filas seleccionado en un conjunto de filas de resumen de acuerdo con los valores de una o más columnas o expresiones.
+
+Para ejemplificar su trabajo asociado obtendremos una nueva tabla con el cálculo de las tasas crudas para cada jurisdicción por año (similar al ejemplo de la aplicación de `mutate()`: 
+
+```{r, message=F}
+datos %>% group_by(jurisdiccion, año) %>%  
+  summarise(tasa = casos/pob*100000)
+```
+
+En la mayoría de estos ejemplos la salida es directa, es decir no construimos nuevos objetos contenedores de los datos producidos. Pero en muchas situaciones vamos a necesitar generar nuevos conjunto de datos con las transformaciones realizadas. Si en alguna de estas ocasiones llegamos a agrupar datos mediante `group_by()` y posteriormente necesitamos volver a tener la información desagrupada existe una función vinculada denominada `ungroup()`
+
+### Combinaciones
+
+En los ejemplos anteriores vimos como se van integrando alguna de las funciones mediante el uso de la tubería **%>%**. La idea detrás de la búsqueda gramatical del paquete es poder enlazar las acciones para construir oraciones más complejas.
+
+Un ejemplo que podría integrar gran parte de los visto sería:
+
+Obtener una nueva tabla con las tasas crudas de casos notificados de VIH, por año y jurisdicción, mayores a 20 x 100000 habitantes ordenadas de mayor a menor.
+
+```{r, message=F}
+datos %>% 
+  group_by(año, jurisdiccion) %>% 
+  summarise(tasa = casos/pob*100000) %>% 
+  filter(tasa > 20) %>% 
+  arrange(desc(tasa)) 
+```
+
+Observemos que una buena manera de construir el código es respetar un salto de línea para cada término de la oración.
+
+Demostramos así la potencialidad que tienen estas funciones combinadas donde en esta situación integramos las funciones `group_by()`, `summarise()` , `filter()` y `arrange()` en una misma operación. 
+
+
+### Función **count()** 
+
+Esta última función que presentamos permite contar rápidamente los valores únicos de una o más variables.
+
+Produce fácilmente tablas de frecuencias absolutas que luego posibilitan construir frecuencias relativas.
+
+La aplicamos sobre la variable **jurisdiccion** de *datos*
+
+```{r}
+datos %>% count(jurisdiccion)
+```
+Tiene un par de argumentos opcionales:
+
+- **name**: es el nombre de la columna con el conteo. Por defecto se llama **n**
+- **sort**: ordena la tabla de frecuencia de mayor a menor
+- **wt**: se puede opcionalmente incorporar una variable con la ponderación (factor de expansión) para el calculo de la frecuencia.
+
+## Gráficos estadísticos con **ggplot2**
+
+__ggplot2__ es un paquete que se autodefine como librería para *“crear elegantes visualizaciones de datos usando una gramática de gráficos”*
+
+Propone una forma intuitiva de construir gráficos basada en [The Grammar of Graphics](https://www.springer.com/gp/book/9780387245447), a partir de utilizar capas y un sistema apoyado en tres componentes básicos:
+
+- datos 
+- coordenadas 
+- objetos geométricos
+
+La estructura para construir un gráfico es la siguiente:
+
+```{r,echo=F,  fig.align='center', out.width = "40%"}
+knitr::include_graphics("estructura_ggplot.jpg")
+```
+
+
+### Anatomía de gráficos con ggplot2
+
+El paquete se basa en una gramática de gráficos que puede ser entendida a partir de conocer sus componentes:
+
+```{r,echo=F,  fig.align='center', out.width = "40%"}
+knitr::include_graphics("ggplot1.jpg")
+```
+
+
+- __Data__ es aquél conjunto de datos que vamos a graficar, con toda la información pertinente para realizar el gráfico.
+- __aes__ reducción de aesthetic mapping o mapeo estético en el que se puede declarar todo lo que puede ser visible de un gráfico.
+- __geoms__ son representaciones para dibujar gráficos (puntos, líneas, cajas, entre otros).
+- __Stats__ son aquellas transformaciones estadísticas que le hacemos a los datos. Nos ayudan a hacer un resumen del conjunto de datos para visualizar mejor (por ejemplo, la media o la mediana como estadísticas de tendencia central).
+- __Scales__ facilitan colorear (o escalar) los datos según distintas variables. Dibujan los ejes y las leyendas.
+- __Coordinate Systems__ es el sistema de coordenadas para el mapeo del gráfico en un plano bidimensional.
+- __Facets__ nos permiten partir el conjunto de datos según factores para graficar en viñetas separadas creando matrices gráficas.
+- __Themes__ son conjuntos de características gráficas que permiten controlar la apariencia general de todos los elementos que no son datos (por ejemplo, el color del fondo o el tipo de fuente).
+
+Antes de comenzar a explicar cada componente vamos a leer un conjunto de datos que nos permita mostrar los ejemplos gráficos.
+
+
+```{r, message=FALSE, warning=FALSE}
+library(readr)
+
+facultad <- read_csv("facultad.csv")
+
+head(facultad) # mostramos las 6 primeras observaciones
+```
+
+El archivo leído se llama *facultad.csv* y contiene información de salud sobre ingresantes a una facultad tales como sexo, edad, talla y peso, entre otras. (son datos ficticios con fines docentes).
+
+### Mapeo estético (**aesthetic mapping**) y objetos geométricos (**geom**)
+
+Decíamos que `aes()` hace referencia al contenido estético del gráfico. Es decir, la función le brinda indicios a __ggplot2__ sobre cómo dibujar los distintas líneas, formas, colores y tamaños.
+
+Es importante notar que `aes()` crea una nueva capa en relación a las variables y agrega leyendas a los gráficos. Al incorporar `aes()` al llamado de `ggplot()` estamos compartiendo la información estética en todas las capas. Si deseamos que esa información sólo esté en una de las capas, debemos usar `aes()` en la capa correspondiente. 
+
+Veamos como funciona y sus diferencias.
+
+```{r,out.width="60%", fig.align="center", message=FALSE}
+library(ggplot2)  ## activamos el paquete 
+
+ggplot(facultad, aes(TALLA, PESO))  # solo la capa estética aes()
+```
+
+Este gráfico solo contiene los ejes que especificamos (PESO y TALLA) pero no contiene los datos. Si deseamos incorporarlos agregamos una capa de puntos con `geom_poin()` a través del símbolo **+**.
+
+```{r,out.width="60%", fig.align="center"}
+ggplot(facultad, aes(TALLA, PESO)) + 
+  geom_point()                    # agregamos la capa geométrica de puntos
+```
+
+Podemos diferenciar los puntos según se traten de ingresantes mujeres y hombres, asociando el argumento __color__ dentro de `aes()` con la variable SEXO.
+
+```{r,out.width="60%", fig.align="center"}
+ggplot(facultad, aes(TALLA, PESO, color = SEXO)) +
+  geom_point()
+```
+
+Estos gráficos también posibilitan el agregado de otra capa geométrica, por ejemplo rectas de regresión para cada grupo según sexo.
+
+```{r,out.width="60%", fig.align="center"}
+ggplot(facultad, aes(TALLA, PESO, color = SEXO)) + 
+  geom_point() + 
+  geom_smooth(method = "lm")            # agregamos una segunda capa geométrica 
+```
+
+Esta función `geom_smooth()` posee distintos métodos y en este ejemplo utilizamos el de regresión lineal entre talla y peso junto a sus intervalos de confianza.
+
+A continuación vamos a ver que diferencias existen cuando `aes()` se encuentra dentro del `ggplot()` y cuando se ubica en otras capas de funciones como en `geom_point()`
+
+Decíamos anteriormente que al incorporar `aes()` al llamado de `ggplot()` estamos compartiendo la información estética en todas las capas.
+
+Entonces si quitamos `aes()` de allí y lo ubicamos en una capa única, esta configuración deja de afectar al conjunto del gráfico.
+
+```{r, out.width="60%", fig.align="center"}
+ggplot(facultad, aes(TALLA, PESO)) + 
+  geom_point(aes(color = SEXO)) + # color esta definido en el aes() de la capa geométrica
+  geom_smooth(method = "lm")
+```
+
+En este ejemplo, `aes()` para el color solo se ubica dentro de `geom_point()` y por lo tanto dibuja los puntos con sus respectivos colores, pero no afecta a la capa de `geom_smooth()` produciendo solo una línea de regresión para el conjunto de puntos. 
+
+Es decir que `geom_smooth()` no recibe la orden de agrupar según SEXO, a raíz de no haber definido color dentro del `aes()` general.
+
+Este comportamiento nos permite gran versatilidad en los gráficos que realicemos.
+
+Algunas otras funciones de **geom_** son:
+
+`geom_line()`, para líneas
+
+`geom_boxplot()`, para boxplot
+
+`geom_histogram()` para histogramas
+
+`geom_density()` para curvas de densidad
+
+`geom_bar()` para barras
+
+Estas funciones geométricas aplicadas sobre los mismos datos definen el tipo de gráfico. 
+
+Para ejemplificar, podemos gráficar dos variables como SEXO y TALLA generando una base a la que sumaremos capas diferentes de `geom()`:
+
+
+```{r, out.width="60%", fig.align="center"}
+ggplot(facultad, aes(SEXO, TALLA, color = SEXO)) + 
+  geom_point()                # capa geométrica de puntos
+```
+
+```{r, out.width="60%", fig.align="center"}
+ggplot(facultad, aes(SEXO, TALLA, color = SEXO)) + 
+  geom_boxplot()            # capa geométrica de boxplot
+```
+
+```{r, out.width="60%", fig.align="center"}
+ggplot(facultad, aes(SEXO, TALLA, color = SEXO)) + 
+  geom_jitter()                    # capa geométrica jitter (entramado de puntos)
+```
+
+```{r, out.width="60%", fig.align="center"}
+ggplot(facultad, aes(SEXO, TALLA, fill = SEXO)) + 
+  geom_violin()            # capa geométrica de violin
+```
+
+Observemos que en este último gráfico cambiamos, dentro de `aes()`, color por fill. Mientras que __color__ define el color del contorno del polígono, la línea de una recta o curva y los puntos, __fill__ define el relleno de los objetos como es el caso de los violines construidos o cualquier elemento geométrico de polígono.
+
+### Escalas (**scale**)
+
+Las configuraciones que se pueden realizar con __scale__ son numerosas. Entre ellas encontramos cambios de color de contorno y relleno, cambios de posición, de tamaño y tipo de línea.
+
+El argumento para modificar valores de escala comienzan siempre con con `scale_` (por ejemplo scale_fill_ )
+
+Sigamos trabajando con el conjunto de datos leído para mostrar ejemplos de gráficos donde agregamos capas de escala para color de relleno. ( `scale_fill_brewer()` )
+
+```{r, out.width="60%", fig.align="center"}
+ggplot(facultad, aes(SEXO, TALLA, fill = SEXO)) + 
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Oranges")   # paleta de los naranjas
+```
+
+En este ejemplo aplicamos una capa `scale_fill_brewer()` con una paleta de colores (Oranges) que se vincula con el argumento fill de `aes()` y definen los colores del boxplot.
+
+Lo mismo hacemos para una gama de grises mediante `scale_fill_grey()`
+
+```{r, out.width="60%", fig.align="center"}
+ggplot(facultad, aes(SEXO, TALLA, fill = SEXO)) + 
+  geom_boxplot() +
+  scale_fill_grey(start = 0.4, end = 0.8)   # paleta de los grises
+```
+
+Otro uso de escalas, esta vez aplicado a los ejes, es la inversión del eje x.
+
+```{r,out.width="60%", fig.align="center"}
+ggplot(facultad, aes(TALLA, PESO, color = SEXO)) +
+  geom_point() +
+  scale_x_reverse()     # escala inversa de x
+```
+
+Como se observa en el gráfico la inclusión de `scale_x_reverse()` provoca que la escala x se invierta, quedando la TALLA ordenada de mayor a menor.
+
+Por último, otro ejemplo interesante es aplicado a escalas de etiquetado de ejes. Volvamos al ejemplo reciente de boxplot con relleno en escala de grises, su eje y se dibuja predeterminado desde 130 a casi 200 cms con cortes cada 5 cms y etiquetas cada 10 cms.
+
+Con escalas continuas manuales de la forma `scale_*_continuos()` podemos personalizar el eje y.
+
+```{r, out.width="60%", fig.align="center"}
+ggplot(facultad, aes(SEXO, TALLA, fill = SEXO)) + 
+  geom_boxplot() +
+  scale_fill_grey(start = 0.4, end = 0.8)   +
+  scale_y_continuous(breaks = seq(130,200,2))
+```
+
+En este caso particular definimos un eje y con etiquetas de 2 en 2, mediante la línea ` scale_y_continuous(breaks = seq(130,200,2))`
+
+
+### Transformaciones estadísticas (**stat**)
+
+Algunos gráficos no requieren de transformaciones estadísticas, en cambio, otros como boxplot, histogramas, etc poseen valores predeterminados de __stat__ que pueden ser modificados.
+
+Estos valores se encuentra en forma de argumentos dentro de la función geométrica, por ejemplo para los histograma el argumento __bins__ define la cantidad de intervalos de clase.  
+
+```{r,out.width="60%", fig.align="center"}
+ggplot(facultad, aes(EDAD)) +
+    geom_histogram(bins = nclass.Sturges(facultad$EDAD), fill = "Blue")
+```
+
+Vemos que el gráfico se construyó utilizando la *regla de Sturges* para determinar la cantidad de intervalos de clase para la variable EDAD. (función `nclass.Sturges()`)
+
+Otras transformaciones estadísticas se incorporan como capas independientes, por ejemplo si queremos agregar los valores de media a los boxplot de talla según sexo construidos anteriormente.
+
+```{r, out.width="60%", fig.align="center"}
+ggplot(facultad, aes(SEXO, TALLA, fill = SEXO)) + 
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Greens") +
+  stat_summary(fun = mean, color = "darkred", geom = "point", 
+               shape = 18, size = 3)
+```
+
+Aquí la capa completa surge a partir de la función `stat_summary()`, con argumentos que indican que se aplique la función `mean`. Incluye también la definición del objeto geométrico (point) que representa el valor de media (color, forma y tamaño)
+
+### Facetado (**facet**)
+
+Con `facet` es posible separar gráficos en distintas ventanas o viñetas, creando matrices de gráficos separados por grupos de datos, a partir de la estratificación, en función de diferentes categorías de una variable cualitativa.
+
+Este comportamiento es sumamente útil cuando tenemos más de una variable categórica o cuando deseamos utilizar color para simbolizar otra variable.
+
+ggplot ofrece dos posibilidades de hacer el facetado:
+
+- `facet_wrap()` – define subgrupos a partir de los niveles de una sola variable categórica
+
+- `facet_grid()` – define subgrupos a partir del cruce de dos variables de categóricas.
+
+Una aplicación de `facet_wrap()` podría ser que el primer gráfico que hicimos de dispersión de puntos con las variables TALLA y PESO se visualice en dos gráficos distintos según cada categoría de SEXO.
+
+```{r, out.width="60%", fig.align="center"}
+ggplot(facultad, aes(TALLA, PESO, color = SEXO)) +
+     geom_point() +
+     facet_wrap(~SEXO)
+```
+
+Usamos `facet_grid()` para crear una matriz producto del cruce de las variables FUMA y SEXO.Dentro de la cuadrícula graficaremos histogramas de la variable PESO coloreados por SEXO.
+
+```{r, out.width="60%", fig.align="center"}
+ggplot(facultad, aes(PESO, fill = SEXO)) +
+     geom_histogram(bins = nclass.Sturges(facultad$PESO)) +
+     scale_fill_brewer(palette = "Set1") +
+     facet_grid(SEXO ~ FUMA)
+```
+
+Si observamos las 4 líneas que integran todas las capas del código de ggplot notaremos que estamos integrando varias de las funciones que fuimos mostrando. 
+
+Se hace imposible generar todas combinaciones posibles dada la variedad y extensión de argumentos que posee el paquete. De todas formas, el objetivo de este material es entender la base de funcionamiento, es decir la estructura "gramatical" que proponen sus autores.
+
+
+### Sistema de coordenadas (**Coordinate Systems**)
+
+En algunas ocasiones puede que necesitemos introducir modificaciones en el sistema de coordinadas predeterminado. 
+
+Sobre las coordenadas cartesianas iniciales se puede invertir la orientación para que, por ejemplo, las barras se dibujen horizontales.
+
+```{r, out.width="60%", fig.align="center"}
+ggplot(facultad, aes(SEXO, fill = SEXO)) +
+     scale_fill_brewer(palette = "Set2") +
+     geom_bar() +
+     coord_flip()   # invierte disposición de ejes
+```
+
+
+### Temas (**themes**)
+
+El paquete ofrece un conjunto reducido de temas gráficos. El tema por defecto o inicial es `theme_gray()` pero se puede modificar a partir de agregar una capa de tema dentro de la estructura ggplot.
+
+A modo de ejemplo repetimos el último gráfico con el tema blanco y negro ( `theme_bw()` ):
+
+```{r, out.width="60%", fig.align="center"}
+ggplot(facultad, aes(SEXO, fill = SEXO)) +
+     scale_fill_brewer(palette = "Set2") +
+     geom_bar() +
+     coord_flip() +
+     theme_bw()  # tema blanco y negro
+```
+
+Otro tema que podemos utilizar es `theme_dark()` que tiene un fondo gris oscuro.
+
+```{r, out.width="60%", fig.align="center"}
+ggplot(facultad, aes(SEXO, fill = SEXO)) +
+     scale_fill_brewer(palette = "Set2") +
+     geom_bar() +
+     coord_flip() +
+     theme_dark()
+```
+
+El siguiente cuadro muestra el nombre y presentación de los temas que contiene el paquete.
+
+```{r,echo=F,  fig.align='center', out.width = "40%"}
+knitr::include_graphics("temas_ggplot.jpg")
+```
+
+
+Continuando con cuestiones estéticas en otra capa se pueden definir etiquetas, como título, subtítulo y nombres de ejes.
+
+La forma de la función con argumentos básicos es `labs( x = “Etiqueta X", y = “Etiqueta Y", title =“Título del gráfico", subtitle = "Subtítulo del gráfico")` 
+
+Además se utiliza la función `theme()` para configurar el tipo de fuente y tamaño, entre otras opciones posibles.
+
+```{r, out.width="60%", fig.align="center"}
+ggplot(facultad, aes(SEXO, fill = SEXO)) +
+     scale_fill_brewer(palette = "Set2") +
+     geom_bar() +
+     coord_flip() +
+     labs(y = "Cantidad", title = "Distribución de Sexo") +
+     theme(plot.title=element_text(face="italic", size=16)) 
+```
+
+### Paquete **esquisse**
+
+**Esquisse** es un paquete que contiene una aplicación asistente para crear gráficos **ggplot2** de forma interactiva. Basta con arrastrar y soltar las variables para asignarlas a diferentes estéticas. 
+
+Podemos visualizar rápidamente los datos de acuerdo con su tipo, exportarlos en varios formatos y recuperar el código para reproducir el gráfico.
+
+El paquete se instala mediante el menú Packages de RStudio o ejecutando:
+
+```{r, eval=F}
+install.packages("esquisse")
+```
+
+Luego se puede acceder a la aplicación por medio del acceso Addins
+
+```{r,echo=F,  fig.align='center', out.width = "70%"}
+knitr::include_graphics("esquisse.PNG")
+```
+
+o ejecutando en consola `esquisser()`
+
+También se puede agregar el nombre de la tabla de datos dentro de los paréntesis
+
+```{r, eval=F}
+esquisser(datos)
+```
+
+Para más información consultar en la [viñeta](https://cran.r-project.org/web/packages/esquisse/vignettes/get-started.html) del paquete en CRAN.
