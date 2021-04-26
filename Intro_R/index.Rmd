@@ -5,6 +5,7 @@ date: ""
 output:
   html_document:
     css: style.css
+    toc: true
 ---
 
 ```{r, message=FALSE, echo=F}
@@ -13,7 +14,7 @@ knitr::opts_chunk$set(comment=NA, dpi = 300)
 
 ## Qué es R?
 
-El sitio oficial **_r-project.org_**^[https://www.r-project.org/] dice que *"R es un entorno de software libre para gráficos y computación estadística. Se compila y se ejecuta en una amplia variedad de plataformas UNIX, Windows y MacOS.”.* 
+El sitio oficial [r-project.org](https://www.r-project.org/) dice que *"R es un entorno de software libre para gráficos y computación estadística. Se compila y se ejecuta en una amplia variedad de plataformas UNIX, Windows y MacOS.”.* 
 
 Profundizando en su descripción podemos decir, más técnicamente, que es un __*lenguaje de programación interpretado, orientado a objetos, multiplataforma y open source aplicado al manejo de datos estadísticos.*__
 
@@ -60,9 +61,8 @@ vendido y dio origen a una versión propietaria denominada S-Plus que es
 comercializada por Insighful Corporation.
 
 En 1995 dos profesores de estadística de la Universidad de Auckland, en
-Nueva Zelanda **Ross Ihaka**^[https://en.wikipedia.org/wiki/Ross_Ihaka] y **Robert Gentleman**^[https://en.wikipedia.org/wiki/Robert_Gentleman_(statistician)], iniciaron el **"Proyecto
-R"**^[https://en.wikipedia.org/wiki/R_(programming_language)], con la intención de desarrollar un programa estadístico inspirado
-en el lenguaje S pero de dominio público.
+Nueva Zelanda [Ross Ihaka](https://en.wikipedia.org/wiki/Ross_Ihaka) y [Robert Gentleman](https://en.wikipedia.org/wiki/Robert_Gentleman_(statistician)), iniciaron el ["Proyecto
+R"](https://en.wikipedia.org/wiki/R_(programming_language)), con la intención de desarrollar un programa estadístico inspirado en el lenguaje S pero de dominio público.
 
 Aunque se dice que R es un dialecto de S existen diferencias importantes
 en el diseño de ambos lenguajes.
@@ -72,7 +72,7 @@ agregadas en Fortran) y su nombre se debe a la letra con la que inician
 los nombres de pila de sus autores (Ross y Robert).
 
 Actualmente R es mantenido por un grupo internacional de desarrolladores
-voluntarios denominado **Core Development Team**.
+voluntarios denominado [Core Development Team](https://www.r-project.org/contributors.html).
 
 ## Scripts
 
@@ -312,7 +312,7 @@ c
 Observemos que además de devolvernos los valores para cada uno de los
 objetos aparece delante un 1 entre corchetes `[1]`.Este número es la
 ubicación o índice del comienzo del objeto, que para este caso tiene una
-sola posición. (veremos este tema más adelante en tema **indexación**)
+sola posición. (veremos este tema más adelante en tema [indexación](https://cballejo.github.io/R_Epi_Avanzada/Intro_R/index.html#índices))
 
 ## Estructuras de datos
 
@@ -1231,7 +1231,7 @@ En este capítulo solo nos ocuparemos de explicar la forma de lectura de
 archivos con formato texto ASCII (acrónimo inglés de *American Standard
 Code for Information Interchange* - *Código Estándar Estadounidense para el Intercambio de Información*).
 
-Encontrarán en el material **Primeros pasos y misceláneas** formas de lectura de archivos de datos por menú.
+Encontrarán en el material [Primeros pasos y misceláneas](https://cballejo.github.io/R_Epi_Avanzada/Miscelaneas/index.html) formas de lectura de archivos de datos por menú.
 
 Dentro del lenguaje, la familia de funciones básicas para realizar la lectura de
 estos archivos de texto ASCII o "planos" se denomina `read.table()`
