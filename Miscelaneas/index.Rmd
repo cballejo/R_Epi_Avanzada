@@ -5,6 +5,11 @@ output:
   html_document:
     css: style.css
     toc: true
+    toc_float: true
+    toc_collapsed: true
+number_sections: true
+anchor_sections: true
+theme: lumen
 ---
 
 ```{r setup, include=FALSE}
