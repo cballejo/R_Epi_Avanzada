@@ -1,2 +1,4 @@
-# R_Epi_Avanzada
-Unidad de R para Curso de Epidemiología Avanzada
+# Lenguaje R para Curso Epidemiología Avanzada
+
+
+....
