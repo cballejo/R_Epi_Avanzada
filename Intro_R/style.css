@@ -17,6 +17,7 @@ h3{
   font-size: 20pt;
 }
 
+
 h4{
   font-size: 18pt;
 }
@@ -27,4 +28,11 @@ h5{
 
 h6{
   font-size: 14pt;
+}
+
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+    z-index: 2;
+    color: #fff;
+    background-color: #194C19;
+    border-color: #337ab7;
 }
