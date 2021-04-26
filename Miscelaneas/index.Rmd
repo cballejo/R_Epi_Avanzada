@@ -1,6 +1,6 @@
 ---
 title: "Primeros pasos y misceláneas"
-author: "Material del Curso Epidemiología Nivel Avanzado"
+author: "*Material del Curso Epidemiología Nivel Avanzado*"
 output:
   html_document:
     css: style.css

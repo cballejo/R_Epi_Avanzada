@@ -1,6 +1,6 @@
 ---
 title: "Introducción a R"
-author: "Material del Curso Epidemiología Nivel Avanzado"
+author: "*Material del Curso Epidemiología Nivel Avanzado*"
 date: ""
 output:
   html_document:
