@@ -4,6 +4,7 @@ author: "Material del Curso Epidemiología Nivel Avanzado"
 output:
   html_document:
     css: style.css
+    toc: true
 ---
 
 ```{r setup, include=FALSE}
