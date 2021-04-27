@@ -1,13 +1,13 @@
 ---
-title: "Introducción a R"
-author: "*Material del Curso Epidemiología Nivel Avanzado*"
+title: "**Introducción al lenguaje R**"
+author: ""
 date: ""
 output:
   html_document:
     css: style.css
     toc: true
     toc_float: true
-    toc_collapsed: true
+    toc_collapsed: false
 number_sections: true
 anchor_sections: true
 theme: lumen
@@ -16,6 +16,20 @@ theme: lumen
 ```{r, message=FALSE, echo=F}
 knitr::opts_chunk$set(comment=NA, dpi = 300)
 ```
+
+
+
+<br> 
+
+<center>_Este material es parte de la_ **_Unidad 1 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS_**</center>
+
+<br> 
+
+<center><p xmlns:cc="http://creativecommons.org/ns#" >Este material posee licencia bajo <a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"></a></p></center>
+
+<br> 
+<br> 
+
 
 ## Qué es R?
 
@@ -1430,3 +1444,6 @@ dentro de una formula:
 |     *    |  x * z  | Incluye ambas variables y la interacción entre ellas |
 |     /    |  x / z  | Anidamiento: incluye a z anidado en x                |
 |    \|    |  x \| z | Condicional: incluye a x dado z                      |
+
+<br>
+<br>
