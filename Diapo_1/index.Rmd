@@ -1,0 +1,246 @@
+---
+title: "Introducción al Lenguaje R"
+subtitle: "Epidemiología Nivel Avanzado"  
+date: "07/05/2021"
+output:
+  xaringan::moon_reader:
+    includes:
+      after_body: insert-logo.html
+    transition: slide
+    lib_dir: libs
+    css: 
+     - "xaringan-themer2.css"
+     - "animate.min.css"
+     - "fonts_mtheme.css"
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+layout: true
+class: animated, fadeIn
+
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE, htmltools.preserve.raw = FALSE)
+library(xaringan)
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(base_color = "#004b00", 
+                  colors = c(red = "#f34213",
+  purple = "#3e2f5b",
+  orange = "#ff8811",
+  green = "#1d771d",
+  white = "#FFFFFF"))
+```
+
+---
+class: top
+
+<br>
+
+.center[## Objetivo de la Unidad 1]
+
+<br>
+
+.font150[Introducir y nivelar al grupo de estudiantes del curso de .bold[Epidemiología Nivel Avanzado] en el lenguaje ![](assets/logoR.PNG), con el fin de aplicarlo en el proceso de análisis de la siguientes unidades.]
+
+---
+background-image: url(assets/Enc1.PNG)
+background-size: 800px
+background-position: 50% 60%
+
+
+## Encuesta inicial
+
+---
+background-image: url(assets/Enc2.PNG)
+background-size: 800px
+background-position: 50% 60%
+
+
+## Encuesta inicial
+
+---
+background-image: url(assets/Enc3.PNG)
+background-size: 800px
+background-position: 50% 60%
+
+
+## Encuesta inicial
+
+---
+background-image: url(assets/Enc4.PNG)
+background-size: 800px
+background-position: 50% 60%
+
+
+## Encuesta inicial
+
+---
+background-image: url(assets/Enc5.PNG)
+background-size: 800px
+background-position: 50% 60%
+
+
+## Encuesta inicial
+
+---
+## Competencias a lograr
+
+--
+
+.font150[
+- Realizar análisis de datos con R]
+<br>
+--
+
+.font150[
+  - Utilizar herramientas de RStudio]
+  
+--
+
+.font150[
+  - Leer archivos de datos]
+  
+--
+
+.font150[
+  - Instalar y activar librerías]
+  
+--
+
+.font150[
+  - Comprender la ayuda de las funciones]
+  
+---
+## Dificultades en el camino
+
+--
+
+.font150[
+- Lenguaje de línea de comandos = Curva de aprendizaje lenta]
+
+--
+
+.font150[
+- Muchas veces la Ayuda no es clara]
+  
+--
+
+.font150[
+- Aprender a lidiar con los errores]
+  
+--
+
+.font150[
+- Muchas veces los errores tampoco son claros]
+  
+--
+
+.font150[
+- Hay muchas funciones y muchos paquetes. Es fácil confundirse]  
+  
+--
+
+.font150[
+- Casi todo se resuelve con muchas horas de uso y pidiendo AYUDA!]
+  
+
+---
+
+## Sintaxis
+
+.font150[
+- Cuidado con las mayúsculas y minúsculas (Case sensitive).
+
+<br> 
+
+```{r}
+"variable" == "VARIABLE"
+```
+]
+---
+
+.font150[
+- Las funciones siempre se acompañan de paréntesis al final. 
+  
+<br>  
+  
+```{r}
+c(2,43,67) # función concatenar c() - devuelve un vector
+
+c # función sin paréntesis devuelve el código interno de la función
+```
+]  
+---
+.font150[
+- Los argumentos siempre se separan con comas.
+
+<br>  
+
+```{r}
+args(sample) # argumentos de la función sample()
+```
+]
+  
+  
+---
+
+.font150[
+- Las cadenas de caracteres (texto) siempre van entre comillas.
+
+<br>  
+
+```{r}
+class("123")  # números como cadena de caracteres (texto)
+
+class(123)  # números en formato numérico
+
+args(read.csv) # comillas en argumentos tipo texto
+```
+]
+  
+---
+
+.font150[
+- Los índices de las estructuras de datos se indican dentro de corchetes.
+
+<br>  
+
+```{r}
+x <- c(2,43,67) # x es un vector de 3 elementos
+
+x[3] # valor en la posición 3 del vector
+```
+]  
+  
+---
+background-image: url(assets/Tab.PNG)
+background-size: 800px
+background-position: 50% 60%
+
+.font150[
+- Son MUY UTILES las herramientas de RStudio para evitar problemas de sintaxis.]
+
+---
+
+## Check list del encuentro de hoy
+
+.font150[
+- Problemas de descarga e instalación
+
+- Crear  proyectos de RStudio
+
+- Crear, abrir y guardar scripts
+
+- Leer datos (archivos csv)
+
+- Usar autocompletado de RStudio y ayuda
+
+- Instalar y gestionar paquetes
+]
