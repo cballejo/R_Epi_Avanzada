@@ -244,5 +244,5 @@ background-position: 50% 60%
 
 - Instalar y gestionar paquetes
 
-- Responder preguntas, acalarar dudas, etc...
+- Responder preguntas, aclarar dudas, etc...
 ]
