@@ -8,7 +8,7 @@ output:
     toc: true
     toc_float: true
     toc_collapsed: false
-    toc_depth: 3
+    toc_depth: 4
 number_sections: true
 anchor_sections: true
 theme: lumen
@@ -28,9 +28,9 @@ knitr::opts_chunk$set(comment=NA, dpi = 300)
 
 <br>
 
-INSERTAR LICENCIA
+<center><p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Unidad2/Transversal/">Diseño de corte transversal</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://www.ine.gov.ar">Andrea Silva</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"></a></p></center>
 
-<br> <br>
+<br> 
 
 ## Introducción
 
@@ -200,7 +200,7 @@ Si hubiésemos tomado muestras del mismo tamaño en una gran cantidad de ocasion
 
 El producto de  *(coeficiente de confiabilidad) x (error estándar)*   se lo denomina precisión de la estimación.  
 
-Cuando planteamos anteriormente los componentes de un IC (IC = estimador ± (coeficiente de confiabilidad) x (error estándar)), nos damos cuenta que el término (coeficiente de confiabilidad) x (error estándar)  será el responsable de la amplitud de dicho IC. 
+Cuando planteamos anteriormente los componentes de un IC (*IC = estimador ± (coeficiente de confiabilidad) x (error estándar)*), nos damos cuenta que el término (coeficiente de confiabilidad) x (error estándar)  será el responsable de la amplitud de dicho IC. 
 
 Al analizar este término vemos que, en el caso de la media:
 
@@ -232,6 +232,8 @@ Dado que un IC implica una declaración probabilística, para su cálculo debere
 
 No deberán preocuparse por las expresiones matemáticas, veremos que los paquetes estadísticos son capaces de calcularlos por nosotros. Pero lo importante aquí es entender de qué magnitudes depende y en qué forma.
 
+Para visualizar simulaciones al respecto pueden visitar **INCORPORAR ENLACE A SITIO WEB SORE DATOS**
+
 ### Selección de la muestra en estudios transversales
 
 En reglas generales,  toda investigación epidemiológica exige la selección de una muestra de la población que se estudia. Esto implica:
@@ -246,11 +248,11 @@ El tamaño de la muestra se decide en la fase de diseño del estudio, habitualme
 
 Cuando el objetivo de nuestra investigación incluye la estimación de un IC para alguna variable de interés, desearemos que dicho IC sea de alta confiabilidad y lo más estrecho posible.
 
-Volvamos nuevamente a los estudios de corte transversal: debemos pensarlos como estudios cuyo objetivo es estimar una proporción. Son estudios que intentan responder preguntas como ¿cuáles la prevalencia, proporción o porcentaje del fenómeno en estudio?
+Volvamos nuevamente a los estudios de corte transversal: debemos pensarlos como estudios cuyo objetivo es estimar una proporción. Son estudios que intentan responder preguntas como ¿cuál es la prevalencia, proporción o porcentaje del fenómeno en estudio?
 
 Al tomar una muestra para estimar lo que sucede en la realidad, es necesario aceptar que la medición realizada en la muestra nos dará una apreciación de la población de la cual se tomó, pero con cierto grado de variabilidad (o error). 
 
-La variabilidad que estamos dispuestos a aceptar en dicha estimación es lo que llamamos precisión y puede manejare a través de los intervalos de confianza (es decir, los límites superior e inferior dentro de los cuales se encontrará el verdadero valor del parámetro estimado).
+La variabilidad que estamos dispuestos a aceptar en dicha estimación es lo que llamamos precisión y puede manejarse a través de los intervalos de confianza (es decir, los límites superior e inferior dentro de los cuales se encontrará el verdadero valor del parámetro estimado).
 
 Como se mencionó en la sección anterior, se requiere conocer algunos datos para el cálculo del tamaño de muestra requerido, entre los que destacan:
 
@@ -272,22 +274,45 @@ En donde:
 -	$\delta$ = Precisión o magnitud del error que estamos dispuestos a aceptar.
 -	$Z\alpha$ = Distancia de la media del valor de significación propuesto. Se obtiene de tablas de distribución normal de probabilidades y habitualmente se utiliza un valor $\alpha$ de 0.05, al que le corresponde un valor $Z$ de 1.96
 
-Cuando el tamaño de la población es menor a 5000, se debe hacer una corrección de la fórmula (ajuste por población finita)
+Cuando se conoce el tamaño de la población se debe hacer una corrección de la fórmula (ajuste por población finita)
 
-$$N =\frac{n^1}{1+\frac{n^1}{Población}}   $$
+$$N =\frac{n^1}{1+\frac{n^1}{Población}}$$
 (donde $n^1$ es el $N$ calculado con la ecuación previa)
 
 No deberán preocuparse por la ecuación., es sólo para no perder de vista de qué dependerá el tamaño de la muestra. 
 
-Varios son los paquetes estadísticos que calculan tamaños de muestra. Algunos se dedican específicamente a esta tarea mientras que otros la incluyen entre  sus opciones. 
+Varios son los software estadísticos que calculan tamaños de muestra. Algunos se dedican específicamente a esta tarea mientras que otros la incluyen entre sus opciones. 
 
-Entre los gratuitos podemos mencionar: **EpiDat**, **EpiInfo (StatCalc)**,**OpenEpi**, etc. 
+Entre los gratuitos podemos mencionar: **EpiDat**, **EpiInfo (StatCalc)**, **OpenEpi**, etc. 
 
-Veremos a continuación, una de los paquetes que existen en R
+Por su parte el lenguaje R tiene varias funciones incluidas en muchos paquetes que permiten calcular tamaños de muestra.
 
+Dentro de `stats` perteneciente al R base encontramos funciones específicas como `power.prop.test()` para comparación de proporciones y `power.t.test()` para test de medias bajo distribuciones $t$ de student.
 
-INSERTAR CALCULO DE LA MUESTRA CON pwr
+Otros paquetes con funciones para tamaño de muestra son: `samplingbook`, `samplesize`, `pwr`, `epiR`, etc.
 
+Veamos un ejemplo vinculado con lo explicado anteriormente:
+
+Utilizaremos la función `sample.size.prop()` del paquete *samplingbook* para estimar el tamaño de una muestra pensada para obtener una estimación de proporción con su IC fijando una precisión alta (0.01), la peor proporción esperada (0.5), un tamaño poblacional desconocido (Inf) y un nivel de confianza para los IC de 0.95. 
+
+```{r, message=F, warning=F}
+library(samplingbook)
+
+sample.size.prop(e = 0.01, P = 0.5, N = Inf, level = 0.95)
+```
+Los argumentos son:
+
+- **e**: número positivo que especifica la precisión que es la mitad del ancho del intervalo de confianza 
+- **p**: proporción esperada de eventos con dominio entre los valores 0 y 1. El valor predeterminado es `p = 0.5`. 
+- **N**: número entero positivo para el tamaño de la población. El valor predeterminado es `N = Inf`, lo que significa que los cálculos se realizan sin *corrección de población finita*. 
+- **level**: nivel de confianza para los intervalos de confianza. El valor predeterminado es `level = 0.95`.
+
+La misma función aplicada para un caso similar pero conociendo la población (por ejemplo de 50000 individuos):
+
+```{r}
+sample.size.prop(e = 0.01, P = 0.5, N = 50000, level = 0.95)
+```
+En este último caso, la función aplica la corrección de población finita.
 
 Ya hemos discutido lo concerniente al tamaño de la muestra en procesos de estimación. Ahora diremos algunas palabras sobre cómo seleccionar a los individuos que constituirán la muestra. Debe llevarse a cabo un muestreo probabilístico,  dado que en los estudios de corte transversal  los métodos de muestreo son importantes. Si bien la parte de muestreo no está incluida en los contenidos del curso, es vital tenerlo en cuenta porque determinará los factores de expansión que deberán aplicarse a la muestra, al momento de generalizar los resultados a la población.
 
@@ -427,7 +452,7 @@ Si realizamos los cálculos para todos los conglomerados, obtenemos:
 |     1.5             |     17,3160         |     5,7750         |
 
 
-### La comparación en los diseños transversales
+## La comparación en los diseños transversales
 
 
 Si bien los estudios de corte transversal no son diseños que desde su inicio posean grupos de comparación, es habitual que en los que son de corte más analítico, se establezcan algunas comparaciones. Preguntas tales como ¿la prevalencia de la enfermedad es mayor en mujeres/ en un determinado grupo etario/ en una determinada provincia?; pueden surgir en el marco de estos estudios.
@@ -659,7 +684,7 @@ knitr::include_graphics("test3.PNG")
 
 ¡Veamos algún ejemplo que nos permita bajar a tierra estos contenidos!
 
-Ejemplo: 
+#### Ejemplo: 
 
 En el archivo  “bebe1” encontrarán una muestra aleatoria de los pesos al nacer de 186 bebés. 
 
@@ -679,20 +704,40 @@ $$IC = 2970,86 - 3233,13$$
 
 Rta: El peso medio al nacer de los bebés oscila entre  2970,86 g - 3233,13 g ($\alpha$ = 0,99) 
 
-En R, lo podemos hacer con la función `z.test` del paquete **TeachingDemos**.
+En R, lo podemos hacer con la función `z.test` del paquete **TeachingDemos** que trabaja con valores z de la distribución normal.
 
 ```{r, message=F, warning=F}
 library(TeachingDemos)
 
-z.test(x = 3102, stdev = 696, n = 186, conf.level = 0.99)
+bebe1 <- read.csv2("bebe1.csv")
+
+z.test(x = bebe1$peso, 
+       sd = sd(bebe1$peso), 
+       conf.level = 0.99)
 ```
 Para hacer el inciso b, la metodología apropiada sería un test de comparación de medias para dos poblaciones independientes.
 
 Primeramente, deberemos chequear normalidad para seleccionar el test apropiado:
 
+```{r, message=F, warning=F, fig.align='center', out.width = "60%"}
+bebe2 <- read.csv2("bebe2.csv")
 
+library(DataExplorer)
 
+plot_qq(data = bebe1$peso, 
+        title = "QQ-plot Peso Bebe1",
+        geom_qq_args = list(color = "firebrick4") )
 
+plot_qq(data = bebe2$peso, 
+        title = "QQ-plot Peso Bebe2",
+        geom_qq_args = list(color = "olivedrab") )
+```
+
+```{r}
+shapiro.test(x = bebe1$peso)
+
+shapiro.test(x = bebe2$peso)
+```
 
 Concluimos distribución normal de la variable peso en ambos casos.
 
@@ -700,11 +745,9 @@ Entonces podemos aplicar un *t test* para comparación de medias independientes
 
 Pero primero, debemos comparar varianzas:
 
-
-
-
-
-
+```{r}
+var.test(bebe1$peso, bebe2$peso)
+```
 Concluimos varianzas iguales ($p > 0,05$), entonces aplicaremos un t test para comparar medias de dos poblaciones independientes con varianzas iguales.
 
 Podemos plantear un contraste bilateral, en cuyo caso:
@@ -712,29 +755,115 @@ Podemos plantear un contraste bilateral, en cuyo caso:
 $H_0: \mu_1 = \mu_2$
 $H_1: \mu_1 \neq \mu_2$
 
+```{r}
+t.test(x = bebe1$peso, 
+       y = bebe2$peso, 
+       alternative = "two.sided", 
+       var.equal = TRUE)
+```
+
+
 O también podríamos plantear un contraste unilateral, si consideramos que nuestra hipótesis de trabajo es que el peso de los bebés de madres que no consumen cocaína es mayor que aquellos de madres que sí consumen.
 
 $H_0: \mu_1 = \mu_2$
 $H_1: \mu_1 > \mu_2$ o $\mu_1 - \mu_2 > 0$
 
+```{r}
+t.test(x = bebe1$peso, 
+       y = bebe2$peso, 
+       alternative = "greater",
+       var.equal = TRUE)
+```
 Concluimos que los pesos de los bebés hijos de madres que no consumen cocaína es significativamente mayor respecto de los hijos de madres que sí la consumen
 
-Script de R para resolver el ejemplo:
+Script completo de R para resolver el ejemplo:
+
+```{r, eval = F}
+## Activamos paquetes
+
+library(TeachingDemos)
+library(DataExplorer)
+
+## Leemos los datos
+
+bebe1 <- read.csv2("Unidad2/Transversal/bebe1.csv")
+bebe2 <- read.csv2("Unidad2/Transversal/bebe2.csv")
+
+## Intervalo de confianza para bebe1
+
+##Resumimos la variable peso
+
+summary(bebe1$peso)
+
+##Contraste de normalidad y qqplot
+
+plot_qq(data = bebe1$peso, 
+        title = "QQ-plot Peso Bebe1",
+        geom_qq_args = list(color = "firebrick4") )
+
+shapiro.test(bebe1$peso)
 
 
+##Calculo IC con Teaching Demos
+
+z.test(x = bebe1$peso, 
+       sd = sd(bebe1$peso), 
+       conf.level = 0.99)
+
+##Calculo IC con t.test() - distribución t de student
+
+t.test(x = bebe1$peso, 
+       conf.level = 0.99)
+
+#########
+
+## Contraste de hipotesis
+
+##Resumimos la variable peso
+summary(bebe2$peso)
+
+##Contraste de normalidad y qqplot
+plot_qq(data = bebe2$peso, 
+        title = "QQ-plot Peso Bebe2",
+        geom_qq_args = list(color = "olivedrab") )
+
+shapiro.test(bebe2$peso)
+
+## Test de homogeneidad de varianzas
+var.test(x = bebe1$peso, 
+         y=bebe2$peso)
+
+## Test de comparación de medias con varianzas iguales
+
+## contraste bilateral
+
+t.test(x = bebe1$peso,
+       y = bebe2$peso,
+       alternative = "two.sided",  # valor predeterminado
+       mu = 0, # valor predeterminado
+       var.equal = TRUE,
+       conf.level = 0.95) # valor predeterminado
+
+## contraste unilateral
+
+t.test(x = bebe1$peso,
+       y = bebe2$peso,
+       alternative =  "greater",
+       mu = 0,  # valor predeterminado
+       var.equal = TRUE,
+       conf.level = 0.95) # valor predeterminado
+
+```
 
 
-
-
-
-*Inferencia sobre una población*
+**Inferencia sobre una población**
 
 Algunas veces, además de obtener intervalos de confianza para el valor de la media poblacional, la proporción, etc, podemos  también estar interesados en realizar contrastes de hipótesis sobre un valor propuesto para la misma. En este caso, no es estrictamente una comparación entre dos poblaciones. Esto se denomina *“inferencia sobre una población”*.
 
 Podemos realizar contrastes sobre la media, la proporción, etc.
 
 
-#### Bibliografía de este capítulo
+## Bibliografía 
 
 Rodriguez M, Mendivelso F. Diseño de investigación de corte transversal. Rev.Medica.Sanitas 21 (3): 141-146, 2018
 
@@ -754,8 +883,14 @@ Norman G y Streiner D. Bioestadística. Mosby/Doyma Libros. Madrid.1996.
 
 Glantz S. Bioestadística. 6° Edición. McGraw Hill. México, 2006.
 
+R Core Team (2021). R: A language and environment for statistical
+computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
 
-<br> <br>
+Juliane Manitz, contributions by Mark Hempelmann, Goeran Kauermann, Helmut Kuechenhoff, Shuai Shao, Cornelia Oberhauser, Nina Westerheide and Manuel Wiesenfarth (2017). samplingbook: Survey Sampling Procedures. R package version 1.2.2. https://CRAN.R-project.org/package=samplingbook
 
+Greg Snow (2020). TeachingDemos: Demonstrations for Teaching and
+Learning. R package version 2.12. https://CRAN.R-project.org/package=TeachingDemos
 
-<br> <br>
+Boxuan Cui (2020). DataExplorer: Automate Data Exploration and Treatment.
+R package version 0.8.2. https://CRAN.R-project.org/package=DataExplorer
+
