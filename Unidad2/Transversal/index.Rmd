@@ -232,7 +232,7 @@ Dado que un IC implica una declaración probabilística, para su cálculo debere
 
 No deberán preocuparse por las expresiones matemáticas, veremos que los paquetes estadísticos son capaces de calcularlos por nosotros. Pero lo importante aquí es entender de qué magnitudes depende y en qué forma.
 
-Para visualizar simulaciones al respecto pueden visitar **INCORPORAR ENLACE A SITIO WEB SORE DATOS**
+Para visualizar simulaciones al respecto pueden visitar [Viendo la teoría. Una introducción visual a probabilidad y estadística](https://seeing-theory.brown.edu/frequentist-inference/es.html#section2)
 
 ### Selección de la muestra en estudios transversales
 
