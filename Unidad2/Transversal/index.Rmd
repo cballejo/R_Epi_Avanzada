@@ -279,7 +279,7 @@ Cuando se conoce el tamaño de la población se debe hacer una corrección de la
 $$N =\frac{n^1}{1+\frac{n^1}{Población}}$$
 (donde $n^1$ es el $N$ calculado con la ecuación previa)
 
-No deberán preocuparse por la ecuación., es sólo para no perder de vista de qué dependerá el tamaño de la muestra. 
+No deberán preocuparse por la ecuación, es sólo para no perder de vista de qué dependerá el tamaño de la muestra. 
 
 Varios son los software estadísticos que calculan tamaños de muestra. Algunos se dedican específicamente a esta tarea mientras que otros la incluyen entre sus opciones. 
 
@@ -386,7 +386,7 @@ Veamos un ejemplo para ver cómo el diseño muestral afecta las ponderaciones:
 
 Supongamos que queremos obtener la prevalencia de sobrepeso/obesidad en estudiantes de enseñanza media de una localidad que tiene 966 alumnos registrados (de enseñanza media) y que dichos alumnos están distribuidos en 21 escuelas de tamaños variables (usted cuenta con esta información). 
 
-Ya realizó el cálculo del tamaño del tamaño de la muestra, que deberá ser de 120 alumnos.
+Ya realizó el cálculo del tamaño de la muestra, que deberá ser de 120 alumnos.
 
 Podría realizar un **MAS**: para ello debería contar con el listado de los 966 alumnos y realizar un sorteo entre ellos de los 120 alumnos necesarios para construir la muestra. 
 
@@ -882,6 +882,8 @@ Triola, M. Estadística. 10° Edición. Pearson Educación. México. 2009.
 Norman G y Streiner D. Bioestadística. Mosby/Doyma Libros. Madrid.1996. 
 
 Glantz S. Bioestadística. 6° Edición. McGraw Hill. México, 2006.
+
+Epidat: Material de ayuda programa para análisis epidemiológico de datos. Versión 4.2, julio 2016. Consellería de Sanidade, Xunta de Galicia, España; Organización Panamericana de la salud (OPS-OMS); Universidad CES, Colombia.
 
 R Core Team (2021). R: A language and environment for statistical
 computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
