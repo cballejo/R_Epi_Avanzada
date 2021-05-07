@@ -287,32 +287,46 @@ Entre los gratuitos podemos mencionar: **EpiDat**, **EpiInfo (StatCalc)**, **Ope
 
 Por su parte el lenguaje R tiene varias funciones incluidas en muchos paquetes que permiten calcular tamaños de muestra.
 
-Dentro de `stats` perteneciente al R base encontramos funciones específicas como `power.prop.test()` para comparación de proporciones y `power.t.test()` para test de medias bajo distribuciones $t$ de student.
+Dentro de `stats`, perteneciente al R base, encontramos funciones específicas como `power.prop.test()` para comparación de proporciones y `power.t.test()` para test de medias bajo distribuciones $t$ de student.
 
 Otros paquetes con funciones para tamaño de muestra son: `samplingbook`, `samplesize`, `pwr`, `epiR`, etc.
 
 Veamos un ejemplo vinculado con lo explicado anteriormente:
 
-Utilizaremos la función `sample.size.prop()` del paquete *samplingbook* para estimar el tamaño de una muestra pensada para obtener una estimación de proporción con su IC fijando una precisión alta (0.01), la peor proporción esperada (0.5), un tamaño poblacional desconocido (Inf) y un nivel de confianza para los IC de 0.95. 
+Utilizaremos la función `sample.size.prop()` del paquete **samplingbook** para estimar el tamaño de una muestra para un estudio con el objetivo de estimar la prevalencia de diabetes de la población de una ciudad de 600000 habitantes donde conocemos por estudios previos que pudiera ser cercana a 10,2 %. 
+
+Que tamaño debería tener la muestra (muestreo simple aleatorio)?
+
+Suponiendo que utilizaramos la prevalencia de los estudios previos, el nivel de confianza deseado fuera del 95 % y la precisión aceptada se encuentre en el orden del 2%, hacemos:
 
 ```{r, message=F, warning=F}
 library(samplingbook)
 
-sample.size.prop(e = 0.01, P = 0.5, N = Inf, level = 0.95)
+sample.size.prop(e = 0.02, P = 0.102, N = 600000, level = 0.95)
 ```
-Los argumentos son:
+El resultado, aplicada la corrección por población finita, calcula una muestra de 879 personas. 
+
+Como vemos, los argumentos se corresponden con los elementos que integran la fórmula.
 
 - **e**: número positivo que especifica la precisión que es la mitad del ancho del intervalo de confianza 
 - **p**: proporción esperada de eventos con dominio entre los valores 0 y 1. El valor predeterminado es `p = 0.5`. 
 - **N**: número entero positivo para el tamaño de la población. El valor predeterminado es `N = Inf`, lo que significa que los cálculos se realizan sin *corrección de población finita*. 
 - **level**: nivel de confianza para los intervalos de confianza. El valor predeterminado es `level = 0.95`.
 
-La misma función aplicada para un caso similar pero conociendo la población (por ejemplo de 50000 individuos):
+Por simplicidad, es habitual considerar infinita a la población objetivo, ya que hacerlo así minimiza los riesgos estadísticos. 
 
 ```{r}
-sample.size.prop(e = 0.01, P = 0.5, N = 50000, level = 0.95)
+sample.size.prop(e = 0.02, P = 0.102, N = Inf, level = 0.95)
 ```
-En este último caso, la función aplica la corrección de población finita.
+La muestra, sin corrección por población finita (`N = Inf`), es de 880 personas, solo una mas que la anterior.
+
+Si en cambio, no conociéramos o no confiáramos en el valor de prevalencia de los estudios previos podemos asignar la peor prevalencia esperada (0,5).
+
+
+```{r}
+sample.size.prop(e = 0.02, P = 0.5, N = 600000, level = 0.95)
+```
+El tamaño muestral es más conservador y aumenta hasta las 2392 unidades de la población.
 
 Ya hemos discutido lo concerniente al tamaño de la muestra en procesos de estimación. Ahora diremos algunas palabras sobre cómo seleccionar a los individuos que constituirán la muestra. Debe llevarse a cabo un muestreo probabilístico,  dado que en los estudios de corte transversal  los métodos de muestreo son importantes. Si bien la parte de muestreo no está incluida en los contenidos del curso, es vital tenerlo en cuenta porque determinará los factores de expansión que deberán aplicarse a la muestra, al momento de generalizar los resultados a la población.
 
@@ -475,7 +489,7 @@ Los contrastes de hipótesis se realizan:
 
 El conjunto de estas técnicas de inferencia se denominan **técnicas paramétricas**. 
 
-Existen sin embargo otros métodos paralelos cuyos procedimientos no precisan la estimación de parámetros ni suponer conocida ninguna ley de probabilidad subyacente en la población de la que se extrae la muestra. Estas son las denominadas técnicas **no paramétrica**s o contrastes de distribuciones libres, algunos de los cuales desarrollaremos más adelante en este módulo. 
+Existen sin embargo otros métodos paralelos cuyos procedimientos no precisan la estimación de parámetros ni suponer conocida ninguna ley de probabilidad subyacente en la población de la que se extrae la muestra. Estas son las denominadas técnicas **no paramétricas** o contrastes de distribuciones libres, algunos de los cuales desarrollaremos más adelante en este módulo. 
 
 Antes de avanzar, es necesario aclarar que los contrastes de hipótesis son utilizados no solo en el marco de estudios transversales, sino que más frecuentemente, en aquellos casos donde a priori existen grupos de comparación: diseño de casos y controles, cohortes, ensayos clínicos y similares.
 
@@ -634,6 +648,56 @@ Una de las situaciones más frecuentes que se suelen presentar en epidemiología
 
 El lenguaje R tiene implementado funciones que nos permite calcular y visualizar la relación entre tamaño de la muestra, potencia, tamaño de efecto y nivel de confianza.
 
+Por ejemplo, la función `pwr.t.test()` del paquete **pwr**, calcula la potencia para pruebas $t$ de student de medias (para una muestra, dos muestras y muestras pareadas), basado en el tamaño de la muestra, el nivel de confianza y el tamaño de efecto.
+
+Su estructura es:
+
+__pwr.t.test__(n = NULL, d = NULL, sig.level = 0.05, power = NULL, type = c("two.sample", "one.sample", "paired"), alternative = c("two.sided", "less", "greater"))
+
+donde los argumentos son:
+
+__n__:  número de observaciones (para cada grupo, si hubiese 2)
+
+__d__: tamaño de efecto (d de Cohen) - diferencia (estandarizada) entre grupos. 
+*Nota:* La $d$ de Cohen representa las desviaciones estándar que separan dos o más grupos, ej: d de Cohen = 0.5 representa que la diferencia entre grupo experimental y muestral es de media desviación estándar. Cohen sugirió (provisoriamente) que 0.2 es un tamaño de efecto pequeño, 0.5 es mediano y 0.8 es grande,
+
+__sig.level__: nivel de significación (probabilidad del error de tipo I)
+
+__power__: potencia del test (1 menos la probabilidad del error tipo II)
+
+__type__: tipo de test ("two.sample", "one.sample", "paired")
+
+__alternative__: palabra que especifica la hipotesis alternativa, debe ser "two.sided" (predeterminado), "greater" or "less".
+
+La función se ejecuta incorporando todos los argumentos obligatorios (`d`,`n`, `power` and `sig.level`) menos el que se quiere calcular. En ese caso se iguala a NULL o se omite. 
+
+Supongamos que queremos conocer el tamaño de la muestra para detectar diferencias en la media de la glucemia glicosilada entre dos grupos de pacientes con tratamientos de control de la diabetes distintos. Aceptamos un nivel de efecto convencional de una pequeña desviación ($d$ de Cohen = 0,2), una potencia del 80% y una significación habitual de 0,05.
+
+```{r, message=F, warning=F}
+library(pwr)
+
+pwr.t.test(d = 0.2, 
+           power = 0.8,
+           sig.level = 0.05, 
+           type = "two.sample", 
+           alternative = "two.sided")
+```
+El tamaño muestral necesario obtenido es de 393 participantes para cada grupo a comparar.
+
+Esta familia de funciones también permite graficar el tamaño muestral vs la potencia del estudio.
+
+```{r, out.width="60%", fig.align="center"}
+grafico1 <- pwr.t.test(d = 0.2, 
+           power = 0.8,
+           sig.level = 0.05, 
+           type = "two.sample", 
+           alternative = "two.sided")
+
+plot(grafico1) # ploteamos la salida de grafico1
+```
+
+Nos muestra, por ejemplo, que si tomasemos una muestra de 300 individuos por grupo, la potencia del estudio con ese tamaño de efecto y nivel de significación del 0,05  sería aproximadamente de 68 %.
+
 **¿Qué test se debe aplicar en cada caso?**
 
 Ya hemos discutido la mecánica general de los test de hipótesis, ahora exploraremos cuál test se debe aplicar en cada situación. Hay un desarrollo teórico detrás de cada caso, que lo soslayaremos aquí, para quedarnos con ciertas reglas que nos orienten en esa decisión. 
@@ -684,7 +748,7 @@ knitr::include_graphics("test3.PNG")
 
 ¡Veamos algún ejemplo que nos permita bajar a tierra estos contenidos!
 
-#### Ejemplo: 
+**Ejemplo:** 
 
 En el archivo  “bebe1” encontrarán una muestra aleatoria de los pesos al nacer de 186 bebés. 
 
@@ -774,7 +838,7 @@ t.test(x = bebe1$peso,
        alternative = "greater",
        var.equal = TRUE)
 ```
-Concluimos que los pesos de los bebés hijos de madres que no consumen cocaína es significativamente mayor respecto de los hijos de madres que sí la consumen
+Concluimos que los pesos de los bebés hijos de madres que no consumen cocaína es significativamente mayor respecto de los hijos de madres que sí la consumen.
 
 Script completo de R para resolver el ejemplo:
 
@@ -856,12 +920,54 @@ t.test(x = bebe1$peso,
 ```
 
 
-**Inferencia sobre una población**
+### Inferencia sobre una población
 
 Algunas veces, además de obtener intervalos de confianza para el valor de la media poblacional, la proporción, etc, podemos  también estar interesados en realizar contrastes de hipótesis sobre un valor propuesto para la misma. En este caso, no es estrictamente una comparación entre dos poblaciones. Esto se denomina *“inferencia sobre una población”*.
 
 Podemos realizar contrastes sobre la media, la proporción, etc.
 
+Veamos un ejemplo en R sobre contraste de medias.
+
+Se tiene interés en estudiar la presión arterial en enfermos con un síndrome determinado que toman un nuevo fármaco. Estos enfermos suelen tener una presión arterial media de 165. Con el objetivo de valorar si el nuevo fármaco consigue rebajar la presión arterial de estos enfermos se toma la presión arterial de 15 personas con este síndrome que toman el nuevo fármaco. 
+
+Puede concluirse, con un nivel de confianza del 95%, que los enfermos con este síndrome que toman el nuevo fármaco tienen una presión arterial media menor que 165?
+
+__Hipótesis:__
+
+$H_0 : \mu = 165$
+
+$H_1 : \mu < 165$
+
+unilateral cola izquierda
+
+**Lectura y análisis de supuestos**
+
+```{r}
+enfermos <- read.csv2("enfermos.csv") # leemos los datos
+
+mean(enfermos$V1)                     # calculamos la media
+sd(enfermos$V1)                       # calculamos el desvío estandar
+shapiro.test(enfermos$V1)             # verificamos normalidad
+```
+
+Este grupo de enfermos tratados con el nuevo fármaco tienen una media de aproximadamente 148 con un desvío de casi 26. Podemos asegurar que es estadísticamente menor al conocido de 165?
+
+__Prueba de hipótesis__
+
+```{r, message=F}
+
+## ejecutamos el test de contraste para una población
+t.test(x = enfermos$V1, 
+       alternative = "less", 
+       mu=165, 
+       conf.level = 0.95)
+```
+
+__Interpretación:__
+
+Verificamos los supuestos de normalidad la muestra: test shapiro-wilks p-valor = 0,4174.
+
+El p-valor de 0,01158 es significativo (< 0,05) por lo que rechazamos la hipótesis nula de que la presión media de los enfermos que toman el nuevo fármaco es igual a la presión promedio de los enfermos que no lo toman. Por lo tanto, concluimos que la media de presión arterial del grupo de pacientes tratados con el nuevo fármaco es significativamente menor respecto de los no tratados.
 
 ## Bibliografía 
 
@@ -896,3 +1002,5 @@ Learning. R package version 2.12. https://CRAN.R-project.org/package=TeachingDem
 Boxuan Cui (2020). DataExplorer: Automate Data Exploration and Treatment.
 R package version 0.8.2. https://CRAN.R-project.org/package=DataExplorer
 
+Stephane Champely (2020). pwr: Basic Functions for Power Analysis. R package
+version 1.3-0. https://CRAN.R-project.org/package=pwr
