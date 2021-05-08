@@ -5,10 +5,7 @@ date: ""
 output:
   html_document:
     css: style.css
-    toc: true
-    toc_float: true
-    toc_collapsed: false
-    toc_depth: 4
+    toc: false
 number_sections: true
 anchor_sections: true
 theme: lumen
@@ -17,6 +14,9 @@ theme: lumen
 ```{r, message=FALSE, echo=F}
 knitr::opts_chunk$set(comment=NA, dpi = 300)
 ```
+
+*Este material es parte de la* ***Unidad 2 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS***
+
 
 ## Ejemplo de construcción de intervalos de confianza con R
 
@@ -43,7 +43,7 @@ Podemos visualizar la estructura de la tabla de datos
 ```{r}
 str(pcb)
 ```
-Tenemos una tabla con 14 observaciones (mediciones en individuos) y la variable de interés se llama *concentracion* (nos informan que está expresada como nanogramode PCB/gramo de lípido)
+Tenemos una tabla con 14 observaciones (mediciones en individuos) y la variable de interés se llama *concentracion* (nos informan que está expresada como nanogramo de PCB/gramo de lípido)
 
 b. Calculo de media, DS y percentilos
 
@@ -77,35 +77,27 @@ library(DataExplorer)
 plot_qq(pcb$concentracion)
 ```
 
-Si bien son pocos datos, los puntos se desarrollan ""alrededor" a la recta de normalidad.
+Si bien son pocos datos, los puntos se desarrollan "alrededor" a la recta de normalidad.
 
-Con estos dos elementos podemos confirmar el cumplimiento del supuesto de "normalidad".
+Con estos dos elementos podemos confirmar el cumplimiento del supuesto de "normalidad" necesario para hacer uso de métodos paramétricos.
 
 d. Calculo de IC 
 
-Vimos en el módulo teórico que para la construcción de un IC, basado en método paramétricos, se requiere de 3 componentes:
-
-- Un estimador puntual: en este caso la media
-- Un coeficiente de confiabilidad ($\alpha$): el ejercicio nos propone dos (95 y 90%)
-- El EE (Error estándar de la media)
-
-Con esta formula:
-
-$IC = estimador \pm (coeficiente \; de\; confiabilidad)\; *\; (error\; estándar)$
-
-Podríamos hacer las operaciones y cálculos individuales utilizando la distribución $t$ de Student en R.
+Estamos frente al calculo de IC de una muestra de $n$ = 14 (menor a 30 observaciones) y que cumple con el supuesto de normalidad, por lo tanto podemos/debemos aplicar un método paramétrico basado en la distribución $t$ de Student.
 
 La distribución $t$ de Student se asemeja en gran medida a la distribución normal. Tiene como parámetros la media, la varianza y además incorpora a través de los grados de libertad una modificación que permite flexibilizar las colas en función del tamaño que tenga la muestra.
 
-Si bien debemos utilizar esa distribución, dado que el $n$ de nuestra muestra es menor a 30, la idea de este ejercicio es mostrarles la forma operativa más sencilla de llevarlo a cabo con funciones de R.
+En la practica, cuando trabajamos sobre inferencia de la media (para IC o para pruebas de hipótesis para comparar) y el tamaño muestral es mayor a 30 igualmente se hace con la distribución $t$ de Student, dado que con 30 o más grados de libertad es prácticamente igual a una distribución normal.
+
+Podríamos hacer las operaciones y cálculos individuales utilizando las funciones que R tiene sobre esta distribución (*familia TDist*: `qt()`, etc), pero la idea de este ejercicio es mostrarles la forma operativa más sencilla de llevarlo a cabo.
 
 **Función t.test()**
 
-La función `t.test()` del paquete `stats` de R base sirve apara ejecutar test de hipótesis de medias de una y dos poblaciones (independientes o pareadas) pero además nos calcula automáticamente el intervalo de confianza requerido.
+La función `t.test()`, incluída en el paquete `stats` de R base, sirve apara ejecutar test de hipótesis de medias de una y dos poblaciones (independientes o pareadas) pero además nos calcula automáticamente el intervalo de confianza requerido, basado en la distribución $t$ de Student.
 
-En este ejemplo debemos utilizar como argumentos:
+Para este ejemplo debemos utilizar como argumentos:
 
-- la variable de interés que contiene los valores de ls muestra
+- la variable de interés que contiene los valores de la muestra
 - el nivel de confianza con el que necesitamos el IC
 
 ```{r}
