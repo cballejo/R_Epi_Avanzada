@@ -234,6 +234,8 @@ No deberán preocuparse por las expresiones matemáticas, veremos que los paquet
 
 Para visualizar simulaciones al respecto pueden visitar [Viendo la teoría. Una introducción visual a probabilidad y estadística](https://seeing-theory.brown.edu/frequentist-inference/es.html#section2)
 
+Se puede observar un ejemplo de cálculo de IC para la media basado en la distribución $t$ *de Student* en el siguiente enlace: [Intervalos de confianza con R](https://cballejo.github.io/R_Epi_Avanzada/Unidad2/IC/)
+
 ### Selección de la muestra en estudios transversales
 
 En reglas generales,  toda investigación epidemiológica exige la selección de una muestra de la población que se estudia. Esto implica:
