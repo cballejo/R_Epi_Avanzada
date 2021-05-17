@@ -1,0 +1,275 @@
+---
+title: "Unidad I: Encuentro 2"
+subtitle: "Epidemiología Nivel Avanzado"  
+date: "18/05/2021"
+output:
+  xaringan::moon_reader:
+    includes:
+      after_body: insert-logo.html
+    transition: slide
+    lib_dir: libs
+    css: 
+     - "xaringan-themer2.css"
+     - "animate.min.css"
+     - "fonts_mtheme.css"
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+layout: true
+class: animated, fadeIn
+
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE, htmltools.preserve.raw = FALSE)
+library(xaringan)
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(base_color = "#004b00", 
+                  colors = c(red = "#f34213",
+  purple = "#3e2f5b",
+  orange = "#ff8811",
+  green = "#1d771d",
+  white = "#FFFFFF"))
+```
+
+---
+background-image: url(assets/tidyverse.PNG), url(assets/tidyverse2.PNG)
+background-size: 200px, 350px
+background-position: 50% 10%, 50% 90%
+
+class: center, middle
+
+.font140[ 
+Una colección de paquetes de R modernos, que comparten una gramática y filosofía común, diseñados para resolver los desafíos de la ciencia de datos.
+]
+
+---
+background-image: url(assets/tidy.PNG)
+background-size: 450px
+background-position: 90% 40%
+
+## Fundamentos
+
+.font110[
+- **Estructura ordenada de datos (tidy)**
+
+  - Cada _variable_ es una _columna_ de la tabla de datos
+  
+  - Cada _observación_ es una _fila_ de la tabla de datos
+  
+  - Cada _tabla_ responde a una _unidad observacional_
+
+- **Principios básicos** 
+
+  - Reutilizar las estructuras de datos
+  
+  - Resolver problemas complejos combinando varias piezas sencillas
+  
+  - Utilizar programación funcional
+  
+  - Diseño para humanos incorporando gramática al lenguaje
+]
+---
+## Enfoque "comunicativo"
+
+
+.font140[
+- Visto como un lenguaje para **_"comunicarse"_** (similar a un segundo lenguaje como el inglés, francés, etc.)
+
+- R es similar, pues contiene una estructura **_semántica_**, **_gramatical_** y **_sintáctica_**.
+
+- Se busca comenzar a **_"decir cosas con datos"_** y luego profundizar en las estructuras del lenguaje.
+
+- Diferencias entre ser **_"usuario"_** y **_"programador"_** (algo así como un linguista de R)
+
+
+- Ver ponencia “How to do things with words: Learning to program with a ‘communicative approach’" de Riva Quiroga en [rstudio::global(2021)](https://rstudio.com/resources/rstudioglobal-2021/how-to-do-things-with-words-learning-to-program-in-r-with-a-communicative-approach/)
+
+]
+---
+background-image: url(assets/readr.PNG), url(assets/readxl.PNG), url(assets/dplyr.PNG), url(assets/ggplot2.PNG)
+background-size: 130px, 130px, 150px, 150px
+background-position: 20% 70%, 40% 70%, 60% 70%, 80% 70%
+class: top
+
+## Paquetes nucleo (tidyverse core)
+
+.font150[La versión actual (*tidyverse 1.3.0*) incluye los paquetes: **ggplot2**, **dplyr**, **tidyr**, **readr**, **purrr**, **tibble**, **stringr**, **forcats**
+
+Dentro de esta Unidad presentamos, en los materiales y actividades, las funciones principales de estos paquetes:]
+
+---
+## Sintaxis R base vs tidyverse
+
+.font150[- En la sintaxis del R base el símbolo **$** es protagonista. 
+
+Acompaña al nombre de la tabla de datos (dataframe) cuando queremos llamar a las variables contenidas en ella.]
+
+.font160[
+```{r, eval=FALSE}
+
+datos$x
+
+función(datos$x, datos$y)
+```
+]
+---
+background-image: url(assets/pipe.PNG)
+background-size: 450px
+background-position: 50% 95%
+class: top
+## Sintaxis R base vs tidyverse
+.font150[
+- En la sintaxis del ecosistema tidyverse el protagonista es el símbolo **%>%**. 
+
+Es una tubería (*pipe*) que sirve para conectar partes de código. 
+
+Estas estructuras comienzan habitualmente con el llamado a la tabla de datos.]
+
+.font160[
+```{r, eval=FALSE}
+datos %>% función(x, y)  # el atajo de teclado es Ctrl+Shift+M
+```
+
+]
+.font150[
+- La diferencia entre las dos formas sintácticas es:]
+
+---
+## Análisis exploratorio de datos
+.font150[
+Los principales objetivos perseguidos por EDA son:
+
+- Conocer la estructura de la tabla de datos y sus tipos de variable
+
+- Detectar observaciones incompletas (valores missing)
+
+- Conocer la distribución de las variables de interés a partir de:
+
+  - Resumir datos mediante estadísticos
+  
+  - Resumir datos mediante gráficos
+  
+  - Detectar valores atípicos (outlier)]
+---
+### Conocer la estructura de los datos
+
+.font150[
+- Consiste en una exploración técnica asociada a elementos informáticos pero a su vez busca relacionarse con la clasificación estadística de las variables de estudio.
+
+- Suele realizarse de la mano de un *"diccionario de datos"* producido durante el proceso de recolección.
+
+- Los tipos de datos informáticos que maneja R son: *numéricos enteros* (**integer**), *numéricos reales* (**numeric/double**), *caracter* (**character**), *factor* (**factor**), *lógicos* (**logical**), *fecha* (**date**) y *fecha-hora* (**dttm**).
+
+- La clasificación estadística de las variables referida es la clásica: *variables cualitativas* y *cuantitativas*, *continuas* y *discretas*, con escalas *nominales*, *ordinales*, de *intervalo* y de *razón*.
+]
+
+
+---
+### Detectar observaciones incompletas (valores missing)
+
+.font120[
+- Identificar los valores faltantes en las variables nos permite conocer con que tamaño muestral estamos trabajando frente a cada estadístico calculado. ]
+
+.pull-left[
+.font120[
+- Suele descartarse la variable, cuando la proporción de valores faltantes es alta en el conjunto de observaciones para dicha variable.
+
+- Suele descartarse la observación, cuando la proporción de valores faltantes es alta en el conjunto de variables de dicha observación (en analisis multivariado)
+]]
+
+.pull-right[
+
+```{r, echo = F, message=F, warning=F, fig.height=5}
+library(dlookr)
+SEXO <- c(rep(NA, 6),seq(1,4, length.out = 8))
+EDAD <- c(rep(NA, 3),seq(1,4, length.out = 11))
+EDUCACION <- c(rep(NA, 12),seq(1,4, length.out = 2))  
+datos <- data.frame(SEXO, EDAD, EDUCACION)
+plot_na_pareto(datos)
+```
+
+]
+.footnote[
+*En muchas situaciones de este tipo se aplican diferentes algoritmos de imputación* (no se ven en este curso)
+]
+
+---
+### Conocer la distribución de las variables de interés
+
+.font150[
+- Obtención de **estadísticos** (media, proporción, desvío estándar, etc.) uni y bivariados.
+
+  - Funciones en R base para el cálculo de estos estadísticos:
+  
+```{r, eval=F}
+funcion(x = datos$variable, na.rm = T)
+```
+  
+  - Funciones diseñadas para resumir conjuntos de variables de tablas de datos:
+  
+    - `skim()` de **_skimr_**, `describe()` de **_dlookr_**, `dfsummary()` de **_summarytools_**, entre otras.
+
+- **Gráficos**: funciones base de **_graphics_** y del paquete **_ggplot2_** (basado en gramática de gráficos)
+]
+---
+### Detectar valores atípicos (outlier)
+
+.font150[
+- Determinar si se trata de errores de recolección/carga o reales valores atípicos.
+
+- Tener en cuenta a la hora de analizar las distribuciones de las variables.
+
+- En el curso usaremos **gráficos boxplot** y funciones útiles como `diagnose_outlier()` del paquete **_dlookr_**.
+]
+
+```{r, echo=F, message=F, warning=F, fig.height=3, fig.align='center'}
+library(tidyverse)
+datos1 <- read_csv2("datos.csv")
+datos1 %>% 
+  ggplot(aes(x = peso)) + 
+  geom_boxplot(fill = "darkorchid3", outlier.color = "red") 
+```
+---
+## Qué vamos a necesitar para el resto del curso?
+
+.font130[
+- **No vamos a tener que hacer...**
+
+  - demasiado trabajo en depurar y organizar tablas de datos.
+  
+  - exploraciones descriptivas exhaustivas. 
+
+- **Habitualmente vamos a...**
+
+  - leer archivos de datos (csv y Excel)
+
+  - recategorizar variables, convertirlas a factor y configurar niveles.
+
+  - aplicar funciones de R base y probablemente de tidyverse (*consejo para gestión*)
+
+  - utilizar sintaxis fórmula en los modelos de regresión y otras funciones.
+  
+]
+---
+## Temario del encuentro de hoy
+
+.font150[
+- Gestión de datos con tidyverse (comparado con R base)
+
+- Lectura de datos
+
+- EDA mínimo
+
+- Uso de sintaxis fórmula
+
+- Repaso de las consignas del TP final 
+
+- Responder preguntas, aclarar dudas, etc...
+]
