@@ -1,0 +1,257 @@
+---
+title: "**ANOVA**"
+author: ""
+date: ""
+output:
+  html_document:
+    css: style.css
+    toc: true
+    toc_float: true
+    toc_collapsed: false
+    toc_depth: 4
+number_sections: true
+anchor_sections: true
+theme: lumen
+---
+
+```{r, message=FALSE, echo=F}
+knitr::opts_chunk$set(comment=NA, dpi = 300, message=F, warning=F)
+```
+
+*Este material es parte de la* ***Unidad 2 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS***
+
+
+## Introducción
+
+La técnica de análisis de varianza (ANOVA) es el test estadístico a emplear cuando se desea comparar las medias de más de dos grupos. 
+
+La hipótesis nula ($H_0$) de la prueba es que la media de la variable de interés es la misma en los diferentes grupos, en contraposición a la hipótesis alternativa de que al menos dos medias difieren de forma significativa. 
+
+Por lo tanto, ANOVA permite comparar múltiples medias, pero lo hace mediante el estudio de sus varianzas.
+
+El funcionamiento básico consiste comparar la varianza de las medias por grupo (varianza explicada por la variable grupo, **_intervarianza_**) frente a la varianza promedio dentro de los grupos (la no explicada por la variable grupo, **_intravarianza_**).
+
+El estadístico estudiado en el ANOVA, que sigue una distribución *"F de Fisher/Snedecor"*, es el cociente entre la varianza de las medias de los grupos y el promedio de la varianza dentro de los grupos.  
+
+Si se cumple la $H_0$, el estadístico $F$ adquiere el valor de 1 ya que la intervarianza será igual a la intravarianza.
+
+Cuanto más diferentes son las medias de los grupos, mayor será la varianza entre esas medias en comparación al promedio de la varianza dentro de los grupos, obteniéndose valores de F
+superiores a 1.
+
+## ANOVA de un factor o de una vía
+
+Esta prueba es una extensión de los *t-test* independientes para más de dos grupos.
+
+Entendemos por factor a la propiedad o característica que nos permite distinguir entre sí a distintas poblaciones o grupos.
+
+Los requisitos necesarios son:
+
+- Observaciones aleatorias
+- Independencia de las observaciones entre grupos
+- Variable respuesta: cuantitativa continua
+- Variable explicatoria o factor: cualitativa (> 2 grupos)
+- Normalidad para cada grupo
+- Homocedasticidad (homogeneidad de varianzas, asume que las varianzas dentro de cada grupo a comparar son homogéneas.)
+
+Las hipótesis contrastadas en un ANOVA de una vía son:
+
+- $H_0$: No hay diferencias entre las medias de los diferentes grupos 
+
+- $H_1$: Al menos un par de medias son significativamente distintas entre ellas.
+
+## Ejemplo de ANOVA con R
+
+La concentración plasmática elevada de lipoproteínas de alta densidad (HDL) se acompaña de un menor riesgo de padecer cardiopatía coronaria. 
+
+Varios estudios sugieren que el ejercicio vigoroso eleva la concentración de HDL. Con el fin de investigar si el trote incrementa la concentración plasmática de HDL, *G. Harley Hartung et al*. cuantificaron la concentración de HDL en corredores de maratón, trotadores y varones sedentarios (35 a 66 años de edad). 
+
+La concentración promedio de HDL en estos últimos fue de 43,3 mg/100 ml con una desviación estándar de 14,2 mg/100 ml. 
+
+La media y desvío estándar de la concentración de HDL en los trotadores y maratonistas fueron de 58,1 y 17,2 mg/100 ml y de 64,8 y 14,1 mg/100 ml, respectivamente. 
+
+Si cada grupo constaba de 70 varones, comprobemos si existen o no existen diferencias significativas en la concentración promedio de HDL en los diversos grupos.
+
+Vayamos paso a paso con el código en R:
+
+### Lectura y exploración de datos
+
+El archivo **_Anova-HDL.csv_** es de texto plano y utiliza el punto y coma (;) como separador.
+
+```{r}
+HDL <- read.csv2("Anova-HDL.csv")
+```
+
+Exploramos con skim de skimr
+
+```{r}
+skimr::skim(HDL)
+```
+
+Observamos que la tabla de datos contiene dos variables y 210 observaciones. 
+
+Una llamada **grupo** de tipo caracter con tres categorías diferentes (n_unique = 3) y sin valores NA (n_missing = 0).
+
+La otra con nombre **hdl**, numérica con valores entre 55,4 y 96,5 y sin NA´s.
+
+Antes de continuar vamos a convertir la variable grupo de caracter a factor dándole cierto orden a sus categorías.
+
+```{r}
+HDL$grupo <- factor(HDL$grupo, 
+                    levels = c("Sedentario", "Trotador", "Maratonista"))
+
+# el orden de los niveles se otorga al escribir sus niveles (en este ejemplo van en aumento de actividad fisica)
+
+## verificamos con class() y levels()
+
+class(HDL$grupo)
+
+levels(HDL$grupo)
+```
+
+
+Graficamente podemos ver la distribución con un histograma y un boxplot.
+
+```{r, message=F, warning=F, fig.align='center', out.width = "60%"}
+library(tidyverse)
+
+HDL %>% 
+  ggplot(aes(x = hdl)) + 
+  geom_histogram(fill="mediumpurple1", binwidth = 10, color = "white")
+
+HDL %>% 
+  ggplot(aes(y = hdl)) + 
+  geom_boxplot(fill="indianred")
+
+```
+La distribución global es simétrica y no hay valores atípicos.
+
+Ahora veamos como es la distribución de los valores de HDL por grupo.
+
+```{r, message=F, warning=F, fig.align='center', out.width = "60%"}
+HDL %>% 
+  ggplot(aes(x = hdl, fill = grupo)) + 
+  geom_histogram(binwidth = 10, color = "white") +
+  facet_grid(grupo ~ .)
+
+HDL %>% 
+  ggplot(aes(y = hdl, x = grupo, fill = grupo)) + 
+  geom_boxplot() 
+
+```
+Observamos que las distribuciones en cada grupo parecen simétricas y que a simple vista hay diferencias entre las medianas. La pregunta es si podemos afirmar que esas diferencias son estadísticamente significativas o pueden deberse al azar.
+
+### Análisis de supuestos
+
+El análisis de los supuestos puede realizarse previo al test de ANOVA, dado que si no se cumplen no tiene mucho sentido seguir adelante. Sin embargo la forma habitual de comprobar que se satisfacen las condiciones necesarias es estudiando los residuos del modelo una vez generado el objeto ANOVA en R.
+
+
+#### Normalidad
+
+Dado que los grupos tienen mas de 50 observaciones empleamos el test de *Kolmogorov-Smirnov* con la corrección de *Lilliefors*. La función en R se llama `lillie.test()` y se encuentra en el paquete `nortest`. Si fuesen menos de 50 eventos por grupo podríamos utilizar el test Shapiro-Wilk (`shapiro.test()` en R base).
+
+```{r}
+library(nortest)
+
+lillie.test(HDL$hdl[HDL$grupo=="Sedentario"])
+lillie.test(HDL$hdl[HDL$grupo=="Trotador"])
+lillie.test(HDL$hdl[HDL$grupo=="Maratonista"])
+```
+En los tres grupos los test de hipótesis no muestran evidencias de falta de normalidad.
+
+También podemos graficar con Q-Q Plots
+
+```{r, fig.align='center', out.width = "60%"}
+DataExplorer::plot_qq(data = HDL, by = "grupo")
+```
+La gráfica muestra que los puntos se distribuyen a lo largo de la línea, incluso para el grupo de sedentarios que se aleja un poco en sus colas.
+
+Como conclusión podemos asumir el ajuste normal de las distribuciones.
+
+### Varianza constante entre grupos (homocedasticidad)
+
+Usaremos el test de bondad de ajuste implementado para probar homocedasticidad de *Bartlett*.
+
+```{r}
+bartlett.test(hdl ~ grupo, data=HDL) # utiliza sintaxis fórmula
+```
+No hay evidencias significativas de falta de homocedasticidad (p valor > 0,05).
+
+## Análisis de varianza ANOVA
+
+La función del lenguaje para el ANOVA es `aov()` y se encuentra en R base. 
+
+Utiliza sintaxis fórmula del tipo $var\_cuanti \sim factor$ y su resultado es un objeto lista (modelo "aov-lm").
+
+Siempre que trabajemos con modelos, sea para el ANOVA como para las regresiones, conviene que asignemos los resultados a objetos que luego nos servirán para aplicar otras funciones.
+
+En las siguientes dos líneas corremos el análisis ANOVA para el conjunto de datos y luego ejecutamos un resumen del análisis con `summary()` para obtener los resultados completos, incluido el p-valor.
+
+```{r, fig.align='center', out.width = "60%"}
+resultado <- aov(formula = hdl ~ grupo, data = HDL)
+summary(resultado)
+```
+La tabla de resultados muestra un p-valor muy menor a 0,05 sugiriendo que hay evidencias suficientes para considerar que al menos dos medias son distintas.
+
+### Comparaciones múltiples
+
+Con el resultado anterior solo podemos decir que hay diferencias significativas entre al menos dos grupos de los tres que tenemos pero no podemos decir entre cuales sucede.
+
+Existen diferentes algotirmos de comparaciones múltiples y correcciones implementados en R. Aquí vamos a aplicar la prueba de rango de Tukey cuya función es `TukeyHSD()`.
+
+La __HSD de Tukey__ proviene de *Diferencia Honestamente Significativa de Tukey* es una técnica de comparaciones múltiples y de rangos a la vez. Se aplica para grupos equilibrados (mismo tamaño) y varianzas similares (homogeneidad de varianzas).
+
+Compara los grupos entre ellos de dos en dos y calcula el intervalo de confianza de esas diferencias.
+
+Es una prueba conservadora, dado que mantiene bajo el error de tipo I, sacrificando la capacidad de detectar diferencias existentes.
+
+Si lo aplicamos sobre el objeto **resultado** con el modelo ANOVA realizado, obtenemos:
+
+```{r, fig.align='center', out.width = "60%"}
+TukeyHSD(resultado)
+```
+
+Hay mayor diferencia entre los grupos Sedentario-Maratonista y Trotador-Sedentario que en Trotador-Maratonista, aunque todos tiene *valor-p ajustado* significativo.
+
+Una mejor forma de ver este resultado es en un gráfico:
+
+```{r, fig.align='center', out.width = "60%"}
+plot(TukeyHSD(resultado))
+```
+
+La línea punteada vertical es el 0 de *"no hay diferencias"* y cada segmento de comparación de dos grupos está conformado por los intervalos de confianza. Se observa que ninguno de estos tocan el valor 0 y claramente se encuentran separados unos de otros.
+
+#### Tamaño de efecto y potencia de la prueba
+
+Los test de potencia permiten determinar la probabilidad de encontrar diferencias
+significativas entre las medias para un determinado nivel de significancia indicando el tamaño de los grupos.
+
+El paquete **pwr** contiene la función `pwr.anova.test()` que necesita como argumentos el número de grupos, el número de observaciones por cada grupo, el tamaño del efecto y el nivel de significancia (habitualmente 0,05).
+
+El tamaño de efecto comúnmente utilizado para el caso de ANOVA es *eta cuadrado*, que se calcula haciendo el cociente de la suma de cuadrados del efecto sobre la suma de cuadrados total. (los datos se pueden leer en la salida del *summary(modelo)*)
+
+
+```{r}
+library(pwr)
+
+eta_cuadrado <- 16934/(16934 + 48172)
+
+eta_cuadrado
+
+
+## tamaño de efecto mediano convencional de Cohen 
+cohen.ES(test = c("anov"), size = c("medium"))
+
+pwr.anova.test(k = 3, n = 70, f = eta_cuadrado, sig.level = 0.05)
+```
+Para el tamaño de efecto calculado (cercano al medio convencional propuesto por Cohen) la potencia del este de ANOVA efectuado es 92,8 %.
+
+#### Análisis de residuos
+
+Decíamos anteriormente que para poder dar por validos los resultados del ANOVA es necesario verificar que se satisfacen las condiciones analizando los residuos del modelo.
+
+Describiremos este procedimiento en la Unidad III cuando trabajemos con modelos de regreión lineal.
+
+## Conclusión
+
+En el estudio realizado con la técnica de inferencia ANOVA se ha encontrado evidencia estadística suficiente para sustentar la aseveración de que las tres medias no son iguales. 
+Por otra parte, con base en la prueba HSD de Tukey, parece que todas las medias de HDL de los grupo difieren entre ellas.
