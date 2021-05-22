@@ -86,7 +86,7 @@ Las dos actividades principales de la estadística inferencial, son el uso de da
 
 -   Probar una hipótesis respecto de un parámetro poblacional
 
-Volvamos nuevamente en los estudios transversales: *"Estimar un parámetro poblacional"* podría consistir por ejemplo en *"Estimar la prevalencia de una enfermedad X en la población"*.
+Volvamos nuevamente a los estudios transversales: *"Estimar un parámetro poblacional"* podría consistir por ejemplo en *"Estimar la prevalencia de una enfermedad X en la población"*.
 
 El segundo ítem, *"Probar una hipótesis respecto de un parámetro poblacional"*, podría traducirse, en términos de un estudio transversal, en *"Probar que la prevalencia de la enfermedad X en Argentina es menor que en Uruguay"* o *"Probar que la prevalencia de la enfermedad X en Argentina en el año 2010 es menor que en el año 2000"*
 
@@ -224,9 +224,9 @@ Recién comentamos el caso de estimación de una media poblacional. Si por el co
 La media de la distribución (que es el promedio de todas las proporciones posibles de las muestras) es igual a la proporción real de la población $p$ y la varianza de la distribución es $p(1-p)/n$, por lo que en este caso, la expresión para el IC, resulta:
 
 
-$$EE = \sqrt{\frac{p(1-p)}{n}}     $$
+$$EE = \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}     $$
 
-$$p - Z_{1-\alpha/2}\sqrt{\frac{p(1-p)}{n}} < \hat{p} < p + Z_{1-\alpha/2}\sqrt{\frac{p(1-p)}{n}} $$
+$$\hat{p} - Z_{1-\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}} < p < \hat{p} + Z_{1-\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}} $$
 
 Dado que un IC implica una declaración probabilística, para su cálculo deberemos necesariamente, tratar con las distribuciones de las variables aleatorias que surgen del muestreo. Es decir que dependiendo del parámetro que quiera estimar, deberé conocer o aproximar una distribución muestral y conocer su EE. 
 
@@ -673,7 +673,7 @@ __alternative__: palabra que especifica la hipotesis alternativa, debe ser "two.
 
 La función se ejecuta incorporando todos los argumentos obligatorios (`d`,`n`, `power` and `sig.level`) menos el que se quiere calcular. En ese caso se iguala a NULL o se omite. 
 
-Supongamos que queremos conocer el tamaño de la muestra para detectar diferencias en la media de la glucemia glicosilada entre dos grupos de pacientes con tratamientos de control de la diabetes distintos. Aceptamos un nivel de efecto convencional de una pequeña desviación ($d$ de Cohen = 0,2), una potencia del 80% y una significación habitual de 0,05.
+Supongamos que queremos conocer el tamaño de la muestra para detectar diferencias en la media de la hemoglobina glicosilada entre dos grupos de pacientes con tratamientos de control de la diabetes distintos. Aceptamos un nivel de efecto convencional de una pequeña desviación ($d$ de Cohen = 0,2), una potencia del 80% y una significación habitual de 0,05.
 
 ```{r, message=F, warning=F}
 library(pwr)
@@ -716,7 +716,7 @@ La pregunta 2 hace referencia a si comparo dos grupos, comparo tres o más grupo
 
 Comencemos: 
 
-**Variable resultado cuantitativa**: En este caso, la comparación de grupos equivale a comparar medias de dichos grupos. Hay una tercera pregunta que debemos responder, y es si dicha variable se *distribuye normalmente*, porque si no fuera así, debemos recurrir a los contrastes *no paramétricos*. 
+**Variable resultado cuantitativa**: En este caso, la comparación de grupos equivale a comparar medias de dichos grupos. Hay una tercera pregunta que debemos responder, y es si dicha variable se *distribuye normalmente* (pulse sobre el enlace para ver material sobre [contrastes de normalidad](https://cballejo.github.io/R_Epi_Avanzada/Unidad2/Supuestos/), porque si no fuera así, debemos recurrir a los contrastes *no paramétricos*. 
 
 Como ya discutimos previamente, el mecanismo general implica:
 
@@ -770,7 +770,7 @@ $$IC = 2970,86 - 3233,13$$
 
 Rta: El peso medio al nacer de los bebés oscila entre  2970,86 g - 3233,13 g ($\alpha$ = 0,99) 
 
-En R, lo podemos hacer con la función `z.test` del paquete **TeachingDemos** que trabaja con valores z de la distribución normal.
+En R, lo podemos hacer con la función `z.test()` del paquete **TeachingDemos** que trabaja con valores z de la distribución normal o con la función `t.test()` de R base que utiliza la distribución $t$ *de Student*.
 
 ```{r, message=F, warning=F}
 library(TeachingDemos)
@@ -780,7 +780,12 @@ bebe1 <- read.csv2("bebe1.csv")
 z.test(x = bebe1$peso, 
        sd = sd(bebe1$peso), 
        conf.level = 0.99)
+
+t.test(x = bebe1$peso,
+      conf.level = 0.99)
 ```
+Los IC producidos por los test son similares y en la medida que la muestra sea mayor más cercanos serán los valores obtenidos. Fuera de la demostración docente, habitual se utiliza el `t.test()`.
+
 Para hacer el inciso b, la metodología apropiada sería un test de comparación de medias para dos poblaciones independientes.
 
 Primeramente, deberemos chequear normalidad para seleccionar el test apropiado:
@@ -969,7 +974,7 @@ __Interpretación:__
 
 Verificamos los supuestos de normalidad la muestra: test shapiro-wilks p-valor = 0,4174.
 
-El p-valor de 0,01158 es significativo (< 0,05) por lo que rechazamos la hipótesis nula de que la presión media de los enfermos que toman el nuevo fármaco es igual a la presión promedio de los enfermos que no lo toman. Por lo tanto, concluimos que la media de presión arterial del grupo de pacientes tratados con el nuevo fármaco es significativamente menor respecto de los no tratados.
+El p-valor de 0,01158 es significativo (< 0,05) por lo que rechazamos la hipótesis nula de que la presión media de los enfermos que toman el nuevo fármaco es igual 165.  Por lo tanto, concluimos que la media de presión arterial del grupo de pacientes tratados con el nuevo fármaco es significativamente menor del valor objetivo. 
 
 ## Bibliografía 
 

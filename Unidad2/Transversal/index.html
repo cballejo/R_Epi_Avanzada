@@ -317,7 +317,7 @@ div.tocify {
 <li><p>Estimar un parámetro poblacional</p></li>
 <li><p>Probar una hipótesis respecto de un parámetro poblacional</p></li>
 </ul>
-<p>Volvamos nuevamente en los estudios transversales: <em>“Estimar un parámetro poblacional”</em> podría consistir por ejemplo en <em>“Estimar la prevalencia de una enfermedad X en la población”</em>.</p>
+<p>Volvamos nuevamente a los estudios transversales: <em>“Estimar un parámetro poblacional”</em> podría consistir por ejemplo en <em>“Estimar la prevalencia de una enfermedad X en la población”</em>.</p>
 <p>El segundo ítem, <em>“Probar una hipótesis respecto de un parámetro poblacional”</em>, podría traducirse, en términos de un estudio transversal, en <em>“Probar que la prevalencia de la enfermedad X en Argentina es menor que en Uruguay”</em> o <em>“Probar que la prevalencia de la enfermedad X en Argentina en el año 2010 es menor que en el año 2000”</em></p>
 <p>Antes de comenzar con el primero de los ítems, será necesario que hablemos el mismo lenguaje y comprendamos cómo la teoría de la probabilidad nos ayuda a encontrar el camino que va de la muestra a la población.</p>
 <p>Al hablar de población y muestra, hay un tema que queda implícito y es todo lo que hace a la teoría de muestreo. Es un tema que no abordaremos aquí en profundidad, pero es importante aclarar que la teoría del muestreo tiene por objetivo, el estudio de las relaciones existentes entre la distribución de un caracter (o variable) en una población y las distribuciones de dicho caracter en todas sus muestras.</p>
@@ -394,8 +394,8 @@ div.tocify {
 <p>(<span class="math inline">\(\sigma\)</span> generalmente no se conoce, así que habitualmente se usa el estimado con la muestra)</p>
 <p>La expresión para el <strong>error estándar</strong>, dependerá del parámetro a ser estimado. Recién comentamos el caso de estimación de una media poblacional. Si por el contrario, lo que queremos calcular es un IC para la <em>proporción</em>, recordemos que cuando la muestra es grande, la distribución de las proporciones de la muestra es aproximadamente normal de acuerdo con el TCL.</p>
 <p>La media de la distribución (que es el promedio de todas las proporciones posibles de las muestras) es igual a la proporción real de la población <span class="math inline">\(p\)</span> y la varianza de la distribución es <span class="math inline">\(p(1-p)/n\)</span>, por lo que en este caso, la expresión para el IC, resulta:</p>
-<p><span class="math display">\[EE = \sqrt{\frac{p(1-p)}{n}}     \]</span></p>
-<p><span class="math display">\[p - Z_{1-\alpha/2}\sqrt{\frac{p(1-p)}{n}} &lt; \hat{p} &lt; p + Z_{1-\alpha/2}\sqrt{\frac{p(1-p)}{n}} \]</span></p>
+<p><span class="math display">\[EE = \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}     \]</span></p>
+<p><span class="math display">\[\hat{p} - Z_{1-\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}} &lt; p &lt; \hat{p} + Z_{1-\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}} \]</span></p>
 <p>Dado que un IC implica una declaración probabilística, para su cálculo deberemos necesariamente, tratar con las distribuciones de las variables aleatorias que surgen del muestreo. Es decir que dependiendo del parámetro que quiera estimar, deberé conocer o aproximar una distribución muestral y conocer su EE.</p>
 <p>No deberán preocuparse por las expresiones matemáticas, veremos que los paquetes estadísticos son capaces de calcularlos por nosotros. Pero lo importante aquí es entender de qué magnitudes depende y en qué forma.</p>
 <p>Para visualizar simulaciones al respecto pueden visitar <a href="https://seeing-theory.brown.edu/frequentist-inference/es.html#section2">Viendo la teoría. Una introducción visual a probabilidad y estadística</a></p>
@@ -824,7 +824,7 @@ Sample size needed: 2392</code></pre>
 <p><strong>type</strong>: tipo de test (“two.sample”, “one.sample”, “paired”)</p>
 <p><strong>alternative</strong>: palabra que especifica la hipotesis alternativa, debe ser “two.sided” (predeterminado), “greater” or “less”.</p>
 <p>La función se ejecuta incorporando todos los argumentos obligatorios (<code>d</code>,<code>n</code>, <code>power</code> and <code>sig.level</code>) menos el que se quiere calcular. En ese caso se iguala a NULL o se omite.</p>
-<p>Supongamos que queremos conocer el tamaño de la muestra para detectar diferencias en la media de la glucemia glicosilada entre dos grupos de pacientes con tratamientos de control de la diabetes distintos. Aceptamos un nivel de efecto convencional de una pequeña desviación (<span class="math inline">\(d\)</span> de Cohen = 0,2), una potencia del 80% y una significación habitual de 0,05.</p>
+<p>Supongamos que queremos conocer el tamaño de la muestra para detectar diferencias en la media de la hemoglobina glicosilada entre dos grupos de pacientes con tratamientos de control de la diabetes distintos. Aceptamos un nivel de efecto convencional de una pequeña desviación (<span class="math inline">\(d\)</span> de Cohen = 0,2), una potencia del 80% y una significación habitual de 0,05.</p>
 <pre class="r"><code>library(pwr)
 
 pwr.t.test(d = 0.2, 
@@ -863,7 +863,7 @@ plot(grafico1) # ploteamos la salida de grafico1</code></pre>
 <p>Respecto de la pregunta 1, tendremos que evaluar si la variable resultado es cuantitativa, cualitativa, tiempo hasta un evento, etc.</p>
 <p>La pregunta 2 hace referencia a si comparo dos grupos, comparo tres o más grupos, comparo el mismo grupo antes y después (muestras relacionadas), lo que traducido al lenguaje estadístico implica decir si comparo muestras independientes o relacionadas.</p>
 <p>Comencemos:</p>
-<p><strong>Variable resultado cuantitativa</strong>: En este caso, la comparación de grupos equivale a comparar medias de dichos grupos. Hay una tercera pregunta que debemos responder, y es si dicha variable se <em>distribuye normalmente</em>, porque si no fuera así, debemos recurrir a los contrastes <em>no paramétricos</em>.</p>
+<p><strong>Variable resultado cuantitativa</strong>: En este caso, la comparación de grupos equivale a comparar medias de dichos grupos. Hay una tercera pregunta que debemos responder, y es si dicha variable se <em>distribuye normalmente</em> (pulse sobre el enlace para ver material sobre <a href="https://cballejo.github.io/R_Epi_Avanzada/Unidad2/Supuestos/">contrastes de normalidad</a>, porque si no fuera así, debemos recurrir a los contrastes <em>no paramétricos</em>.</p>
 <p>Como ya discutimos previamente, el mecanismo general implica:</p>
 <ul>
 <li>Plantear la <span class="math inline">\(H_0\)</span>: <span class="math inline">\(\mu_1 = \mu_2\)</span> (o su equivalente <span class="math inline">\(\mu_1 - \mu_2 = 0\)</span>)</li>
@@ -895,7 +895,7 @@ plot(grafico1) # ploteamos la salida de grafico1</code></pre>
 <p><span class="math display">\[IC = \bar{x} \pm Z_{1-\alpha/2}\frac{\sigma}{\sqrt{n}}\]</span></p>
 <p><span class="math display">\[IC = 3102 \pm 2,57\frac{696}{\sqrt{186}} = 3102 \pm 131,14\]</span> <span class="math display">\[IC = 2970,86 - 3233,13\]</span></p>
 <p>Rta: El peso medio al nacer de los bebés oscila entre 2970,86 g - 3233,13 g (<span class="math inline">\(\alpha\)</span> = 0,99)</p>
-<p>En R, lo podemos hacer con la función <code>z.test</code> del paquete <strong>TeachingDemos</strong> que trabaja con valores z de la distribución normal.</p>
+<p>En R, lo podemos hacer con la función <code>z.test()</code> del paquete <strong>TeachingDemos</strong> que trabaja con valores z de la distribución normal o con la función <code>t.test()</code> de R base que utiliza la distribución <span class="math inline">\(t\)</span> <em>de Student</em>.</p>
 <pre class="r"><code>library(TeachingDemos)
 
 bebe1 &lt;- read.csv2(&quot;bebe1.csv&quot;)
@@ -915,6 +915,20 @@ alternative hypothesis: true mean is not equal to 0
 sample estimates:
 mean of bebe1$peso 
               3103 </code></pre>
+<pre class="r"><code>t.test(x = bebe1$peso,
+      conf.level = 0.99)</code></pre>
+<pre><code>
+    One Sample t-test
+
+data:  bebe1$peso
+t = 60.804, df = 185, p-value &lt; 2.2e-16
+alternative hypothesis: true mean is not equal to 0
+99 percent confidence interval:
+ 2970.178 3235.822
+sample estimates:
+mean of x 
+     3103 </code></pre>
+<p>Los IC producidos por los test son similares y en la medida que la muestra sea mayor más cercanos serán los valores obtenidos. Fuera de la demostración docente, habitual se utiliza el <code>t.test()</code>.</p>
 <p>Para hacer el inciso b, la metodología apropiada sería un test de comparación de medias para dos poblaciones independientes.</p>
 <p>Primeramente, deberemos chequear normalidad para seleccionar el test apropiado:</p>
 <pre class="r"><code>bebe2 &lt;- read.csv2(&quot;bebe2.csv&quot;)
@@ -1111,7 +1125,7 @@ mean of x
  147.9333 </code></pre>
 <p><strong>Interpretación:</strong></p>
 <p>Verificamos los supuestos de normalidad la muestra: test shapiro-wilks p-valor = 0,4174.</p>
-<p>El p-valor de 0,01158 es significativo (&lt; 0,05) por lo que rechazamos la hipótesis nula de que la presión media de los enfermos que toman el nuevo fármaco es igual a la presión promedio de los enfermos que no lo toman. Por lo tanto, concluimos que la media de presión arterial del grupo de pacientes tratados con el nuevo fármaco es significativamente menor respecto de los no tratados.</p>
+<p>El p-valor de 0,01158 es significativo (&lt; 0,05) por lo que rechazamos la hipótesis nula de que la presión media de los enfermos que toman el nuevo fármaco es igual 165. Por lo tanto, concluimos que la media de presión arterial del grupo de pacientes tratados con el nuevo fármaco es significativamente menor del valor objetivo.</p>
 </div>
 </div>
 <div id="bibliografía" class="section level2">
