@@ -857,8 +857,8 @@ library(DataExplorer)
 
 ## Leemos los datos
 
-bebe1 <- read.csv2("Unidad2/Transversal/bebe1.csv")
-bebe2 <- read.csv2("Unidad2/Transversal/bebe2.csv")
+bebe1 <- read.csv2("bebe1.csv")
+bebe2 <- read.csv2("bebe2.csv")
 
 ## Intervalo de confianza para bebe1
 
