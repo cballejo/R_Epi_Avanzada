@@ -20,6 +20,7 @@ knitr::opts_chunk$set(comment=NA, dpi = 300, message=F, warning=F)
 
 *Este material es parte de la* ***Unidad 2 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS***
 
+<center><p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Unidad2/Anova/">ANOVA</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://www.ine.gov.ar">Christian Ballejo</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"></a></p></center>
 
 ## Introducción
 
@@ -91,7 +92,7 @@ Observamos que la tabla de datos contiene dos variables y 210 observaciones.
 
 Una llamada **grupo** de tipo caracter con tres categorías diferentes (n_unique = 3) y sin valores NA (n_missing = 0).
 
-La otra con nombre **hdl**, numérica con valores entre 55,4 y 96,5 y sin NA´s.
+La otra con nombre **hdl**, numérica con valores entre 14,7 y 96,5 y sin NA´s.
 
 Antes de continuar vamos a convertir la variable grupo de caracter a factor dándole cierto orden a sus categorías.
 
