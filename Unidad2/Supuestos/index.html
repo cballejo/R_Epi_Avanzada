@@ -416,7 +416,7 @@ alternative hypothesis: data have a skewness</code></pre>
 <h3>F-test</h3>
 <p>Este test es un contraste de la razón de varianzas, mediante el estadístico F que sigue una distribución F-Snedecor.</p>
 <p>Se utiliza cuando las distribuciones se aproximan a la “normal” y en R base se la encuentra en la función <code>var.test()</code></p>
-<pre class="r"><code>var.test(datos$peso[datos$sexo == &quot;Mujer&quot;], datos$peso[datos$sexo == &quot;Varon&quot;],)</code></pre>
+<pre class="r"><code>var.test(datos$peso[datos$sexo == &quot;Mujer&quot;], datos$peso[datos$sexo == &quot;Varon&quot;])</code></pre>
 <pre><code>
     F test to compare two variances
 

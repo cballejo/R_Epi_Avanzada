@@ -217,7 +217,7 @@ Este test es un contraste de la razón de varianzas, mediante el estadístico F 
 Se utiliza cuando las distribuciones se aproximan a la "normal" y en R base se la encuentra en la función `var.test()` 
 
 ```{r}
-var.test(datos$peso[datos$sexo == "Mujer"], datos$peso[datos$sexo == "Varon"],)
+var.test(datos$peso[datos$sexo == "Mujer"], datos$peso[datos$sexo == "Varon"])
 ```
 Comparamos las varianzas de la variable peso entre el grupo de mujeres y hombres. El valor $p$ del test indica que no podemos descartar la igualdad de varianzas entre los grupos ($H_0$) o lo que es lo mismo el test no encuentra diferencias significativas entre las varianzas de los dos grupos.
 
