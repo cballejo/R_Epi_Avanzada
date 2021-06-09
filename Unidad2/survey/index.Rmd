@@ -1,0 +1,641 @@
+---
+title: "**Estimaciones con IC en muestras complejas con R**"
+author: ""
+date: ""
+output:
+  html_document:
+    css: style.css
+    toc: true
+    toc_float: true
+    toc_collapsed: false
+    toc_depth: 4
+number_sections: true
+anchor_sections: true
+theme: lumen
+---
+
+```{r, message=FALSE, echo=F}
+knitr::opts_chunk$set(comment=NA, dpi = 300, message = F, warning = F)
+```
+
+*Este material es parte de la* ***Unidad 2 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS***
+
+
+## Introducción
+
+En los estudios epidemiológicos de corte transversal, muchas veces se realizan y/o utilizan encuestas poblacionales para estimar la frecuencia de determinadas características de salud o de factores de riesgo en la población.
+
+Estas encuestas enfrentan restricciones prácticas que hacen que el muestreo aleatorio simple (MAS) no sea factible o no sea conveniente por costoso en infraestructura, tiempo y dinero. Por lo tanto resulta necesario recurrir a otras alternativas de muestreo, como la estratificación, la selección en etapas, la formación de conglomerados o el empleo de probabilidades de selección desiguales. 
+
+Los diseños muestrales que incorporan combinaciones de estas estrategias se denominan complejos, por contraste con el MSA, en el que las unidades muestrales se seleccionan independientemente unas de otras y todas tienen igual probabilidad de selección y distribución.
+
+Realizar estimaciones acompañadas de sus intervalos de confianza (IC) en estas bases de datos sin tener en cuenta el efecto del diseño muestral, los dominios de estimación y los factores de expansión puede producir resultados erróneos.
+
+### Algunas definiciones necesarias
+
+**Estratos**:  son subpoblaciones "naturales" que, a priori, son homogéneos en su interior pero heterogéneos entre sí. 
+
+El diseño de la encuesta se hace de modo que se garantiza cubrir adecuadamente todos los estratos de interés. Algunas variables de estratos habituales son: sexo, edad (como grupo etario), nivel de educación,  urbano/rural, etc.
+
+**Conglomerados**: son unidades definidas dentro de cada estrato (si es muestreo polietápico), cuyo tamaño es conocido. 
+
+Lo ideal es que la población dentro de un conglomerado sea lo más heterogénea posible, pero debe haber homogeneidad entre los conglomerados. Cada grupo debe ser una representación a pequeña escala de la población total. Los grupos deben ser mutuamente excluyentes y colectivamente exhaustivos.
+
+**Probabilidad de inclusión**: es la probabilidad que cada unidad tiene de estar incluida en la muestra. En los muestreos complejos polietápicos se obtiene, en general, multiplicando las probabilidades asociadas al estrato, a cada unidad primaria de muestreo (PSU) dentro del estrato, y a la unidad de segunda etapa dentro cada PSU.
+
+**Dominios de estimación**: se definen como subconjuntos de la población objetivo cuyos elementos pueden ser identificados en el marco muestral sin ambigüedad, y en los que se permite desagregar los resultados de la encuesta.
+
+Es aconsejable respetar estos dominios de estimación  y no realizar inferencia de parámetros de interés para otros dominios no previstos que conlleva estimaciones inválidas.
+
+**Factor de expansión**: es el valor asociado a cada unidad elegible y que responde a la muestra, que se construye a partir de la inversa de la probabilidad de inclusión de cada unidad o peso muestral inicial.
+
+Puede incluir distintos tipos de ajustes, para disminuir en lo posible los errores de cobertura y de no respuesta que afectan a la encuesta, y ser tratados por un proceso de calibración que lleva en general a ganar eficiencia y precisión en las estimaciones. 
+
+Los factores de expansión finales son los que se emplean tanto para generar todas las estimaciones de una encuesta, como en los cálculos del error muestral al determinar la precisión alcanzada.
+
+**Efecto de diseño (DEFF por sus siglas en inglés)**: mide la pérdida en precisión al utilizar un diseño muestral complejo en lugar de un diseño aleatorio simple, por ejemplo, un efecto de diseño de 1,5 indica que la varianza del diseño complejo es 1,5 veces más grande que la varianza de un diseño aleatorio simple, en otras palabras se dio un aumento en la varianza de un 50%.
+
+
+## Paquete survey de R
+
+El paquete más conocido y utilizado del lenguaje R para trabajar con datos provenientes de muestreos complejos es **survey**. Desarrollado por *Thomas Lumley* que a su vez es autor del libro *Complex Surveys - A Guide to Analysis Using R (2010)*.
+
+La versión actual publicada en CRAN es la 4.0 y en el siguiente [enlace](http://r-survey.r-forge.r-project.org/survey/index.html) se encuentra información oficial sobre la librería.
+
+Se activa, como todos los paquetes, con:
+
+```{r, message=F, warning=F}
+library(survey)
+```
+
+Las funciones que lo integran utilizan en sus argumentos la sintaxis fórmula preferentemente y no son compatibles con el universo "ordenado" de tidyverse.
+
+Existe un paquete "wrapper" llamado **srvyr** que incorpora sintaxis *tidy*, haciendo uso de tuberías y funciones tales como `group_by()`, `summarise()`, entre otras. 
+
+
+### Especificación del diseño de la muestra
+
+El primer paso para trabajar con las funciones de **survey** es crear un objeto con la información relacionada con el diseño muestral.
+
+Esta tarea se realiza con la función `svydesign()` que tiene la forma general:
+
+
+```{r, eval=FALSE}
+svydesign(ids=..., strata=..., data=..., weights=..., nest=..., fpc=...)
+```
+
+donde:
+
+- **ids**: Fórmula con la o las variables que definen los conglomerados, desde el nivel más alto al más bajo. La expresión comienza con el símbolo \~ y si hay más de un conglomerado se utiliza el símbolo \+ entre las variables.
+
+Si la muestra no tiene conglomerados definidos se escribe \~1. 
+
+- **strata**: Fórmula con los estratos. Si no hay estratos, se ignora esta especificación.
+
+Usualmente, se declara a partir de una variable. Por ejemplo, si la variable ESTRATO define los estratos, sería,
+
+```{r, eval=FALSE}
+svydesign(..., strata= ~ESTRATO, ...)
+```
+
+- **data**: Dataframe que contiene las variables con los datos muestrales.
+
+- **weights**: Fórmula con la variable de ponderación de cada observación.
+
+- **nest**: Si es TRUE, re-etiqueta los conglomerados considerando anidamiento dentro de los estratos. Necesario activar cuando las etiquetas de las categorías de los conglomerados en los distintos estratos se llaman igual.
+
+- **fpc**: Fórmula con el factor de corrección por población finita. Puede ser n/N o bien N.
+
+
+Los argumentos mínimos que debemos definir dependerá de la estructura muestral de la base de datos que estemos analizando y de las variables que tengamos a disposición. Habitualmente se tiene referencia de estratos, conglomerados y ponderaciones. También podemos encontrarnos con situaciones donde están definidos los tamaños poblacionales (variable fpc). 
+
+Para ejemplificar vamos a tomar un dataset que viene incluído llamado **_nhanes_** con datos extraídos de la "National Healt and Nutrition Examination Survey 2009-2020" (ver más información en https://wwwn.cdc.gov/nchs/nhanes/search/datapage.aspx?Component=laboratory&CycleBeginYear=2009).
+
+Leemos el dataset con:
+
+```{r}
+data("nhanes")
+
+str(nhanes)
+```
+Observamos que el dataframe importado consta de 7 variables y 8591 observaciones.
+
+Las variables relevantes para el diseño muestral son:
+
+- **SDMVPSU**: Unidades primarias de muestreo (conglomerados)
+
+- **SDMVSTRA**: Estratos del muestreo
+
+- **WTMEC2YR**: Ponderación
+
+Esta encuesta poblacional se realiza desde 1970 y tiene como fin proporcionar datos a nivel nacional sobre salud y enfermedades, y sobre factores de riesgo dietéticos y clínicos. Cada ciclo de cuatro años de NHANES recluta a unas 28000 personas en una muestra de bietápica. Estos participantes reciben una entrevista y un examen clínico, y se les toman muestras de sangre. 
+
+Las tres variables detalladas anteriormente participaran dentro de los argumentos para definir el objeto de diseño muestral de **survey**.
+
+```{r}
+d <- svydesign(id= ~SDMVPSU,        # conglomerados
+               strata= ~SDMVSTRA,   # estratos
+               weights= ~WTMEC2YR,  # ponderación
+               nest= TRUE,
+               data= nhanes)
+
+summary(d) 
+```
+Con la función `summary()` podemos obtener información sobre el objeto creado y detalles del diseño muestral, tales como tamaño de los estratos y cantidad de conglomerados.
+
+Una vez que tenemos creado el objeto *"survey.design"*, que en nuestro ejemplo se denomina **d**, podemos avanzar en el calculo de las estimaciones.
+
+Tengamos en cuenta que si por algún motivo debemos modificar la estructura de la tabla de datos, ya sea para crear una nueva variable o modificar una existente, debemos volver a generar el objeto con el diseño muestral para poder hacer uso de esos cambios en las estimaciones futuras. Por este motivo, recomendamos realizar todas las operaciones de gestión de variables previamente a utilizar el paquete **survey**.
+
+### Estimaciones
+
+Las variables disponibles en este dataset para realizar estimaciones son pocas dado que está pensado como un recorte de NHANES con el objetivo de ejemplificar el uso de las funciones de **survey**.
+
+En primer lugar tomaremos la variable **HI_CHOL** (Colesterol alto) que tiene formato numérico, donde 1 es mayor o igual a 240 mg/dl y 0 es menor a 240 mg/dl. 
+
+La función `svymean()` computa estimaciones de medias (si la variable es cuantitativa) o de proporciones (si la variable categórica es dicotómica con valores 0 y 1 o clase *factor*).
+
+Los siguientes son los argumentos comunes de la función:
+
+- **x**: Formato fórmula con la o las variables. 
+
+- **design**: Objeto "survey.design" creado anteriormente
+
+- **na.rm**: Si es TRUE, omite los valores NA de la variable
+
+- **deff**: Si es TRUE, calcula el efecto de diseño para la estimación
+
+Aplicamos la función sobre la variable de colesterol.
+
+```{r}
+colesterol <- svymean(x = ~HI_CHOL, design = d, na.rm = T, deff = T)
+
+colesterol
+
+```
+El objeto colesterol (de clase *svystat*) contiene la estimación puntual de proporción de colesterol alto (11,2 %), el error estandar y el DEFF.
+
+Mediante la función `confint()` podemos obtener el límite inferior y superior del intervalo de confianza al 95% (valor por defecto).
+
+
+```{r}
+confint(colesterol) # IC 95 %
+
+confint(colesterol) * 100  # valores porcentuales
+
+round(confint(colesterol) * 100,2)  # valores porcentuales redondeados
+
+confint(colesterol, level = 0.99) # IC 99 %
+
+deff(colesterol) ## la función deff() muestra el efecto de diseño de la estimación
+
+```
+Si bien `svymean()` se puede utilizar para medias y para proporciones (teniendo en cuenta las formas técnicas de la variable categórica antes mencionada), el paquete también posee una función específica para estimación de proporciones e intervalos de confianza denominada 
+`svyciprop()` que computa intervalos utilizando una variedad de métodos que pueden ser más precisos cuando los valores de proporción se encuentran cercanos al 0 o al 1.
+
+Su aplicación es similar a `svymean()` pero tiene mayores exigencias a la hora del formato de la variable que incluimos como argumento principal.
+
+Mientras `svymean()` se adapta a variables categóricas tipo factor o dictomizadas 0-1, `svyciprop()` exige que la variable tenga este último formato y por lo tanto en situación de multiples categorías debemos "dummificar" (proceso por el cual se convierte en tantas variable dummy 0-1 como categorías tenga la variable en cuestión.)
+
+Veamos el ejemplo con colesterol que cumple con este requisito (valores 0-1):
+
+```{r}
+## formato dejando los valores predeterminados de los argumentos sin declarar
+svyciprop(formula = ~HI_CHOL, design = d)
+
+# el código anterior utiliza "logit" como método de cálculo para los IC
+# este médodo ajusta un modelo de regresión logística y calcula un intervalo de 
+# tipo Wald en la escala logarítmica de probabilidades, que luego se transforma 
+# en la escala de probabilidad.
+
+## formato indicando el método "mean"
+svyciprop(formula = ~HI_CHOL, design = d, method = "mean", na.rm =T)
+
+# el método "mean" es un intervalo en la escala de probabilidad, identico al 
+# calculado por la función confint(syvmean()) vista anteriormente
+```
+En este documento no vamos a profundizar en los métodos que la función ofrece, solo mencionaremos las otras posibilidades permitidas según la ayuda del paquete.
+
+El método de `"likelihood"` utiliza la distribución de chi-cuadrado escalada (Rao-Scott) para la loglikelihood de una distribución binomial. 
+
+El método `"asin"` usa la transformación estabilizadora de la varianza para la distribución binomial, la raíz cuadrada del arcoseno, y luego transforma el intervalo a la escala de probabilidad. 
+
+El método `"beta"` usa la función beta incompleta como en `binom.test`, con una tamaño de muestra efectivo basado en la varianza estimada de la proporción. (Korn y Graubard, 1998) 
+
+El método `"xlogit"` utiliza una transformación logit de la media y luego se retrotransforma a la escala de probabilidad. Este parece ser el método utilizado por los software SUDAAN y SPSS COMPLEX SAMPLES. 
+
+Ahora tomaremos otra variable del dataset que no cumple con el requisito técnico de ser dicotómica con valores 0-1 para mostrar las diferencias de procesamiento.
+
+La variable **agecat** contiene las siguientes categorías etarias de la población:
+
+```{r}
+class(nhanes$agecat)
+levels(nhanes$agecat)
+```
+Como vemos es de formato factor y posee 4 intervalos de clase para la edad.
+
+Para obtener las estimaciones de proporción e IC respetando el diseño del muestreo y sus ponderaciones debemos ejecutar:
+
+```{r}
+svymean(x = ~agecat, design = d, na.rm = T, deff = T)
+
+confint(svymean(x = ~agecat, design = d, na.rm = T, deff = T))
+```
+Dado que **agecat** es una *variable factor* la función `svymean()` puede correrse sin problemas y devolver los resultados de proporción, el error estandar, el DEFF y los intervalos de confianza de cada categoría.
+
+Si intentasemos lo mismo con la función `svyciprop()` obtendríamos:
+
+```{r}
+svyciprop(formula = ~agecat, design = d)
+```
+Observamos que informa un solo valor que no tiene absoluto sentido y eso sucede porque la estructura interna del factor se compone de números que comienzan en 1 y finalizan en el número correlativo como tantas categorías tenga. En este ejemplo va de 1 a 4.
+
+Entonces cómo debemos proceder en estas situaciones si quisiéramos usar `svyciprop()`? 
+
+Hay que ejecutar una línea de código por cada categoría, de la siguiente forma:
+
+```{r}
+svyciprop(formula = ~I(agecat == "(0,19]"), design = d)
+svyciprop(formula = ~I(agecat == "(19,39]"), design = d)
+svyciprop(formula = ~I(agecat == "(39,59]"), design = d)
+svyciprop(formula = ~I(agecat == "(59,Inf]"), design = d)
+```
+Nota informativa: la letra **I** dentro de la sintaxis fórmula es una función indicadora, donde vale TRUE, si se cumple la condición entre paréntesis, y FALSE si no se cumple. Es una forma de dicotomizar cada categoría al momento de hacer la estimación.
+
+
+Para las situaciones propuestas dentro del curso vamos a utilizar la forma de la función `svymean()`, aplicada para estimaciones de medias y proporciones con sus IC.
+
+### Subgrupos
+
+Es habitual que necesitemos obtener estimaciones en subgrupos o subpoblaciones determinados por categorías definidas de una variable. 
+
+Los subgrupos requeridos pueden no coincidir con los estratos de la muestra compleja generando un inconveniente para las estimaciones, dado que las ponderaciones muestrales serían correctas pero la probabilidad de muestreo seguramente no, lo que produce estimaciones puntuales correctas con errores estándar incorrectos.
+
+El problema de la estimación en subpoblaciones también se denomina estimación de dominio en la literatura de encuestas. Afortunadamente, el paquete **survey** maneja estos detalles sin ningún esfuerzo especial por parte del analista. 
+
+Siempre que se utilice la muestra completa para definir el objeto de diseño de la encuesta, se pueden calcular estimaciones para cualquier subpoblación de interés. 
+
+La forma de especificar fácilmente estimaciones en un subgrupo es utilizando la función `svyby()`. 
+
+Su forma general es:
+```{r, eval=F}
+svyby(formula=..., by=..., design=..., FUN=..., deff=..., ...)
+```
+
+donde:
+
+- **formula**: Fórmula donde se especifica la variable donde se aplicará la función (FUN)
+
+- **by**: Fórmula especificando el factor que define los subgrupos.
+
+- **design**: Objeto con el diseño muestral
+
+- **FUN**: Función a aplicar
+
+- **deff**: Si es TRUE, calcula el efecto de diseño para las estimaciones
+
+Para ver su implementación y resultados la utilizaremos para estimar las proporciones de colesterol alto (**HI_CHOL**) según las categorías de grupos de edad (**agecat**) en el _dataset_ **_nhanes_**.
+
+
+```{r}
+col_x_gEdad <- svyby(formula = ~HI_CHOL,  # variable ppal
+                     by = ~agecat,        # factor que define los grupos
+                     design = d,          # objeto diseño muestral
+                     FUN = svymean,       # función que se aplica
+                     deff = T,            # activa calculo deff
+                     na.rm = TRUE)        # omite valores NA en el cálculo de IC
+
+col_x_gEdad
+
+confint(col_x_gEdad)  # intervalos de confianza
+```
+
+## Errores estándar según efecto del diseño
+
+En este punto vamos a comparar estimaciones en función de construir objetos de diseños muestrales diferentes sobre la misma base de datos **nhanes**.
+
+```{r}
+# Diseño complejo y pesos
+d_complejo <- svydesign(id= ~SDMVPSU, 
+                        strata= ~SDMVSTRA, 
+                        weights= ~WTMEC2YR, 
+                        nest= TRUE,
+                        data= nhanes)
+
+# Diseño sin uso de pesos
+
+d_simple <- svydesign(id= ~1, 
+                        strata= NULL, 
+                        weights= NULL, 
+                        data= nhanes)
+
+# Diseño con pesos pero sin estructura compleja
+d_ponde <- svydesign(id= ~1, 
+                        strata= NULL, 
+                        weights= ~WTMEC2YR, 
+                        data= nhanes)
+```
+
+Tenemos tres diseños distintos: un diseño complejo basado en conglomerados, estratos y pesos, un diseño sólo con pesos y un diseño simple sin ponderación.
+
+Sabemos que el primero es el diseño "real" con el que se llevó a cabo la recolección de los datos.
+
+```{r}
+d_complejo
+
+d_ponde
+
+d_simple
+```
+
+Ahora ejecutemos la función `svymean()` para estimar la proporción de **HI_COL** en cada caso.
+
+```{r}
+col1 <- svymean(~HI_CHOL, d_complejo, deff = T, na.rm = T)
+
+col1
+
+col2 <- svymean(~HI_CHOL, d_ponde, deff = T, na.rm = T)
+
+col2
+
+col3 <- svymean(~HI_CHOL, d_simple, na.rm = T)
+
+col3
+```
+
+La estimación puntual (11,21 %) es la misma para los análisis que usan el diseño complejo y los que usan sólo pesos. A su vez es diferente (10,03 %) si las estimaciones se llevan a cabo sin considerar el factor de expansión (muestreo simple). 
+
+Los errores estándar estimados son diferentes para todos los casos porque además se vinculan con la estructura del muestreo (estratos y conglomerados).
+
+Si no se utilizan pesos en las estimaciones, los estimadores no serán representativos de la población muestreada.
+
+Si solo se utilizan pesos sin considerar el diseño complejo, en general, se infravalorará la dispersión de los estimadores, llevando a intervalos de confianza excesivamente estrechos y a niveles de significación reales mayores que los nominales.
+
+
+### Criterios de calidad en las estimaciones
+
+Todas las estimaciones elaboradas a partir de datos obtenidos por encuestas poblacionales con muestreos complejos están sujetas al error muestral, lo que hace necesario evaluar su validez estadística mediante diversos indicadores de precisión y confiabilidad.
+
+Veamos algunos de estos indicadores de calidad:
+
+#### Coeficiente de variación
+
+Esta medida configura un acercamiento al error de muestreo que permite verificar si la inferencia es válida. 
+
+Se caracteriza por ser proporcional a la amplitud del intervalo de confianza, que provee una versión estandarizada y relativa de la precisión alrededor de la estimación puntual.
+
+Un umbral aproximado de CV mayor a 20%-30% puede asumirse como un valor de referencia útil a nivel regional para señalar una cifra de poco confiable, *Gutiérrez y otros (2020)*.
+
+Para calcular el coeficiente de variación de las estimaciones en R basta con utilizar la función `cv()` e incluir como argumento el objeto de estimación.
+
+```{r}
+cv(col_x_gEdad)
+```
+Observamos que los coeficientes son diferentes en cada estimación y esto se debe a la variabilidad asociada a los distintos tamaños muestrales en cada subgrupo. 
+
+#### Tamaño de muestra
+
+Este criterio debe ser considerado como uno de los más importantes a la hora de decidir la calidad de la estimación. La cobertura de los intervalos de confianza y la distribución de los estimadores dependen de que, tanto el tamaño de la subpoblación como su tamaño de muestra asociado, no sean pequeños. En este espíritu, *Andrés Gutiérrez et al. Cepal (2020)* proponen que todas las estimaciones basadas en un tamaño de muestra menor a 100 unidades deberían ser marcadas como no confiables.
+
+Para obtener tamaños muestrales ponderados de subgrupos podemos aplicar la función `svytotal()`.
+
+```{r}
+svytotal(x = ~agecat, design = d)
+```
+
+#### Conteo de casos no ponderado 
+
+Cuando la incidencia de un fenómeno es muy baja y el diseño de la encuesta no lo tuvo en cuenta, entonces es posible que las estimaciones asociadas a tamaños, totales y proporciones sobre este fenómeno no sean confiables. Por ejemplo, *National Research Council (2015)* plantea que si el número de casos no ponderados es menor a 50 unidades entonces la estimación no es publicada.
+
+Conocer este valor es sencillo, por ejemplo usando `count()` de dplyr/tidyverse:
+
+```{r, message=F, warning=F}
+library(tidyverse)
+
+nhanes %>% count(agecat)
+```
+
+
+## Gestión de datos con R
+
+Incorporamos algunas funciones para el manejo de datos relacionadas con la creación de nuevas variables y de transformación de variables cuantitativas a categóricas nominales u ordinales.
+
+Algunas de estas operaciones serán necesarias para cumplimentar los objetivos del trabajo practico grupal de esta unidad y seguramente se utilizarán a lo largo de las siguientes unidades restantes.
+
+Para crear nuevas variables producto de algún cálculo podemos hacerlo de las siguientes formas:
+
+**Sintaxis R base**
+
+```{r, eval = F}
+datos$variable_nueva <- datos$var1 * datos$var2
+
+# los operadores aritmeticos pueden ser +, -, *, /, etc.
+```
+
+Se puede hacer cualquier tipo de cálculo tomando valores de variables de nuestras tablas de datos e incorporando operadores, funciones matemáticas y constantes en las formulas.
+
+Siempre que asignemos la forma:
+
+`<nombre del dataframe>$<nombre de nueva variable> <- formula`
+
+Estaremos creando una nueva variable dentro del dataframe; y si el nombre de la variable existe, estaremos modificando o “pisando” los valores existentes por los nuevos valores asignados.
+
+
+**Sintaxis tidyverse**
+
+La función-verbo para crear variables nuevas o reemplazar existentes es `mutate()`
+
+```{r, eval=F}
+datos <- datos %>%  mutate(variable_nueva = var1 * var2)
+```
+
+
+Respecto a discretizar variables continuas podemos dividir el proceso en salidas dicotómicas o politómicas.
+
+Para salidas dicotómicas el lenguaje R tiene una función condicional `ifelse()` para R base y `if_else()` para tidyverse derivada de la simplificación del **IF condicional** que existe en todos los lenguajes de programación.
+
+La forma general de uso sería:
+
+**Sintaxis R base**
+
+```{r, eval=F}
+datos$variable_nueva <- ifelse(test = datos$var1 > 10, 
+                               yes = "< 10", 
+                               no = ">= 10")
+
+# los operadores de comparación pueden ser ==, !=, >, <, >=, <=
+# se pueden agregar conectores lógicos &, |, etc
+```
+
+Observemos que se necesitan tres argumentos: el test condicional, el valor que toma cuando el test es positivo (yes) y el valor que toma cuando el test es negativo (no).
+
+**Sintaxis tidyverse**
+
+```{r, eval=F}
+datos <- datos %>% 
+  mutate(variable_nueva = if_else(condition = var1 > 10, 
+                                  true = "< 10", 
+                                  false = ">= 10")
+```
+
+Para salidas politómicas tenemos varias opciones dependiendo de si los intervalos de clase de la variable continua son regulares o irregulares.
+
+La función `cut()` de R base sirve para las dos situaciones y la función `case_when()` del tidyverse para condiciones múltiples (generalmente irregulares).
+
+Veamos las formas generales de las dos funciones:
+
+**Función `cut()`**
+```{r, eval=F}
+## intervalos regulares
+datos$var_nueva <- cut(x = datos$var1, 
+                       breaks = seq(0,100, by = 10), 
+                       ordered_result = T)
+
+# En el ejemplo anterior la función seq() genera intervalos de 10 en 10 desde 0 a 100
+# es decir, 10 niveles de un factor ordenado
+
+# las etiquetas son automáticas y utilizan notación matemática, donde los ( implican intervalo abierto que no inlcuye el valor y los [ intervalo cerrado que si incluye el valor
+
+# El argumento ordered_result = T determina que el factor sea ordenado
+
+## intervalos irregulares
+datos$var_nueva <- cut(x = datos$var1, 
+                       breaks = c(-Inf, 18, 65, +Inf),
+                       labels = c("1.grupo", "2.grupo", "3.grupo"),
+                       ordered_result = T)
+
+# Los breaks se construyen con un vector de "cortes" 
+# Es necesario definir labels
+# En este ejemplo, al intervalo entre el valor más bajo y 18 incluído se le asigna la categoría "1.grupo", al intervalo de 19 a 65 incluído "2.grupo" y "3.grupo" a los valores que van de 66 al máximo valor de la variable var1.
+```
+
+Los argumentos obligatorios y opcionales de la función `cut()` son:
+
+- **x**: El conjunto de datos numéricos de entrada (variable cuantitativa continua)
+
+- **breaks**: los puntos de corte de los intervalos (pueden definirse regulares o irregulares)
+
+- **labels**:  las etiquetas de los intervalos (pueden omitirse cuando los intervalos son regulares y surgen de una función `seq()`)
+
+- **include.lowest**:  opcional - indica si se debe incluir el valor más bajo (o más alto
+para rigth = FALSE) de corte. Por defecto vale FALSE
+
+- **right**: opcional - indica si los intervalos son cerrados a la derecha o viceversa. Por
+defecto vale TRUE
+
+- **ordered_result**: opcional - determina si el resultado es un factor ordenado. Por
+defecto vale FALSE
+
+
+**Función `case_when()`**
+
+Ejecuta una vectorización múltiple de funciones if-else. Es el equivalente en R del comando CASE WHEN de SQL.
+
+Esquema de funcionamiento:
+
+```{r, eval=F}
+var_salida = case_when( 
+		var1 > 10 | var2 == TRUE	 ~ 	"categoría1", 
+		var3 == "XX" 	 	           ~ 	"categoría2", 
+		TRUE			                 ~ 	"Otra_categoría")
+
+```
+
+Produce salidas de variables de tipo **_carácter_** (chr) a diferencia de `cut()` donde son **_factores_**.
+
+
+Veamos algunos ejemplos prácticos de las funciones presentadas trabajando con una variable común como **EDAD**. 
+
+```{r, echo=F, message=F, warning=F}
+library(tidyverse)
+datos <- read_csv("ciudad.csv")
+```
+
+**Función `cut()` en sintaxis base**
+
+```{r}
+## Discretizamos con cut() en intervalos regulares cerrados a derecha
+datos$grupo <- cut(x = datos$EDAD, 
+                   breaks = seq(0,100, by = 10),
+                   include.lowest = T,
+                   right = T,          # define cerramiento
+                   ordered_result = T)
+
+table(datos$grupo)  # vemos distribución
+
+class(datos$grupo)  # clase de la nueva variable grupo
+```
+
+
+```{r}
+## Discretizamos con cut() en intervalos regulares cerrados a izquierda
+datos$grupo <- cut(x = datos$EDAD, 
+                   breaks = seq(0,100, by = 10),
+                   include.lowest = T,
+                   right = F,             # define cerramiento
+                   ordered_result = T)
+
+table(datos$grupo) # vemos distribución
+```
+
+```{r}
+## Discretizamos con cut() en intervalos irregulares 
+datos$grupo <- cut(datos$EDAD, 
+                   c(0,12,25,65,+Inf), 
+                   c("Niño", "Adolescente", "Adulto Joven", "Adulto mayor"), 
+                   include.lowest = T,
+                   ordered_result = T)
+
+table(datos$grupo) # vemos distribución
+
+```
+
+**Función `cut()` en sintaxis tidyverse**
+
+```{r}
+## Discretizamos con cut() en intervalos regulares cerrados a derecha
+datos <- datos %>% mutate(grupo = cut(x = EDAD, 
+                   breaks = seq(0,100, by = 10),
+                   include.lowest = T,
+                   right = T,             # define cerramiento
+                   ordered_result = T))
+
+datos %>% count(grupo) # vemos distribución
+```
+
+**Función `case_when()` - sintaxis tidyverse**
+
+```{r}
+## Discretizamos con case_when() en intervalos irregulares 
+datos <- datos %>% mutate(grupo = case_when(
+  EDAD < 13 ~ "1.Niño",
+  EDAD > 12 & EDAD < 26 ~ "2.Adolescente",
+  EDAD > 25 & EDAD < 66 ~ "3.Adulto Joven",
+  EDAD > 64 ~ "4.Adulto mayor"
+))
+
+datos %>% count(grupo)   # vemos distribución
+```
+
+
+## Bibliografía
+
+
+Luis Carlos Silva Ayçaguer (2020), "Diseño razonado de muestras y captación de datos para la investigación sanitaria", Ediciones Díaz de Santos, S. A.
+
+T. Lumley (2010), "Complex Surveys: A Guide to Analysis Using R". John Wiley and Sons.
+
+Sakshaug, J. W., & West, B. T. (2014). Important considerations when analyzing health survey data collected using a complex sample design. American journal of public health, 104(1), 15–16. https://doi.org/10.2105/AJPH.2013.301515
+
+Bell, B. A., Onwuegbuzie, A. J., Ferron, J. M., Jiao, Q. G., Hibbard, S. T., & Kromrey, J. D. (2012). Use of design effects and sample weights in complex health survey data: a review of published articles using data from 3 commonly used adolescent health surveys. American journal of public health, 102(7), 1399–1405. https://doi.org/10.2105/AJPH.2011.300398
+
+Realizing the Potential of the American Community Survey: Challenges, Tradeoffs, and Opportunities. (2015). Panel on Addressing Priority Technical Issues for the Next Decade of the American Community Survey, Committee on National Statistics, Division of Behavioral and Social Sciences and Education. Washington, DC: The National Academies Press. https://doi.org/10.17226/21653.
+
+Epidat: Material de ayuda programa para análisis epidemiológico de datos. Versión 4.2 (2016),  Consellería de Sanidade, Xunta de Galicia, España; Organización Panamericana de la salud (OPS-OMS); Universidad CES, Colombia.
+
+A. Gutiérrez y otros (2020), “Criterios de calidad en la estimación de indicadores a partir de encuestas de hogares: una aplicación a la migración internacional” serie Estudios Estadísticos, N° 101 (LC/TS.2020/52), Santiago, Comisión Económica para América Latina y el Caribe (CEPAL).
+
+T. Lumley (2020), "survey: analysis of complex survey samples". R package version 4.0.
+
+Greg Freedman Ellis and Ben Schneider (2021). srvyr: 'dplyr'-Like Syntax for Summary Statistics of Survey Data. R package version 1.0.1. https://CRAN.R-project.org/package=srvyr
