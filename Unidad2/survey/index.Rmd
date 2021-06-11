@@ -18,8 +18,17 @@ theme: lumen
 knitr::opts_chunk$set(comment=NA, dpi = 300, message = F, warning = F)
 ```
 
+<br>
+
 *Este material es parte de la* ***Unidad 2 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS***
 
+<br>
+
+<center><p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Unidad2/survey/">Estimaciones con IC en muestras complejas con R</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://www.ine.gov.ar">Christian Ballejo - Instituto Nacional de Epidemiología</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"></a></p></center>
+
+
+<br> 
+<br> 
 
 ## Introducción
 
@@ -109,7 +118,7 @@ svydesign(..., strata= ~ESTRATO, ...)
 
 Los argumentos mínimos que debemos definir dependerá de la estructura muestral de la base de datos que estemos analizando y de las variables que tengamos a disposición. Habitualmente se tiene referencia de estratos, conglomerados y ponderaciones. También podemos encontrarnos con situaciones donde están definidos los tamaños poblacionales (variable fpc). 
 
-Para ejemplificar vamos a tomar un dataset que viene incluído llamado **_nhanes_** con datos extraídos de la "National Healt and Nutrition Examination Survey 2009-2020" (ver más información en https://wwwn.cdc.gov/nchs/nhanes/search/datapage.aspx?Component=laboratory&CycleBeginYear=2009).
+Para ejemplificar vamos a tomar un dataset que viene incluído llamado **_nhanes_** con datos extraídos de la "National Healt and Nutrition Examination Survey 2009-2010" (ver más información en https://wwwn.cdc.gov/nchs/nhanes/search/datapage.aspx?Component=laboratory&CycleBeginYear=2009).
 
 Leemos el dataset con:
 
@@ -195,7 +204,7 @@ Si bien `svymean()` se puede utilizar para medias y para proporciones (teniendo 
 
 Su aplicación es similar a `svymean()` pero tiene mayores exigencias a la hora del formato de la variable que incluimos como argumento principal.
 
-Mientras `svymean()` se adapta a variables categóricas tipo factor o dictomizadas 0-1, `svyciprop()` exige que la variable tenga este último formato y por lo tanto en situación de multiples categorías debemos "dummificar" (proceso por el cual se convierte en tantas variable dummy 0-1 como categorías tenga la variable en cuestión.)
+Mientras `svymean()` se adapta a variables categóricas tipo factor o dicotomizadas 0-1, `svyciprop()` exige que la variable tenga este último formato y por lo tanto en situación de multiples categorías debemos "dummificar" (proceso por el cual se convierte en tantas variable dummy 0-1 como categorías tenga la variable en cuestión.)
 
 Veamos el ejemplo con colesterol que cumple con este requisito (valores 0-1):
 
@@ -392,7 +401,7 @@ Para calcular el coeficiente de variación de las estimaciones en R basta con ut
 ```{r}
 cv(col_x_gEdad)
 ```
-Observamos que los coeficientes son diferentes en cada estimación y esto se debe a la variabilidad asociada a los distintos tamaños muestrales en cada subgrupo. 
+Observamos que en el grupo de (0-19) la estimación no es tan confiable (CV 30.8 %)
 
 #### Tamaño de muestra
 
@@ -453,7 +462,11 @@ datos <- datos %>%  mutate(variable_nueva = var1 * var2)
 
 Respecto a discretizar variables continuas podemos dividir el proceso en salidas dicotómicas o politómicas.
 
-Para salidas dicotómicas el lenguaje R tiene una función condicional `ifelse()` para R base y `if_else()` para tidyverse derivada de la simplificación del **IF condicional** que existe en todos los lenguajes de programación.
+Para salidas dicotómicas el lenguaje R tiene una función condicional `ifelse()` para R base e `if_else()` para tidyverse derivada de la simplificación del **IF condicional** que existe en todos los lenguajes de programación.
+
+Supongamos que creamos una nueva variable dentro del dataframe **datos** que se llama **_variable_nueva_** de tipo cualitativa y queremos que la misma tome valores a partir del cumplimiento de una condición de una variable cuantitativa existente denominada **var1**. 
+
+Si los valores de **var1** son mayores a 10, entonces **variable_nueva**, tomará el valor "> 10", en caso contrario, tomará el valor "<= 10"
 
 La forma general de uso sería:
 
@@ -461,8 +474,8 @@ La forma general de uso sería:
 
 ```{r, eval=F}
 datos$variable_nueva <- ifelse(test = datos$var1 > 10, 
-                               yes = "< 10", 
-                               no = ">= 10")
+                               yes = "> 10", 
+                               no = "<= 10")
 
 # los operadores de comparación pueden ser ==, !=, >, <, >=, <=
 # se pueden agregar conectores lógicos &, |, etc
@@ -475,8 +488,8 @@ Observemos que se necesitan tres argumentos: el test condicional, el valor que t
 ```{r, eval=F}
 datos <- datos %>% 
   mutate(variable_nueva = if_else(condition = var1 > 10, 
-                                  true = "< 10", 
-                                  false = ">= 10")
+                                  true = "> 10", 
+                                  false = "<= 10")
 ```
 
 Para salidas politómicas tenemos varias opciones dependiendo de si los intervalos de clase de la variable continua son regulares o irregulares.
