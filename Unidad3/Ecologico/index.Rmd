@@ -1,0 +1,413 @@
+---
+title: "**Estudios ecológicos**"
+author: ""
+date: ""
+output:
+  html_document:
+    css: style.css
+    toc: true
+    toc_float: true
+    toc_collapsed: false
+    toc_depth: 4
+number_sections: true
+anchor_sections: true
+theme: lumen
+---
+
+```{r, message=FALSE, echo=F}
+knitr::opts_chunk$set(comment=NA, dpi = 300)
+```
+
+<br>
+
+<center>
+
+*Este material es parte de la* ***Unidad 3 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS***
+
+</center>
+
+<br>
+
+<center><p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Unidad3/Ecologico/">Estudios ecológicos</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://www.ine.gov.ar">Andrea Silva</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"></a></p></center>
+
+<br> 
+
+## Introducción
+
+Por definición, un estudio ecológico es aquel en el cual las unidades de análisis son poblaciones o agrupamientos de individuos, no los individuos propiamente dichos. Estos conglomerados pueden estar definidos en un contexto espacial (ciudad, provincia, país, región, etc), institucional (hospitales, escuelas, etc), social, temporal, etc. La característica principal de este tipo  de diseños es que se cuenta con información  sobre la exposición y el evento para el conglomerado en su totalidad, pero se desconoce la  información a escala individual. En este tipo de estudios se asigna la misma exposición (generalmente una exposición promedio) a todo el conglomerado. Algo similar ocurre con el evento considerado, tenemos un número de eventos correspondiente al conglomerado, pero no se sabe si los individuos expuestos son los que tienen el evento.
+
+Recordemos las principales ventajas y desventajas de este diseño:
+
+
+Repasemos las ventajas y desventajas de este diseño
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-color:#93a1a1;border-spacing:0;}
+.tg td{background-color:#fdf6e3;border-color:#93a1a1;border-style:solid;border-width:1px;color:#002b36;
+  font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{background-color:#657b83;border-color:#93a1a1;border-style:solid;border-width:1px;color:#fdf6e3;
+  font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-6sgx{background-color:#ffffff;text-align:left;vertical-align:top}
+.tg .tg-4b3j{background-color:#006666;color:#ffffff;font-weight:bold;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-4b3j">   Ventajas   </th>
+    <th class="tg-4b3j"> Desventajas   </th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-6sgx">Se pueden estudiar grandes grupos poblacionales<br>   <br>Relativamente fáciles de realizar<br>   <br>Aumenta el poder estadístico<br>   <br>Aumenta la variabilidad en exposición<br>   <br>Se puede utilizar información de estadísticas vitales</td>
+    <td class="tg-6sgx">No se tiene información del individuo, <br>por lo que no se puede ajustar por diferencias a nivel individual <br>(no se puede saber quién sí está expuesto o quién sí desarrolló el evento de interés).<br>   <br>No se tiene información sobre factores de confusión y no se puede  corregir por esto.</td>
+  </tr>
+</tbody>
+</table>
+
+<br>
+Recordemos también que puede incurrirse en la llamada *falacia ecológica*.
+
+::: {.b--gray .ba .bw2 .ma2 .pa4 .shadow-1}
+**Falacia ecológica** (*Ecological fallacy*): Sesgo que puede aparecer al observar una asociación a partir de un estudio ecológico pero que no representa una asociación causal a nivel individual.
+:::
+
+En un estudio ecológico, existen distintos **niveles de medición** de las variables de grupo:
+
+- Medidas agregadas. Se trata de resumir las observaciones sobre individuos en cada  grupo, expresándolas como medias o proporciones (ejemplo la proporción de usuarios de cinturón de seguridad)
+
+- Mediciones ambientales. Son características generalmente del lugar en el que los  miembros del grupo viven o trabajan (ejemplo: niveles de contaminación ambiental). Cada medición ambiental tiene su análogo a nivel individual y la exposición individual puede variar dentro del grupo. 
+
+- Mediciones globales. Son características de grupos, organizaciones o áreas para las que no existe una analogía con el nivel individual  (ejemplo: densidad de población)
+
+Esta distinción es importante, porque para las dos primeras siempre existe el recurso de la medición individual, en tanto que en las mediciones globales, el diseño ecológico es la única alternativa viable.
+
+**Clasificación de estudios ecológicos**
+
+- Exploratorios. 
+
+- De grupos múltiples
+
+- De series de tiempo
+
+- Mixtos
+
+**Exploratorios**: En los estudios exploratorios se comparan las tasas de enfermedad entre muchas regiones  durante un mismo periodo, o se compara la frecuencia de la enfermedad a través del tiempo en una misma región. Se podría decir que se buscan patrones regionales o temporales, que pudieran dar origen a alguna hipótesis.
+
+Ejemplo: [Geographical and Temporal Variations in Female Breast Cancer Mortality in the Municipalities of Andalusia (Southern Spain)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5129372/)
+
+
+**Estudios de grupos múltiples**: Este es el tipo de estudio ecológico más común. Se evalúa la asociación entre los niveles de exposición promedio y la frecuencia de la enfermedad entre varios grupos. La fuente de datos suele ser las estadísticas de morbilidad y mortalidad rutinarias.
+
+
+Ejemplo: [An Ecologic Analysis of County-Level PM2.5 Concentrations and Lung Cancer Incidence and Mortality](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3138001/)
+
+**Estudios de series temporales**: Se comparan las variaciones temporales de los niveles de exposición con otra serie de tiempo que refleja los cambios en la frecuencia de la enfermedad en la población de un área geográfica determinada.
+
+Ejemplo: [Air pollution and emergency hospital admissions for cardiovascular diseases in Valencia, Spain](https://jech.bmj.com/content/55/1/57.long)
+
+
+**Estudios mixtos**: En esta categoría se incluyen los estudios de series de tiempo combinadas con la evaluación de grupos múltiples.
+
+
+Algunos autores presentan la perspectiva que mostramos en la tabla 2, para una comprensión más rápida de las distintas posibilidades de los diseños ecológicos
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-color:#93a1a1;border-spacing:0;border-style:solid;border-width:1px;}
+.tg td{background-color:#fdf6e3;border-color:#93a1a1;border-style:solid;border-width:0px;color:#002b36;
+  font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{background-color:#657b83;border-color:#93a1a1;border-style:solid;border-width:0px;color:#fdf6e3;
+  font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-7gt5{background-color:#bbe4e1;text-align:left;vertical-align:top}
+.tg .tg-opdn{background-color:#368a8a;font-weight:bold;text-align:center;vertical-align:middle}
+.tg .tg-tb1x{background-color:#006666;font-weight:bold;text-align:center;vertical-align:middle}
+.tg .tg-l2y7{background-color:#b7edea;text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-tb1x" colspan="3"><span style="color:#FFF">Estudios ecológicos</span></th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-opdn">Tipo de estudio</td>
+    <td class="tg-opdn">Diseño</td>
+    <td class="tg-opdn">Marco de tiempo</td>
+  </tr>
+  <tr>
+    <td class="tg-7gt5">Transversal</td>
+    <td class="tg-7gt5">A lo largo de diferentes comunidades   </td>
+    <td class="tg-7gt5"> Mismo período    </td>
+  </tr>
+  <tr>
+    <td class="tg-l2y7">Series temporales  </td>
+    <td class="tg-l2y7">Dentro de la misma comunidad   </td>
+    <td class="tg-l2y7">A lo largo del tiempo   </td>
+  </tr>
+  <tr>
+    <td class="tg-7gt5"> Descriptivo</td>
+    <td class="tg-7gt5">A lo largo de diferentes comunidades o dentro de la misma comunidad   </td>
+    <td class="tg-7gt5">Un punto en el tiempo o a lo largo del tiempo   </td>
+  </tr>
+</tbody>
+</table>
+
+## Análisis de estudios ecológicos
+
+Antes de entrar en este campo, tenemos que señalar que existen distintos niveles de análisis en estos estudios.
+
+En un **análisis ecológico completo**, todas las variables son medidas ecológicas (exposición o exposiciones, enfermedad u otras variables incluidas), ya que la unidad de análisis es el grupo. Ello implica que desconocemos la distribución conjunta de cualquier combinación de variables a nivel individual. En un **análisis ecológico parcial** de tres o más variables puede tenerse información de la distribución conjunta de alguna de las variables en cada grupo. Por ejemplo, en el estudio de incidencia de cáncer se conocen la edad y el sexo de los casos (información individual) pero la exposición derivada de la residencia en un área concreta (municipio) es información ecológica. El **análisis multinivel** es un tipo especial de modelización que combina el análisis efectuado a dos o más niveles. Ejemplo: la modelización de la incidencia de cáncer incluyendo el sexo y la edad como variables explicativas, además de variables socio-demográficas.
+
+Como podemos apreciar, tenemos muchas posibilidades para contemplar. En este capítulo, nos centraremos en aquellos estudios ecológicos (completo) donde el objetivo principal sea encontrar una relación entre la exposición y la enfermedad, es decir un **_estudio de grupos múltiples_**. 
+
+La manera usual de evaluación de la asociación en estudios de grupos múltiples es mediante modelos lineales de regresión, de hecho algunos autores se refieren a estos estudios como “Estudios de correlación”. Dependiendo del diseño y la distribución de los datos se pueden emplear otros modelos no lineales o no aditivos. Como las tasas de morbilidad y mortalidad en las regiones geográficas que se comparan comúnmente son eventos raros o que ocurren a bajas frecuencias, éstos semejan una distribución Poisson; así que la regresión de Poisson también puede ser usada. 
+
+En este capítulo abordaremos la regresión lineal simple, a modo de introducción, para luego entender los modelos de regresión lineal múltiple, ampliamente usados en el análisis de los estudios ecológicos, aunque no exclusivos de ellos.
+
+Antes de encarar la regresión lineal múltiple, repasaremos los fundamentos de la correlación y de la regresión lineal simple.
+
+## Regresión lineal simple (RLS)
+
+Nuestra pregunta ahora es: ¿cómo podemos estudiar la relación de dos variables cuantitativas que varían simultáneamente (co-varían), una en función de la otra?
+
+AI analizar los datos en las disciplinas que conforman las ciencias de la salud, con frecuencia es conveniente obtener algún conocimiento acerca de la relación entre dos variables. Por ejemplo, es posible que se tenga interés en analizar la relación entre presión sanguínea y edad, estatura y peso, la concentración de un medicamento inyectable y la frecuencia cardíaca, etc (observar que se trata de variables cuantitativas)
+
+La **covarianza $S_{XY}$**, es una medida que nos hablará de la variabilidad conjunta de dos variables numéricas (cuantitativas). Se define como: 
+
+$$S_{XY} = \frac{1}{n} \sum_{i=1}^{n} (x_i - \bar{x})(y_i - \bar{y})  $$
+
+¿Cómo se interpreta geométricamente la covarianza?
+
+Consideremos la nube de puntos formadas por las $n$ parejas de datos ($x_i$, $y_i$). El centro de gravedad de esta nube de puntos es  ($\bar{x}$ , $\bar{y}$). Trasladamos los ejes XY al nuevo centro de coordenadas. Los puntos que se encuentran en el primer y tercer cuadrante contribuyen positivamente al valor de $S_{XY}$ , y los que se encuentran en el segundo y el cuarto lo hacen negativamente.
+
+```{r,echo=F,  fig.align='center', out.width = "90%"}
+knitr::include_graphics("grafico1.png")
+```
+
+::: {.b--gray .ba .bw2 .ma2 .pa4 .shadow-1}
+
+Si la mayoría de puntos se ubican en el tercer y primer cuadrante: $S_{XY}$ >0
+
+Si la mayoría de puntos se ubican en el segundo y cuarto cuadrante: $S_{XY}$ < 0
+
+Cuando los puntos se reparte de modo más o menos homogéneo entre los cuadrantes primero y tercero, y segundo y cuarto, se tiene que $S_{XY}$ \~ 0.
+:::
+
+
+La covarianza es una medida de la variabilidad común de dos variables (crecimiento de ambas al mismo tiempo o crecimiento de una y decrecimiento de la otra), pero está afectada por las unidades en las que cada variable se mide. Así pues, es necesario definir una medida de la relación entre dos variables, y que no esté afectada por los cambios de unidad de medida. Una forma de conseguir este objetivo es dividir la covarianza por el producto de las desviaciones típicas de cada variable, ya que así se obtiene un coeficiente adimensional, $r$, que se denomina coeficiente de **correlación lineal de Pearson**.
+
+
+$$r = \frac{S_{XY}}{S_xS_y} $$
+Cuando hacemos un análisis bivariado de nuestros datos, queremos determinar si parece haber una relación entre las dos variables. Con frecuencia encontraremos una relación entre dos variables al construir una gráfica: **diagrama de dispersión**. 
+
+Cuando examinamos un diagrama de dispersión, es necesario estudiar el patrón general de los puntos graficados. Si existe un patrón, debemos señalar su dirección. Es decir, mientras una variable se incrementa, ¿la otra parece aumentar o disminuir? Tenemos que observar si hay datos distantes, que son puntos que se ubican muy lejos de todos los demás.
+
+La correlación trata de establecer la relación o dependencia que existe entre las dos variables que intervienen en una distribución bidimensional. Es decir, determinar si los cambios en una de las variables influyen en los cambios de la otra. En caso de que suceda, diremos que las variables están correlacionadas o que hay correlación entre ellas.
+
+La correlación, como cuantificación del grado de relación que hay entre dos variables, es un valor entre -1 y +1, pasando,  por el cero. Hay, por lo tanto, correlaciones positivas y negativas. El signo es, pues, el primer elemento básico a tener en cuenta.
+
+Correlación positiva significa que las variables tienen una relación directa: En este caso, valores pequeños de una variable van asociados a valores también pequeños de la otra; y, paralelamente, valores grandes de una van asociados a valores grandes de la otra. 
+
+
+La correlación negativa la tienen, por el contrario, variables con una relación inversa. En este caso, valores pequeños de una variable van asociados, ahora, a valores grandes de la otra; y, equivalentemente, valores grandes de una van asociados a valores pequeños de la otra.
+
+Lo segundo a tener en cuenta en la correlación es la magnitud. Y esto lo marca el valor absoluto de la correlación. En la magnitud se valora se valora la correlación sin el signo, valorando la magnitud del número puro. Esto significa que cuanto más cerca estemos de los extremos del intervalo de valores posibles: -1 y +1, más correlación tenemos.
+
+¿A partir de qué valores de r se considera que hay *"buena correlación”*? La respuesta no es simple. Hay que tener en cuenta la presencia de observaciones anómalas y si la varianza se mantiene homogénea. En reglas generales se acepta que a partir de 0,7 hay una buena relación lineal y que a partir de 0,4 podría existir cierta relación
+
+En resumen, el $r$ de **Pearson**:
+
+::: {.b--gray .ba .bw2 .ma2 .pa4 .shadow-1}
+- Es adimensional (y su valor no depende de la unidad de medida de X e Y)
+
+- Sólo toma valores entre (-1 y +1)
+
+- Si $r$ = 0 no existe asociación lineal entre $x$ e $y$ (pero cuidado: puede existir una asociación no-lineal). Cuando las variables son incorrelacionadas (hay independencia entre ellas) 
+
+- Cuanto más cerca esté $r$ de 1 o -1 mejor correlación
+:::
+
+La primera manera de explorar la relación entre 2 variables, es mediante un gráfico o diagrama de dispersión que nos permite observar cómo se comportan ambas variables. Luego se puede calcular el coeficiente de correlación que nos dice si la relación es lineal y cuál es la fuerza de esta correlación.
+
+
+```{r,echo=F,  fig.align='center', out.width = "80%"}
+knitr::include_graphics("grafico2.png")
+```
+
+La correlación más usada para variables cuantitativas es la **correlación de Pearson**. Es especialmente apropiada cuando la distribución de las variables es la normal.
+
+Si no se cumple la normalidad o si las variables son ordinales es más apropiado usar la **correlación de Spearman** o la **correlación de Kendall**.
+
+Para explicar la forma de esta correlación e incluso predecir los valores que puede alcanzar una variable (dependiente) en función de la otra (independiente) podemos utilizar la regresión lineal. Cuando el análisis lo realizamos con 2 variables (una dependiente y otra independiente) utilizamos la regresión lineal simple. Cuando el problema es más complejo y queremos incorporar al análisis más de una variable independiente utilizamos la regresión lineal múltiple, que veremos más adelante.
+
+Veamos un ejemplo: 
+
+A partir de los datos de peso (medido en gramos) y edad (medida en semanas luego del nacimiento) de 30 niñas menores de 6 meses[^cita] se realizó un diagrama de dispersión (*“scatter plot”*). 
+
+```{r,echo=F,  fig.align='center', out.width = "80%"}
+knitr::include_graphics("grafico3.PNG")
+```
+
+[^cita]: Estos datos fueron extraídos de las curvas de peso para niños argentinos publicadas por la Sociedad Argentina de Pediatría en el año 2008. La construcción de la base y elección de los casos se realizó con fines pedagógicos.
+
+Como puede observarse existe una fuerte relación lineal positiva, donde a medida que aumenta la edad aumenta el peso, si bien se observan algunos casos que lo hacen con cierta variación.
+
+En la segunda figura trazamos una recta para describir y cuantificar esta asociación lineal que observamos.
+
+Como recordarán la ecuación de la recta es la siguiente:
+
+$$Y = a + bx$$
+
+Donde a es el punto de intersección de la recta con el eje $Y$ y $b$ la pendiente de la recta.
+
+Gráfico 2: Función lineal. Edad y peso en 30 lactantes de sexo femenino
+
+```{r,echo=F,  fig.align='center', out.width = "80%"}
+knitr::include_graphics("grafico4.PNG")
+```
+
+La pendiente de la recta nos está indicando la magnitud y sentido de la variación del peso en función de su edad para este grupo de lactantes. En la ecuación, tanto la pendiente como el origen de la recta, se ponen de manifiesto mediante los coeficientes. Un poco más adelante veremos cómo se calculan y cómo se interpretan.
+
+> El coeficiente de correlación (r de Pearson) nos señala la fuerza y el sentido (según su signo sea + o -) de esta relación lineal.
+
+## Modelos de Regresión
+
+Uno de los propósitos de los modelos en estadística es intentar explicar la realidad de la manera más “simple” posible (lo cual no es sinónimo de fácil!), desde su esencia, dejando de lado los elementos que podrían cambiar en distintos momentos (o sea la variabilidad del fenómeno, que algunos autores lo comparan con “el ruido”). Existen algunos eventos en la naturaleza que podemos explicar con total exactitud si conocemos algunos datos, por ejemplo el volumen de un cubo. Con respecto a la caída de un objeto, podríamos predecir con un margen de error casi nulo su velocidad y su trayecto. Los modelos que explican estos fenómenos se llaman “modelos deterministas”. Sin embargo cuando queremos entender la realidad que nos rodea la situación se complica, debido a que aparecen otros factores que provocan que el valor de la variable dependiente no pueda ser explicado o predicho completamente por la/s otra/s variable/s. Los modelos que incorporan el concepto de “error” se denominan “modelos probabilísticos” y constituyen la mayoría de los modelos que se abordan desde la estadística, que también se denominan *“modelos de regresión”*.
+
+::: {.b--gray .ba .bw2 .ma2 .pa4 .shadow-1}
+Nota: la principal fuente del “error” se debe a la variabilidad entre individuos propia de la naturaleza (por eso se denomina error aleatorio). Puede haber otras fuentes de error, incluso no detectadas (y que deben ser tenidas en cuenta), como pueden ser errores en la medición, calibración o incluso por mala elección del método.
+:::
+
+
+Un modelo de regresión contiene una función que “une” a la variable $Y$ (independiente) con $X$ (dependiente) y el *“error aleatorio”* (también llamado residuo o error residual). Esta función puede ser lineal o no lineal según la naturaleza y distribución de la variable independiente. El componente sistemático de la regresión es esta función que deseamos “modelar”. 
+
+El componente aleatorio es esa parte de la variación de $Y$ que no puede ser totalmente explicada por la variación de la/s variable/s independiente/s. En algunos casos el error tendrá valor positivo y en otros tendrá valor negativo. El promedio del error es igual a 0.
+
+
+```{r,echo=F,  fig.align='center', out.width = "35%"}
+knitr::include_graphics("formula1.PNG")
+```
+
+Una vez que logremos establecer esta función estaremos en condiciones de:
+
+- Saber cómo se comporta la variable respuesta $Y$ en función de la/s variable/s independientes.
+
+- Estimar o predecir el valor de $Y$ para determinados valores de $X$
+
+- Calcular el intervalo de confianza para estas predicciones 
+
+Vamos a volver al ejemplo del Peso en niñas menores de 6 meses, donde habíamos trazado una recta que nos ilustraba la relación lineal del peso en función de la edad.
+
+Según el modelo estadístico para la función lineal de $Y$ según $X$:
+
+$$Y(X) =  \beta_0 + \beta_1 + X_1$$
+
+Hemos ajustado un modelo cuyos parámetros son:
+
+$$\hat{y} = b_0 + b_1X_1$$
+$b_1$ nos está indicando cuánto se modifica $\hat{y}$ por **cada unidad** de aumento de $X_1$.
+
+$$\hat{y} = 3,55 + 181 \: edad \: (en \: semanas) $$
+Se interpreta que por cada semana este grupo de lactantes ha aumentado en promedio 181 grs.
+
+Cada 1 mes (4 semanas) aumentan una media de 724 grs.
+
+Podemos observar que hay una relación lineal y que esta relación no es perfecta. Existe cierta dispersión entre los puntos sugiriendo que alguna variación en el peso no se asocia con un incremento de la edad (por ejemplo dos lactantes de 15 semanas. Tienen la misma edad y 1.600 grs de diferencia. Cabría preguntarse si esas niñas que se “alejan” tanto de la recta de regresión no tienen algún antecedente distinto del resto). Más adelante veremos cómo se interpretan esas diferentes  distancias entre las observaciones y la recta de regresión.
+
+Ahora vamos a concentrarnos en la relación entre la varianza de la muestra, a través del desvío estándar ($ds = \sqrt{varianza}$) y la magnitud de la asociación. Se muestran 4 ejemplos en los cuáles se fue aumentando progresivamente el desvío estándar de los datos. Observen cómo a medida que aumenta la variabilidad entre los individuos va disminuyendo el coeficiente de correlación y el coeficiente $b_1$ (pendiente de la recta)
+
+```{r,echo=F,  fig.align='center', out.width = "80%"}
+knitr::include_graphics("grafico5.PNG")
+```
+
+Podemos observar que cuanto mayor es la varianza en una muestra:
+
+- Mayor es la variabilidad de Y en torno a la recta de regresión
+
+- Mayor es la imprecisión asociada a la estimativa de los parámetros de regresión 
+
+
+## Modelo de Regresión: Presupuestos
+
+Cuando planeamos realizar un análisis de regresión con un conjunto de datos es necesario saber que para que podamos plantearlo adecuadamente deben cumplirse ciertas condiciones, que llamaremos Presupuestos del modelo: 
+
+1.	Independencia: los valores de $y$ deben ser independientes unos de otros
+2.	Linealidad: la relación entre $x$ e $y$ debe ser una función lineal
+3.	Homocedasticidad: la varianza de $y$ debe mantenerse constante para los distintos valores de $x$
+4.	Normalidad: $y$ debe tener una distribución normal
+
+
+**¿Cómo se obtiene la recta de regresión? ¿Cómo se calculan los coeficientes de la regresión?**
+
+Volviendo al ejemplo del peso según edad en niñas menores de 6 meses la idea es encontrar una función lineal (que gráficamente es una recta) que aplicada a los valores de $x$ nos permita aproximar los valores de $y$. La ecuación de la recta que describe la relación entre $x$ e $y$:
+
+$$\hat{y} = b_0 + b_1x$$
+
+Por muy bueno que sea el modelo de regresión $y$ e $\hat{y}$ rara vez coincidirán.
+
+Entonces podríamos pensar que la mejor recta que permita predecir (o aproximar) los valores de $y$ en función de $x$ es aquella que minimice estos errores residuales (que algunos serán en más y otros serán en menos). 
+
+Gráficamente: 
+
+```{r,echo=F,  fig.align='center', out.width = "60%"}
+knitr::include_graphics("grafico6.PNG")
+```
+
+Donde:
+
+$\hat{y}$: es la ecuación de la “mejor” recta que puede trazarse entre estos puntos
+
+$b_0$: ordenada al origen o constante, también llamada alfa. Es el punto donde la recta de regresión corta al eje de ordenadas.
+
+$b_1$: pendiente de la recta
+(Un poco más adelante veremos cuál es la interpretación de estos coeficientes)
+
+Consideremos qué pasa en el caso de la niña 7. Veamos las distancias para este punto.
+
+$y_7$: es el valor “real” del peso de la niña 7
+
+$\hat{y}_7$: es el valor estimado de $y$ que obtendremos a través de la regresión 
+
+$y – \hat{y} = e$ (residuo o error residual) es el desvío de $y$ del valor ajustado $\hat{y}$ en la ecuación de la regresión estimada
+
+Para poder operar con el valor de estos errores (ya que algunos tendrán valor positivo y otros valor negativo) se los eleva al cuadrado. Esta técnica se denomina **“método de los mínimos cuadrados”** y consiste en adoptar como estimativas de los parámetros de la regresión (o sea los coeficientes $b_0$ y $b_1$ y por ende la recta de regresión) los valores que minimizan la suma de los cuadrados de los residuos o error (**SCE**) para todas las observaciones de $y$. Lo podemos expresar así:
+
+$$SCE = \sum{\hat{e}^2} = \sum{(y-\hat{y})^2} $$
+Para visualizar simulaciones al respecto pueden visitar [Viendo la teoría. Una introducción visual a probabilidad y estadística](https://seeing-theory.brown.edu/regression-analysis/es.html#section1)
+
+## Bibliografía 
+
+Rodriguez M, Mendivelso F. Diseño de investigación de corte transversal. Rev.Medica.Sanitas 21 (3): 141-146, 2018
+
+Epidemiología. Diseño y análisis de estudios. Mauricio Hernández Ávila. 2007, Editorial Médica Panamericana
+
+Muestreo y tamaño de muestra. Una guía práctica para personal de salud que realiza investigación. Víctor Manuel Velasco R. (ed.), Verónica Araceli Martínez O., José Roiz Hernández,Francisco Huazano G., Armando Nieves R. 2003
+
+Ríus Díaz F, Barón Lopez F., Sánchez Font E;  Parras Guijosa L. Bioestadística: Métodos y aplicaciones. Editorial: Universidad de Málaga. Publicaciones
+
+Daniel W. Bioestadística: Base para el análisis de las ciencias de la salud. 4° Edición. Ed. Limusa Wiley, 2002.
+
+Álvarez Cáceres R. Estadística aplicada a las ciencias de la salud. Ediciones Díaz de Santos. Madrid. 2007
+
+Triola, M. Estadística. 10° Edición. Pearson Educación. México. 2009.
+
+Norman G y Streiner D. Bioestadística. Mosby/Doyma Libros. Madrid.1996. 
+
+Glantz S. Bioestadística. 6° Edición. McGraw Hill. México, 2006.
+
+Epidat: Material de ayuda programa para análisis epidemiológico de datos. Versión 4.2, julio 2016. Consellería de Sanidade, Xunta de Galicia, España; Organización Panamericana de la salud (OPS-OMS); Universidad CES, Colombia.
+
+R Core Team (2021). R: A language and environment for statistical
+computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
+
+Juliane Manitz, contributions by Mark Hempelmann, Goeran Kauermann, Helmut Kuechenhoff, Shuai Shao, Cornelia Oberhauser, Nina Westerheide and Manuel Wiesenfarth (2017). samplingbook: Survey Sampling Procedures. R package version 1.2.2. https://CRAN.R-project.org/package=samplingbook
+
+Greg Snow (2020). TeachingDemos: Demonstrations for Teaching and
+Learning. R package version 2.12. https://CRAN.R-project.org/package=TeachingDemos
+
+Boxuan Cui (2020). DataExplorer: Automate Data Exploration and Treatment.
+R package version 0.8.2. https://CRAN.R-project.org/package=DataExplorer
+
+Stephane Champely (2020). pwr: Basic Functions for Power Analysis. R package
+version 1.3-0. https://CRAN.R-project.org/package=pwr
