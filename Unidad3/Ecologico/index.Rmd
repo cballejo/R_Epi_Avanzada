@@ -67,9 +67,7 @@ evento considerado, tenemos un número de eventos correspondiente al
 conglomerado, pero no se sabe si los individuos expuestos son los que
 tienen el evento.
 
-Recordemos las principales ventajas y desventajas de este diseño:
-
-Repasemos las ventajas y desventajas de este diseño
+Repasemos las principales ventajas y desventajas de este diseño:
 
 ```{=html}
 <style type="text/css">
@@ -176,30 +174,44 @@ Algunos autores presentan la perspectiva que mostramos en la tabla 2,
 para una comprensión más rápida de las distintas posibilidades de los
 diseños ecológicos
 
-```{=html}
 <style type="text/css">
-.tg  {border-collapse:collapse;border-color:#93a1a1;border-spacing:0;border-style:solid;border-width:1px;}
-.tg td{background-color:#fdf6e3;border-color:#93a1a1;border-style:solid;border-width:0px;color:#002b36;
-  font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg th{background-color:#657b83;border-color:#93a1a1;border-style:solid;border-width:0px;color:#fdf6e3;
-  font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg .tg-7gt5{background-color:#bbe4e1;text-align:left;vertical-align:top}
-.tg .tg-opdn{background-color:#368a8a;font-weight:bold;text-align:center;vertical-align:middle}
-.tg .tg-tb1x{background-color:#006666;font-weight:bold;text-align:center;vertical-align:middle}
-.tg .tg-l2y7{background-color:#b7edea;text-align:left;vertical-align:top}
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-amwm{font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-0lax{text-align:left;vertical-align:top}
 </style>
-```
-+---------------------+
-| Estudios ecológicos |
-+=====================+
-| Tipo de estudio     |
-+---------------------+
-| Transversal         |
-+---------------------+
-| Series temporales   |
-+---------------------+
-| Descriptivo         |
-+---------------------+
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-amwm" colspan="3">Estudios ecológicos</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-amwm">Tipo de estudio</td>
+    <td class="tg-amwm">Diseño</td>
+    <td class="tg-amwm">Marco de tiempo</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">Transversal</td>
+    <td class="tg-0lax">A lo largo de diferentes comunidades</td>
+    <td class="tg-0lax">Mismo período</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">Series temporales</td>
+    <td class="tg-0lax">Dentro de la misma comunidad</td>
+    <td class="tg-0lax">A lo largo del tiempo</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">Descriptivo</td>
+    <td class="tg-0lax">A lo largo de diferentes comunidades o dentro de la misma comunidad</td>
+    <td class="tg-0lax">Un punto en el tiempo o a lo largo del tiempo</td>
+  </tr>
+</tbody>
+</table>
 
 ## Análisis de estudios ecológicos
 
@@ -334,8 +346,7 @@ asociados, ahora, a valores grandes de la otra; y, equivalentemente,
 valores grandes de una van asociados a valores pequeños de la otra.
 
 Lo segundo a tener en cuenta en la correlación es la magnitud. Y esto lo
-marca el valor absoluto de la correlación. En la magnitud se valora se
-valora la correlación sin el signo, valorando la magnitud del número
+marca el valor absoluto de la correlación. En la magnitud se valora la correlación sin el signo, valorando la magnitud del número
 puro. Esto significa que cuanto más cerca estemos de los extremos del
 intervalo de valores posibles: -1 y +1, más correlación tenemos.
 
@@ -356,7 +367,7 @@ En resumen, el $r$ de **Pearson**:
 
 -   Si $r$ = 0 no existe asociación lineal entre $x$ e $y$ (pero
     cuidado: puede existir una asociación no-lineal). Cuando las
-    variables son incorrelacionadas (hay independencia entre ellas)
+    variables son incorrelacionadas (hay independencia entre ellas), entonces $r$ = 0.
 
 -   Cuanto más cerca esté $r$ de 1 o -1 mejor correlación
 :::
@@ -600,10 +611,54 @@ coeficientes $b_0$ y $b_1$ y por ende la recta de regresión) los valores
 que minimizan la suma de los cuadrados de los residuos o error (**SCE**)
 para todas las observaciones de $y$. Lo podemos expresar así:
 
-$$SCE = \sum{\hat{e}^2} = \sum{(y-\hat{y})^2} $$ Para visualizar
-simulaciones al respecto pueden visitar [Viendo la teoría. Una
-introducción visual a probabilidad y
-estadística](https://seeing-theory.brown.edu/regression-analysis/es.html#section1)
+$$SCE = \sum{\hat{e}^2} = \sum{(y-\hat{y})^2} $$ 
+
+Sabíamos que $\hat{y} = b_0 + b_1x$
+
+Entonces si reemplazamos:
+
+$$SCE = \sum_{i=1}^{i=n} (y_i-\hat{y}_i)^2 =  \sum_{i=1}^{i=n}(y_i-(\hat{\beta}_0 + \hat{\beta}_1x_1))^2$$
+Es posible obtener los estimadores $\beta_1$ y $\beta_0$.
+
+$$\hat{\beta}_1 = \frac{\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^{n}(x_i-\bar{x})^2} = \frac{S_{xy}}{S_{xx}}  $$
+Otra fórmula para $\beta_1$:
+
+$$\hat{\beta}_1 = \frac{\sum x_iy_i-\frac{\sum x_i \sum y_i}{n}}{\sum x_i^2 - \frac{(\sum x_i)^2}{n}} $$
+$$\hat{\beta}_0 = \bar{y} - \beta_1\bar{x}  $$
+El método de los mínimos cuadrados fue creado por *Johann Carl Friedrich Gauss* (1777-1855). Tiene además la ventaja de que el promedio de los errores residuales = 0 y que para cada estimación, la varianza del error es mínima. 
+
+**Test de hipótesis para $\beta_1$ e Intervalo de Confianza 95%**
+
+Como siempre que trabajamos con una muestra, será necesario aplicar los procesos de inferencia. Es por eso que los softwares ofrecen un test de hipótesis para el coeficiente.
+
+La hipótesis nula  podría entenderse como que x no logra explicar la variación de y (entonces la pendiente de la recta sería nula)
+
+$$H_0: \beta_1 = 0 $$
+Al calcular el modelo de regresión, todos los softwares estiman el coeficiente y el error estándar del mismo (se) y testean el coeficiente.
+
+**Bondad de ajuste** 
+
+Hasta ahora hemos aprendido a explicar la variación de y según la variación de x mediante un modelo en donde las desviaciones entre el valor observado (“real”) y el estimado (“modelo de regresión”) son las menores posibles. 
+
+Ahora debemos saber, según los datos que tenemos, cuán bueno es el modelo que ajustamos (qué capacidad tiene de explicar la variabilidad de y o, si lo quiero utilizar para realizar una predicción, cuánto se alejará mi valor estimado del verdadero, “real” valor de y). Esta evaluación la realizaremos mediante la descomposición de la varianza del modelo. Por definición la varianza o variabilidad total es la sumatoria de la diferencia entre cada valor de y con el promedio de y  (elevado al cuadrado ya que hay valores negativos y positivos que si los sumamos se anularían).
+
+La variabilidad total del modelo es la suma entre la variabilidad que logró explicar la regresión y la variabilidad residual.
+
+$$\sum (y_i-\bar{y})^2 = \sum (\hat{y}-\bar{y})^2 + \sum (y_i -\hat{y}_i)^2 $$
+$$\frac{Suma \; de \; cuadrados}{totales \; (SCT)} \; \frac{Suma \; de \; cuadrados}{de \; la \; regresion \; (SCR)} \; \frac{Suma \; de \; cuadrados}{residuales \; (SCE)}$$
+
+Cuanto mayor sea la variabilidad que logre explicar la regresión en relación a los residuos, tanto mejor será el modelo. Este es el fundamento para el cálculo del coeficiente de determinación ($R^2$)
+
+$$R^2 = \frac{SCR}{SCT} = 1 - \frac{SCE}{SCT}$$
+$R^2$ expresa la proporción de la variación total que logra explicar el modelo de regresión. Su valor oscila entre 0 y 1, es una cantidad adimensional.
+
+- Cuando el ajuste es bueno $R^2$ será cercano a 1, cuando el ajuste es malo $R^2$ será cercano a 0.
+
+- En la Regresión lineal simple el coeficiente de determinación ($R^2$) es igual al $r$ de Pearson elevado al cuadrado.
+
+
+Para visualizar simulaciones al respecto pueden visitar [Viendo la teoría. Una
+introducción visual a probabilidad y estadística](https://seeing-theory.brown.edu/regression-analysis/es.html#section1)
 
 ## Ejemplo práctico en lenguaje R
 
@@ -759,14 +814,11 @@ library(nortest)
 
 lillie.test(cardio$cardiopatias)
 
-lillie.test(cardio$ciclistas)
-
 DataExplorer::plot_qq(data = cardio$cardiopatias)
 
-DataExplorer::plot_qq(data = cardio$ciclistas)
 ```
 
-Tanto el test de hipótesis como los gráficos de cuantiles nos informan que las distribuciones de las variables cumplen con el criterio de "normalidad".
+Tanto el test de hipótesis como los gráficos de cuantiles nos informan que las distribuciones de la variable dependiente cumple con el criterio de "normalidad".
 
 ### Modelo lineal simple
 
@@ -947,7 +999,7 @@ cardio %>%
 
 ### Residuos
 
-El residuo de una estimación se define como la diferencia entre el valor observado y el valor esperado acorde al modelo.
+El residuo de una estimación se define como la diferencia entre el valor observado y el valor calculado por el modelo de regresión.
 
 A la hora de resumir el conjunto de residuos hay dos posibilidades:
 
@@ -1125,55 +1177,29 @@ Se cumplieron todos los presupuestos necesarios para validar la regresión y no 
 
 ## Bibliografía
 
-Rodriguez M, Mendivelso F. Diseño de investigación de corte transversal.
-Rev.Medica.Sanitas 21 (3): 141-146, 2018
+Daniel W. Bioestadística: Base para el análisis de las ciencias de la salud. 4° Edición. Ed. Limusa Wiley, 2002.
 
-Epidemiología. Diseño y análisis de estudios. Mauricio Hernández Ávila.
-2007, Editorial Médica Panamericana
+Ballester F. y Tenías Burrillo J. M. Estudios ecológicos. Quaderns de Salut Pública i Administració de Serveis de Salut 20. Valencia: Escola Valenciana d´Estudis per a la Salut, 2003.
 
-Muestreo y tamaño de muestra. Una guía práctica para personal de salud
-que realiza investigación. Víctor Manuel Velasco R. (ed.), Verónica
-Araceli Martínez O., José Roiz Hernández,Francisco Huazano G., Armando
-Nieves R. 2003
+Epidemiología. Diseño y análisis de estudios. Mauricio Hernández Ávila. 2007, Editorial Médica Panamericana
 
-Ríus Díaz F, Barón Lopez F., Sánchez Font E; Parras Guijosa L.
-Bioestadística: Métodos y aplicaciones. Editorial: Universidad de
-Málaga. Publicaciones
-
-Daniel W. Bioestadística: Base para el análisis de las ciencias de la
-salud. 4° Edición. Ed. Limusa Wiley, 2002.
-
-Álvarez Cáceres R. Estadística aplicada a las ciencias de la salud.
-Ediciones Díaz de Santos. Madrid. 2007
+Escuela Nacional de Sanidad (ENS). Instituto de Salud Carlos III. Ministerio de Ciencia e Innovación. Manual Docente de la Escuela Nacional de Sanidad .Método epidemiológico. 2009, Madrid.
 
 Triola, M. Estadística. 10° Edición. Pearson Educación. México. 2009.
 
-Norman G y Streiner D. Bioestadística. Mosby/Doyma Libros. Madrid.1996.
+Simon J. Sheather, A Modern Approach to Regression with R. Department of Statistics, College Station, TX, USA, Springer Science+Business Media, LLC, 2009
 
-Glantz S. Bioestadística. 6° Edición. McGraw Hill. México, 2006.
-
-Epidat: Material de ayuda programa para análisis epidemiológico de
-datos. Versión 4.2, julio 2016. Consellería de Sanidade, Xunta de
-Galicia, España; Organización Panamericana de la salud (OPS-OMS);
-Universidad CES, Colombia.
+Sanford Weisberg, Applied Linear Regression. School of Statistics, University of Minnesota. John Wiley & Sons, Inc, 2005
 
 R Core Team (2021). R: A language and environment for statistical
 computing. R Foundation for Statistical Computing, Vienna, Austria. URL
 <https://www.R-project.org/>.
 
-Juliane Manitz, contributions by Mark Hempelmann, Goeran Kauermann,
-Helmut Kuechenhoff, Shuai Shao, Cornelia Oberhauser, Nina Westerheide
-and Manuel Wiesenfarth (2017). samplingbook: Survey Sampling Procedures.
-R package version 1.2.2.
-<https://CRAN.R-project.org/package=samplingbook>
+Juergen Gross and Uwe Ligges (2015). nortest: Tests for Normality. R package
+version 1.0-4. https://CRAN.R-project.org/package=nortest
 
-Greg Snow (2020). TeachingDemos: Demonstrations for Teaching and
-Learning. R package version 2.12.
-<https://CRAN.R-project.org/package=TeachingDemos>
+Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software,
+4(43), 1686, https://doi.org/10.21105/joss.01686
 
-Boxuan Cui (2020). DataExplorer: Automate Data Exploration and
-Treatment. R package version 0.8.2.
-<https://CRAN.R-project.org/package=DataExplorer>
+Achim Zeileis, Torsten Hothorn (2002). Diagnostic Checking in Regression Relationships. R News 2(3), 7-10. URL https://CRAN.R-project.org/doc/Rnews/
 
-Stephane Champely (2020). pwr: Basic Functions for Power Analysis. R
-package version 1.3-0. <https://CRAN.R-project.org/package=pwr>
