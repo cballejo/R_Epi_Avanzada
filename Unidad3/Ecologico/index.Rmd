@@ -40,7 +40,7 @@ Jara" - ANLIS***
 <a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Unidad3/Ecologico/">Estudios
 ecológicos</a> by
 <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://www.ine.gov.ar">Andrea
-Silva</a> is licensed under
+Silva y Christian Ballejo</a> is licensed under
 <a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC
 BY-NC
 4.0<img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/></a>
@@ -625,22 +625,22 @@ Otra fórmula para $\beta_1$:
 
 $$\hat{\beta}_1 = \frac{\sum x_iy_i-\frac{\sum x_i \sum y_i}{n}}{\sum x_i^2 - \frac{(\sum x_i)^2}{n}} $$
 $$\hat{\beta}_0 = \bar{y} - \beta_1\bar{x}  $$
-El método de los mínimos cuadrados fue creado por *Johann Carl Friedrich Gauss* (1777-1855). Tiene además la ventaja de que el promedio de los errores residuales = 0 y que para cada estimación, la varianza del error es mínima. 
+El método de los mínimos cuadrados fue creado por *Johann Carl Friedrich Gauss* (1777-1855). Tiene además la ventaja que el promedio de los errores residuales = 0 y que para cada estimación, la varianza del error es mínima. 
 
 **Test de hipótesis para $\beta_1$ e Intervalo de Confianza 95%**
 
 Como siempre que trabajamos con una muestra, será necesario aplicar los procesos de inferencia. Es por eso que los softwares ofrecen un test de hipótesis para el coeficiente.
 
-La hipótesis nula  podría entenderse como que x no logra explicar la variación de y (entonces la pendiente de la recta sería nula)
+La hipótesis nula  podría entenderse como que $x$ no logra explicar la variación de $y$ (entonces la pendiente de la recta sería nula)
 
 $$H_0: \beta_1 = 0 $$
 Al calcular el modelo de regresión, todos los softwares estiman el coeficiente y el error estándar del mismo (se) y testean el coeficiente.
 
 **Bondad de ajuste** 
 
-Hasta ahora hemos aprendido a explicar la variación de y según la variación de x mediante un modelo en donde las desviaciones entre el valor observado (“real”) y el estimado (“modelo de regresión”) son las menores posibles. 
+Hasta ahora hemos aprendido a explicar la variación de $y$ según la variación de $x$ mediante un modelo en donde las desviaciones entre el valor observado (“real”) y el estimado (“modelo de regresión”) son las menores posibles. 
 
-Ahora debemos saber, según los datos que tenemos, cuán bueno es el modelo que ajustamos (qué capacidad tiene de explicar la variabilidad de y o, si lo quiero utilizar para realizar una predicción, cuánto se alejará mi valor estimado del verdadero, “real” valor de y). Esta evaluación la realizaremos mediante la descomposición de la varianza del modelo. Por definición la varianza o variabilidad total es la sumatoria de la diferencia entre cada valor de y con el promedio de y  (elevado al cuadrado ya que hay valores negativos y positivos que si los sumamos se anularían).
+Ahora debemos saber, según los datos que tenemos, cuán bueno es el modelo que ajustamos (qué capacidad tiene de explicar la variabilidad de $y$ o, si lo quiero utilizar para realizar una predicción, cuánto se alejará mi valor estimado del verdadero, “real” valor de $y$). Esta evaluación la realizaremos mediante la descomposición de la varianza del modelo. Por definición la varianza o variabilidad total es la sumatoria de la diferencia entre cada valor de $y$ con el promedio de $y$  (elevado al cuadrado ya que hay valores negativos y positivos que si los sumamos se anularían).
 
 La variabilidad total del modelo es la suma entre la variabilidad que logró explicar la regresión y la variabilidad residual.
 
@@ -1181,9 +1181,9 @@ Daniel W. Bioestadística: Base para el análisis de las ciencias de la salud. 4
 
 Ballester F. y Tenías Burrillo J. M. Estudios ecológicos. Quaderns de Salut Pública i Administració de Serveis de Salut 20. Valencia: Escola Valenciana d´Estudis per a la Salut, 2003.
 
-Epidemiología. Diseño y análisis de estudios. Mauricio Hernández Ávila. 2007, Editorial Médica Panamericana
+Epidemiología. Diseño y análisis de estudios. Mauricio Hernández Ávila. Editorial Médica Panamericana, 2007.
 
-Escuela Nacional de Sanidad (ENS). Instituto de Salud Carlos III. Ministerio de Ciencia e Innovación. Manual Docente de la Escuela Nacional de Sanidad .Método epidemiológico. 2009, Madrid.
+Escuela Nacional de Sanidad (ENS). Instituto de Salud Carlos III. Ministerio de Ciencia e Innovación. Manual Docente de la Escuela Nacional de Sanidad .Método epidemiológico. Madrid, 2009.
 
 Triola, M. Estadística. 10° Edición. Pearson Educación. México. 2009.
 
@@ -1191,15 +1191,14 @@ Simon J. Sheather, A Modern Approach to Regression with R. Department of Statist
 
 Sanford Weisberg, Applied Linear Regression. School of Statistics, University of Minnesota. John Wiley & Sons, Inc, 2005
 
-R Core Team (2021). R: A language and environment for statistical
-computing. R Foundation for Statistical Computing, Vienna, Austria. URL
+R Core Team. R: A language and environment for statistical
+computing. R Foundation for Statistical Computing, Vienna, Austria, 2021. URL
 <https://www.R-project.org/>.
 
-Juergen Gross and Uwe Ligges (2015). nortest: Tests for Normality. R package
-version 1.0-4. https://CRAN.R-project.org/package=nortest
+Juergen Gross and Uwe Ligges. nortest: Tests for Normality. R package
+version 1.0-4. 2015 https://CRAN.R-project.org/package=nortest
 
-Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software,
-4(43), 1686, https://doi.org/10.21105/joss.01686
+Wickham et al. Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, Año 2019 https://doi.org/10.21105/joss.01686
 
-Achim Zeileis, Torsten Hothorn (2002). Diagnostic Checking in Regression Relationships. R News 2(3), 7-10. URL https://CRAN.R-project.org/doc/Rnews/
+Achim Zeileis, Torsten Hothorn. Diagnostic Checking in Regression Relationships. R News 2(3), 7-10. Año 2002. URL https://CRAN.R-project.org/doc/Rnews/
 
