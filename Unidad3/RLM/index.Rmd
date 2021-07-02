@@ -1,0 +1,256 @@
+---
+title: "**Regresión Lineal Múltiple**"
+author: ""
+date: ""
+output:
+  html_document:
+    css: style.css
+    toc: true
+    toc_float: true
+    toc_collapsed: false
+    toc_depth: 4
+number_sections: true
+anchor_sections: true
+theme: lumen
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r, message=FALSE, echo=F}
+knitr::opts_chunk$set(comment=NA, dpi = 300)
+```
+
+<br>
+
+<center>
+
+*Este material es parte de la* ***Unidad 3 del Curso de Epidemiología -
+Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H.
+Jara" - ANLIS***
+
+</center>
+
+<br>
+
+<center>
+
+<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/">
+
+<a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Unidad3/RLM/">Regresión Lineal Múltiple</a> by
+<a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://www.ine.gov.ar">Andrea
+Silva</a> is licensed under
+<a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC
+BY-NC
+4.0<img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/></a>
+
+</p>
+
+</center>
+
+<br>
+
+## Introducción
+
+Los modelos de Regresión Lineal Múltiple (RLM) son típicamente empleados cuando la variable respuesta (o dependiente) es continua. Las variables independientes (variables explicativas o co variables) pueden ser tanto continuas como categóricas. A su vez las variables categóricas pueden ser dicotómicas, ordinales o tener múltiples niveles, siendo tratadas, en esta situación, como variables *dummy* (según veremos más adelante).
+
+Así como la RLS nos permite estimar el efecto bruto de una variable independiente sobre una variable respuesta, la RLM nos permite conocer el efecto conjunto de 2 o más variables independientes ($X_1$, $X_2$,...$X_k$) sobre la variable respuesta ($Y$). De esta manera podemos decir que la RLM nos permite:
+
+
+- Analizar  la dirección y fuerza de la asociación entre la variable dependiente y las variables independientes.
+
+- Determinar cuáles variables independientes son importantes en la **PREDICCIÓN / EXPLICACIÓN**  de la variable dependiente
+
+- Describir la relación entre una o más variables independientes  controlando por el efecto de las otras variables independientes $\rightarrow$ evaluamos **CONFUSIÓN**
+
+- Identificar si la relación de la variable respuesta y una variable independiente cambia de acuerdo al nivel de otra variable independiente $\rightarrow$ evaluamos **INTERACCION**
+
+El modelo estadístico de la RLS que expresa la relación entre $X$ e $Y$ es:
+
+$$Y = \beta_0 + \beta_1X_1  $$
+
+La representación gráfica de dicha relación es una recta de ajuste que se realiza en un plano (2 dimensiones).
+
+El modelo estadístico de la RLM es:
+
+::: {.b--gray .ba .bw2 .ma2 .pa4 .shadow-1}
+
+$$Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + ...+\beta_kX_k  $$
+
+:::
+
+Donde $\beta_0$, $\beta_1$, $\beta_2$,...,$\beta_k$ son los parámetros de la regresión. Para cada combinación de valores de $X_1$, $X_2$,...$X_k$ existe una distribución $Y$ cuya **media** es una función lineal de $X_1$, $X_2$,..., $X_k$.
+
+
+```{r,echo=F,  fig.align='center', out.width = "60%"}
+knitr::include_graphics("captura1.PNG")
+```
+
+La representación gráfica de la recta de ajuste se realiza en el espacio de dimensión $K + 1$ ($K$ es el número de variables). Recordamos que en el caso de la RLS, podíamos representarla en un plano (2 dimensiones), en el caso de la RLM, se nos dificulta la representación espacial si el modelo tuviera más de 2 variables.
+
+En el caso puntual que el modelo tuviera 2 variables independientes, la ecuación sería: $Y = \beta_0 + \beta_1X_1 + \beta_2X_2$
+
+Y podríamos representarlo:
+
+```{r,echo=F,  fig.align='center', out.width = "60%"}
+knitr::include_graphics("captura2.PNG")
+```
+
+En forma similar a la RLS, la interpretación de cada parámetro$\beta$ de la regresión es:
+
+- $\beta_0$: es el valor esperado de $Y$ cuando todas las otras variables son iguales a cero.
+
+-	$\beta_1$ es la pendiente a lo largo del eje $X_1$ y representa el cambio esperado en la respuesta por unidad de cambio en $X_1$ a valores constantes de $X_2$.
+
+-	$\beta_2$ es la pendiente a lo largo del eje $X_2$ y representa el cambio esperado en la respuesta por unidad de cambio en $X_2$ a valores constantes de $X_1$.
+
+### Presupuestos del modelo de RLM
+
+**1. Independencia**: las observaciones $Y_i$ son independientes unas de otras: el efecto de $X_1$ sobre la respuesta media no depende de $X_2$ y viceversa, siempre y cuando no exista interacción. Cuando existe interacción entre $X_1$ e $X_2$ , el efecto de $X_1$ sobre la respuesta media de $Y$ depende $X_2$ y viceversa ($X_1$ e $X_2$  no son independientes cuando existe interacción).
+
+**2. Linealidad**: para cada combinación de valores de las variables independientes ($X_1$, $X_2$,..., $X_k$) el valor medio de $Y$ es función lineal de $X_1$, $X_2$,...,$X_k$.. La linealidad se define en relación a los coeficientes de la regresión, por lo tanto el modelo puede incluir términos cuadráticos e interacciones
+
+$Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \beta_3X_1X_2\rightarrow$ modelo con interacción
+
+$Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \beta_3X_1^2 + \beta_4X_2^2\rightarrow$ modelo con términos cuadráticos
+
+**3. Homocedasticidad**: la varianza de $Y$ para los distintos valores de $X_1$, $X_2$,...,$X_k$ se mantiene constante
+
+**4. Normalidad**: Los valores de $Y$ tienen una distribución normal según los valores de  $X_1$, $X_2$, $X_k\rightarrow$ ésto nos permite realizar inferencias en relación a los parámetros del modelo.
+
+
+Al igual que en la RLS la estimación de los parámetros de la regresión (coeficientes) se realiza mediante el **Método de los Mínimos Cuadrados** (MMC).
+
+El MMC consiste en adoptar como estimativas de los parámetros de la regresión los valores que minimicen la suma de los cuadrados de los residuos
+
+$$\sum_{i=1}^{i=n}e_1^2=\sum_{i=1}^{i=n}(Y_i-\hat{Y_i})^2=\sum_{i=n}^{i=n}(Y_i-(\hat{\beta}_0+\hat{\beta}_1X_1+\dots+\hat{\beta}_kX_k))^2 $$
+
+Comenzaremos aprendiendo a interpretar un modelo de RLM, para luego aprender a construirlos. Para ello, observemos detalladamente el resultado de un modelo de RLM en R, donde modelamos la V23, en función de las variables V10, V11, V12, V14, V15, V17, V18 y V24.
+
+```{r,echo=F,  fig.align='center', out.width = "100%"}
+knitr::include_graphics("captura3.PNG")
+```
+
+
+La primera columna muestra los coeficientes estimados por el modelo de RLM, la segunda el error estándar de cada coeficiente, las siguientes columnas muestran el estadístico $F$ parcial y su $p$ valor. 
+
+En el párrafo final  encontramos: el error estándar de los residuos, el $R_2$ múltiple y el ajustado, y el estadístico de un test $F$ global con su $p$ valor. Profundicemos ahora en lo que significa cada uno de estos puntos.
+
+**Test F parcial**
+
+Como estamos sacando conclusiones partiendo de una muestra, es obvio que distintas muestras van a dar distintos valores de los parámetros. Es por eso que el test $F$ parcial, testea la siguiente afirmación o hipótesis:
+
+$H_0=\beta_1=\beta_2=\dots\beta_n=0 $
+
+$H_1=\exists\beta_i\neq0$ (existe al menos un coeficiente $\neq$ 0)
+
+De alguna forma, evalúa la contribución de cada variable al modelo. Nos dice si la inclusión de esa variable es útil para explicar significativamente la variabilidad observada en $Y$.  En los modelos lineales generalizados (MLG), el *test de Wald* testea esta $H_0$. Para RLM, el test $F$ parcial es idéntico a Wald.
+
+**Varianza residual**
+
+Como vimos en ANOVA y al igual que en el caso de regresión lineal simple, vamos a descomponer la variabilidad de la variable dependiente Y en dos componentes o fuentes de variabilidad: un componente va a representar la variabilidad explicada por el modelo de regresión y el otro componente va a representar la variabilidad no explicada por el modelo y, por tanto, atribuida a factores aleatorios.
+
+Variabilidad total = Variabilidad Regresión + Variabilidad residual 
+
+Suma de cuadrados totales (SCT) = Suma de cuadrados de la regresión (SCR) + Suma de cuadrados Residuales (SCE)
+
+$$\sum (y_i-\bar{y})^2 = \sum (\hat{y}-\bar{y})^2 + \sum (y_i -\hat{y}_i)^2 $$
+
+$$\frac{Suma \; de \; cuadrados}{totales \; (SCT)} \; \frac{Suma \; de \; cuadrados}{de \; la \; regresion \; (SCR)} \; \frac{Suma \; de \; cuadrados}{residuales \; (SCE)}$$
+Recordemos que cada uno de estos términos, se divide por sus grados de libertad para obtener los cuadrados medios correspondientes (CMT/CMR/CME)
+
+
+<center><style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+.tg .tg-amwm{font-weight:bold;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-0lax">   </th>
+    <th class="tg-amwm">  Grados de libertad   </th>
+    <th class="tg-amwm">   CM </th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-amwm">  SCT   </td>
+    <td class="tg-0lax">n-1   <br></td>
+    <td class="tg-0lax">CMT=SCT/n-1   </td>
+  </tr>
+  <tr>
+    <td class="tg-amwm">SCR   </td>
+    <td class="tg-0lax">k-1   </td>
+    <td class="tg-0lax">CMR=SCR/k-1   </td>
+  </tr>
+  <tr>
+    <td class="tg-amwm">SCE   </td>
+    <td class="tg-0lax">n-k-1   </td>
+    <td class="tg-0lax">CME= SCE/n-k-1   </td>
+  </tr>
+</tbody>
+</table></center>
+
+**Test F global**
+
+Compara el modelo de regresión con el modelo nulo. Evalúa el efecto conjunto de las variables independientes incluidas en el modelo ajustado.
+
+$F = CMR/CME \; \; \; \;gl= (k-1, n-k-1)$
+
+### Coeficiente de determinación
+
+Al igual de lo que aprendimos en la RLS la bondad de ajuste del modelo de RLM se valora con el coeficiente de determinación ($R^2$), que nos dice qué proporción de la variabilidad de $Y$ es explicada por los coeficientes de la regresión del modelo en estudio. El $R^2$ es útil para comparar entre modelos
+
+$$R^2 = \frac{SCT-SCE}{SCT}=\frac{SCR}{SCT}$$
+Sin embargo, en el caso de la RLM, en donde deseamos incluir en el modelo más de una variable independiente, el $R^2$ siempre va a mejorar al agregar una nueva variable, aunque su inclusión no mejore sustancialmente el modelo. El $R^2$ ajustado o corregido por los grados de libertad valora la mejoría en explicar la variabilidad a pesar de haber incorporado más 
+
+$$R^2_a = 1 - \bigg [ \frac{n-1}{n-(k+1)}\bigg]\frac{SCE}{SCT}=1-\bigg[\frac{n-1}{n-(k+1)}\bigg](1-R^2) $$
+
+El $R^2$ más grande se obtiene por el simple hecho de incluir todas las variables disponibles, pero la mejor ecuación de regresión múltiple no necesariamente utiliza todas las variables. A causa de esta desventaja, la comparación de diferentes ecuaciones de regresión múltiple se logra mejor con el coeficiente ajustado de determinación, que es $R^2$ ajustado para el número de variables y el tamaño de la muestra.
+
+
+::: {.b--gray .ba .bw2 .ma2 .pa4 .shadow-1}
+
+Cuando tenemos que elegir el mejor modelo será necesario utilizar distintos criterios para compararlos y basar nuestra decisión en elegir el modelo que mejor explique la variación de $Y$ con el menor número de variables independientes, el modelo más simple y efectivo $\rightarrow$ también llamado el modelo más parsimonioso.
+
+:::
+
+
+
+
+
+
+
+
+## Bibliografía
+
+Daniel W. Bioestadística: Base para el análisis de las ciencias de la salud. 4° Edición. Ed. Limusa Wiley, 2002.
+
+Ballester F. y Tenías Burrillo J. M. Estudios ecológicos. Quaderns de Salut Pública i Administració de Serveis de Salut 20. Valencia: Escola Valenciana d´Estudis per a la Salut, 2003.
+
+Epidemiología. Diseño y análisis de estudios. Mauricio Hernández Ávila. Editorial Médica Panamericana, 2007.
+
+Escuela Nacional de Sanidad (ENS). Instituto de Salud Carlos III. Ministerio de Ciencia e Innovación. Manual Docente de la Escuela Nacional de Sanidad .Método epidemiológico. Madrid, 2009.
+
+Triola, M. Estadística. 10° Edición. Pearson Educación. México. 2009.
+
+Simon J. Sheather, A Modern Approach to Regression with R. Department of Statistics, College Station, TX, USA, Springer Science+Business Media, LLC, 2009
+
+Sanford Weisberg, Applied Linear Regression. School of Statistics, University of Minnesota. John Wiley & Sons, Inc, 2005
+
+R Core Team. R: A language and environment for statistical
+computing. R Foundation for Statistical Computing, Vienna, Austria, 2021. URL
+<https://www.R-project.org/>.
+
+Juergen Gross and Uwe Ligges. nortest: Tests for Normality. R package
+version 1.0-4. 2015 https://CRAN.R-project.org/package=nortest
+
+Wickham et al. Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, Año 2019 https://doi.org/10.21105/joss.01686
+
+Achim Zeileis, Torsten Hothorn. Diagnostic Checking in Regression Relationships. R News 2(3), 7-10. Año 2002. URL https://CRAN.R-project.org/doc/Rnews/
+
