@@ -224,7 +224,306 @@ Cuando tenemos que elegir el mejor modelo será necesario utilizar distintos cri
 
 
 
+## Ejemplo práctico en lenguaje R
 
+En el documento incial de Estudios ecológicos vimos como generar en R una fórmula para la regresión lineal simple:
+
+$$lm \;(variable\_dependiente \; \sim variable\_independiente)$$
+
+Para generar fórmulas que contengan más de una variable independiente o predictora (necesario para que sea una regresión lineal múltiple) debemos agregarlas mediante el símbolo __+__
+
+$$lm \;(variable\_dependiente \; \sim variable\_indepen1 \; + \; variable\_indepen2 \; + \; \dots \; + \; variable\_idepen\_n)$$
+
+Si luego de la ~ incluímos **un punto** como notación de "todas", estamos creando un *modelo saturado* con todas las variables incluidas dentro del dataframe.
+
+$$lm \;(variable\_dependiente \; \sim \;. \;, \; data)$$
+
+Esto es útil cuando tenemos muchas posibles variables explicativas y queremos conocer cuáles tienen una correlación significativa.
+
+También se puede descartar alguna o algunas variables explicativas en particular basado en la misma estructura, mediante el símbolo __-__
+
+$$lm \;(variable\_dependiente \; \sim \;. \;  -variable\_indepen\_x, \; data)$$
+
+En la línea anterior, incluimos dentro del modelo a todas las variables de **data** menos **variable_indepen_x**.
+
+A continuación mostraremos un ejemplo en lenguaje R a partir del dataset ficticio utilizado anteriormente llamado **cardio**.
+
+El conjunto de datos contiene datos agregados sobre el porcentaje de
+personas que van en bicicleta al trabajo cada día, porcentaje de fumadores y porcentaje de personas con cardiopatías en una muestra imaginaria de 498 ciudades de un país determinado.
+
+Los pasos que trataremos, luego de leer la tabla de datos, son:
+
+1. Análisis de variables potencialmente explicativas
+2. Estrategia de construcción del modelo
+3. Comparación de modelos
+4. Colinealidad
+5. Diagnóstico del modelo (análisis de residuos)
+6. Resumen del mejor modelo elegido
+
+### Lectura de datos y visualización de estructura
+
+Leemos los datos guardados en `cardiopatias.csv`:
+
+```{r, message=F, warning=F}
+library(tidyverse) # activamos paquete tidyverse
+
+cardio <- read_csv("cardiopatias.csv")
+```
+
+Vemos su estructura:
+
+```{r}
+glimpse(cardio)
+```
+La tabla de datos contiene 4 variables (una de ellas ID_ciudad no analizable) y 498 observaciones.
+
+### Análisis de variables potencialmente explicativas
+
+En este pequeño ejemplo sólo tenemos dos variables potencialmente explicativas (ciclistas y fumadores). 
+
+Analizaremos si hay relación entre ellas, y entre cada una y la variable dependiente mediante una matriz de correlación.
+
+Existen muchas funciones para llevar a cabo esta tarea en R. Dado que mostramos previamente la función `cor()` y `cor.test()` de R base, en esta oportunidad presentaremos otras funciones más elaboradas pertenecientes al paquete **dlookr**.
+
+```{r, message=F, warning=F, fig.align='center', out.width = "60%"}
+library(dlookr)
+
+correlate(cardio[-1]) %>% 
+  arrange(desc(abs(coef_corr)))
+
+plot_correlate(cardio, -ID_ciudad)
+```
+En los argumentos de las funciones omitimos la variable ID_ciudad y dejamos todas las otras. Encontramos de forma analítica y gráfica que existe una alta correlación inversa entre cardiopatías y ciclistas (-0,93), una baja relación directa entre cardiopatías y fumadores (0,31) y una correlación inexistente entre ciclistas y fumadores (0,01).
+
+Otra función interesante es `ggcorrmat()` del paquete **ggstatsplot** (que debemos tener instalado previamente).
+
+
+```{r, message=F, warning=F, fig.align='center', out.width = "60%"}
+library(ggstatsplot)
+
+ggcorrmat(cardio)
+```
+
+Además del coeficiente de correlación de Pearson y los colores con sus intensidades agrega de modo directo la significación (valores tachados por una X no son significativos).
+
+### Estrategia de construcción del modelo
+
+A la hora de seleccionar las variables independientes que deben formar parte del modelo se pueden seguir varios métodos:
+
+__Método jerárquico (forward)__: se basa en el criterio del investigador que introduce predictores determinados en un orden específico en relación al marco teórico. Es una estrategia forward manual, dado que se comienza con un modelo mínimo o nulo y se van incorporando variables.
+
+__Método de entrada forzada (backward)__: es el método inverso al anterior. Se introducen todos los predictores simultáneamente y luego se van quitando los que no son significativos. Es una estrategia backward manual.
+
+__Método paso a paso (stepwise)__: emplea criterios matemáticos para decidir qué predictores contribuyen significativamente al modelo y en qué orden se introducen.
+
+Un índice común utilizado en lenguaje R es Akaike Information Criterion (AIC) que ajusta mediante *máxima verosimilitud* (función `AIC()`). El algoritmo AIC busca el modelo equilibrado que describa adecuadamente la relación y tenga el mínimo AIC (es decir, cuanto más pequeño es el índice mejor es el modelo).
+
+Dentro de este método automático se diferencian tres estrategias:
+
+__Dirección forward__: El modelo inicial no contiene ningún predictor, solo el intercepto ($\beta_0$). A partir de este se generan todos los posibles modelos introduciendo una sola variable de entre las disponibles. Aquella variable que mejore en mayor medida el modelo se selecciona. A continuación se intenta incrementar el modelo probando a introducir una a una las variables restantes. Si introduciendo alguna de ellas mejora, también se selecciona. En el caso de que varias lo hagan, se selecciona la que incremente en mayor medida la capacidad del modelo. Este proceso se repite hasta llegar al punto en el que ninguna de las variables que quedan por incorporar mejore el modelo.
+
+__Dirección backward__: El modelo se inicia "saturado", es decir con todas las variables disponibles incluidas como predictores. Se prueba a eliminar una a una cada variable, si se mejora el modelo, queda excluida. Este método permite evaluar cada variable en presencia de las otras.
+
+__Doble o mixto__: Se trata de una combinación de la selección forward y backward. Se inicia igual que el forward pero tras cada nueva incorporación se realiza un test de extracción de predictores no útiles como en el backward. Presenta la ventaja de que si a medida que se añaden predictores, alguno de los ya presentes deja de contribuir al modelo, se elimina.
+
+La función `step()` en R base permite encontrar el mejor modelo basado en AIC utilizando cualquiera de las 3 variantes automáticas del método paso a paso. 
+
+Siempre es oportuno aclarar que estos últimos métodos se basan en cálculos matemático/estadísticos que no tienen en cuenta criterios conceptuales epidemiológicos que surjan del marco teórico, por lo que exigen un control especial del analista.
+
+Como siempre el lenguaje R ofrece una variedad de funciones (algunas base y otras provenientes de paquetes adicionales) para abordar y facilitar la tarea de seleccionar el mejor modelo de regresión (aquel que mejor explique la relación entre variables y que a la vez sea el más simple - principio de parsimonia).
+
+El índice de bondad de ajuste utilizado para compararlos, además del AIC, es el   $R^2 \; ajustado$.
+
+Como consecuencia de tener solo dos variables independientes posibles y a modo didáctico, vamos a crear tres objetos de regresión, dos de ellos regresiones lineales simples y uno de regresión lineal múltiple:
+
+```{r}
+mod_simple1 <- lm(cardiopatias ~ ciclistas, data = cardio)
+
+mod_simple2 <- lm(cardiopatias ~ fumadores, data = cardio)
+
+mod_multiple <- lm(cardiopatias ~ ciclistas + fumadores, data = cardio)
+```
+
+Mediante `summary()` observamos sus resultados:
+
+```{r}
+summary(mod_simple1)
+summary(mod_simple2)
+summary(mod_multiple)
+```
+En los resúmenes observamos que todos los coeficientes de las variables involucradas son significativas y que los valores mostrados tienen forma de lista, es decir no son tablas "ordenadas" por lo que muchas veces, sobretodo cuando trabajamos con numerosas variables, se hace difícil la comparación de resultados.
+
+### Comparación de modelos
+
+Algunas funciones vienen a aportar una solución sencilla para la comparación de modelos. Es el caso de `compare_models()` del paquete **paremeters** y `compare_performance()` del paquete **performance**.
+
+```{r, message=F, warning=F}
+library(parameters)
+
+compare_models(mod_simple1, mod_simple2, mod_multiple)
+```
+Se muestran para cada modelo, los coeficientes y sus IC.
+
+
+```{r, message=F, warning=F}
+library(performance)
+
+compare_performance(mod_simple1, mod_simple2, mod_multiple, 
+                    metrics = "common")
+```
+Las métricas comunes extraídas de los objetos de regresión, presentadas en una tabla, son:
+
+- **AIC**: Criterio de información de Akaike
+
+- **BIC**: Criterio de información bayesiano
+
+- **R2**: Coeficiente de determinación $R^2$
+
+- **R2 (adj.)**: Coeficiente de determinación ajustado
+
+- **RMSE**: Error cuadrático medio
+
+En este ejemplo, vemos que el modelo simple de ciclistas es mucho mejor que el modelo simple de fumadores, pero el modelo múltiple que incluye ambas variables tiene aún mejores índices (menor AIC y RMSE y mayor $R^2$ ajustado. 
+
+
+### Colinealidad
+
+Hay varias formas de intuir si hay colinealidad, es decir relación lineal entre nuestras variables independientes. 
+
+La primera es analizar el coeficiente de correlación; si tenemos variables altamente relacionadas es muy probable que el modelo pueda tener colinealidad entre esas variables independientes. 
+
+Otro de los síntomas se produce cuando nuestro modelo tiene un alto coeficiente de correlación ($R^2$) y muchas variables no son significativas. En estos casos también es muy probable la existencia de colinealidad.
+
+Cuando hemos intuido que tenemos multicolinealidad y queremos comprobar, el paquete __car__ nos ofrece una función que implementa el método VIF (variance inflation factor). 
+
+Este factor cuantifica la intensidad de la multicolinealidad en un análisis de regresión normal de mínimos cuadrados y se utiliza así:
+
+
+```{r, message=F, warning=F}
+library(car)
+
+vif(mod_multiple)
+```
+
+Los resultados del ejemplo muestra VIF bajos, cerca del 1 que es el valor más bajo del índice (no hay colinealidad).
+
+El umbral de detección parte de valores 4 o 5, donde debería llamarnos la atención. Un valor 10 o superior indicaría que el modelo de regresión lineal presenta un grado de multicolinealidad preocupante.
+
+### Diagnóstico del modelo (análisis de residuos)
+
+El diagnóstico final del modelo elegido lo debemos realizar con sus residuos.
+
+La forma gráfica habitual es "plotear" el objeto de regresión.
+
+```{r, fig.align='center', out.width = "60%"}
+plot(mod_multiple)
+```
+Por otra parte, también tenemos las funciones de análisis para los supuestos (independencia, linealidad, normalidad, homocedasticidad)
+
+__Independencia con estadístico de Durbin-Watson__
+
+```{r, message=F, warning=F}
+library(lmtest)
+
+dwtest(mod_multiple)
+```
+El valor de p es de 0,1773 por lo que no podemos rechazar la hipótesis nula de inexistencia de autocorrelación (independencia)
+
+
+**Linealidad con estadístico Ramsey's RESET**
+
+```{r, message=F}
+resettest(mod_multiple)
+```
+El p valor es de 0,2372 por lo que no podemos rechazar la hipótesis nula de linealidad.
+
+__Normalidad de los residuos con test de Lilliefors__
+
+```{r, message=F, warning=F}
+library(nortest)
+
+lillie.test(mod_multiple$residuals)
+```
+Los resultados del test nos confirman lo visto en el grafico Q-Q,  el valor p es de 0,2681 y no podemos descartar normalidad de los residuos.
+
+__Homocedasticidad con test de Breush-Pagan__
+
+
+```{r}
+bptest(mod_multiple)
+```
+Cumple con el supuesto de homocedasticidad (valor p al límite mayor a 0,05)
+
+Finalmente presentamos un paquete interesante para validar supuestos de modelos lineales denominado **gvlma**.
+
+Su función, de mismo nombre `gvlma()`, implementa un procedimiento global sobre vector residual estandarizado para probar los cuatro supuestos del modelo lineal. 
+
+Si el procedimiento global indica una violación de al menos uno de los supuestos, los componentes se pueden utilizar para obtener información sobre qué supuestos se han violado.
+
+```{r, message=F, warning=F}
+library(gvlma)
+
+gvlma(mod_multiple)
+```
+
+Todos los resultados son aceptables.
+
+### Resumen del mejor modelo elegido
+
+```{r}
+summary(mod_multiple)
+```
+
+El modelo **mod_multiple** es capaz de explicar el 97,95 % de la variabilidad observada en la proporción de cardiopatías de estas ciudades. $R^2$-Adjustado: 0,9795). El test F global muestra que es significativo (p-value: < 2.2e-16). 
+
+El coeficiente de pendiente de la recta para la proporción de ciclistas fue de -0,20 por lo que la proporción de cardiopatías disminuye un 0,2 % por cada 1 % que sube la proporción de ciclistas manteniendo constante la variable fumadores.
+Por otra parte, fumadores tiene un coeficiente de 0,17, por lo que la proporción de cardiopatías aumenta un 0,17 % por cada 1 % que sube la proporción de fumadores de la ciudad manteniendo constante la variable ciclistas.
+
+Se satisfacen todas las condiciones para la regresión lineal. 
+
+
+## Funciones para modelado automático
+
+El uso de la función `step()` se enmarca en los procedimientos automáticos y puede ser forward, backward o mixto.
+
+La sintaxis básica de la función es:
+
+> step(objeto, direction)
+
+donde:
+
+__objeto__ es el modelo inicial de regresión lineal (nulo o saturado)
+
+__direction__ es la dirección que indicamos. Puede ser "forward", "backward" o "both" (predeterminado, si no se define)  
+
+Generalmente conviene partir del modelo saturado y utilizar la dirección por defecto, donde se usan ambas direcciones.
+
+
+```{r}
+modelo_saturado <- lm(cardiopatias ~ .-ID_ciudad, data = cardio)
+
+modelo_step <- step(modelo_saturado, direction = "both") # el argumento direction se puede omitir
+```
+Observamos que arribamos al mismo resultado con las dos variables, esperable dado la cantidad mínima de variables para la regresión múltiple.
+
+```{r}
+summary(modelo_step)
+```
+
+
+### Inclusión de variables categóricas
+
+Si bien en este ejemplo no tenemos variables categóricas, cuando debemos introducirlas como independientes, una categoría (habitualmente denominado nivel) de la variable se considera el nivel de referencia (normalmente codificado como 0) y el resto de los niveles se comparan con él. 
+
+En el caso que el predictor categórico tenga más de dos niveles, se generan lo que se conoce como variables `dummy`, que son variables creadas para cada uno de los niveles del predictor categórico y que pueden tomar el valor de 0 o 1. 
+
+Cada vez que se emplee el modelo para predecir un valor, solamente una variable *dummy* por predictor adquiere el valor 1 (la que coincida con el valor que adquiere el predictor en ese caso) mientras que el resto se consideran 0. 
+
+El valor del coeficiente parcial de regresión $\beta_i$ de cada variable *dummy* indica la proporción promedio en el que influye dicho nivel sobre la variable dependiente $Y$ en comparación con el nivel de referencia de dicho predictor.
+
+Las consideraciones técnicas dentro de R para que el lenguaje se encargue de construir las variables dummy automáticamente de forma interna es trabajar con **factores**.
+
+Los tipos de datos **factor** tienen una estructura de niveles donde el primero de ellos es el de referencia. Para modificar el nivel de referencia podemos utilizar la función `relevel()` de R base. 
 
 
 ## Bibliografía
@@ -247,6 +546,8 @@ R Core Team. R: A language and environment for statistical
 computing. R Foundation for Statistical Computing, Vienna, Austria, 2021. URL
 <https://www.R-project.org/>.
 
+Choonghyun Ryu. dlookr: Tools for Data Diagnosis, Exploration, Transformation. R package version 0.4.4. 2021. https://CRAN.R-project.org/package=dlookr
+
 Juergen Gross and Uwe Ligges. nortest: Tests for Normality. R package
 version 1.0-4. 2015 https://CRAN.R-project.org/package=nortest
 
@@ -254,3 +555,14 @@ Wickham et al. Welcome to the tidyverse. Journal of Open Source Software, 4(43),
 
 Achim Zeileis, Torsten Hothorn. Diagnostic Checking in Regression Relationships. R News 2(3), 7-10. Año 2002. URL https://CRAN.R-project.org/doc/Rnews/
 
+Patil, I. ggstatsplot: 'ggplot2' Based Plots with Statistical Details., 2018 CRAN. Retrieved from https://cran.r-project.org/web/packages/ggstatsplot/index.html
+
+John Fox and Sanford Weisberg. An {R} Companion to Applied Regression, Third Edition. Thousand Oaks CA: Sage., 2019 URL:   https://socialsciences.mcmaster.ca/jfox/Books/Companion/
+
+Edsel A. Pena and Elizabeth H. Slate. gvlma: Global Validation of
+Linear Models Assumptions. R package version 1.0.0.3., 2019 https://CRAN.R-project.org/package=gvlma
+
+Lüdecke D, Ben-Shachar M, Patil I, Makowski D. “Extracting, Computing
+and Exploring the Parameters of Statistical Models using R.” _Journal of
+Open Source Software_, *5*(53), 2445., 2020 doi: 10.21105/joss.02445 (URL:
+https://doi.org/10.21105/joss.02445).
