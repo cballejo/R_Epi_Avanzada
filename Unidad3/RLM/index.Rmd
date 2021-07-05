@@ -39,7 +39,7 @@ Jara" - ANLIS***
 
 <a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Unidad3/RLM/">Regresión Lineal Múltiple</a> by
 <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://www.ine.gov.ar">Andrea
-Silva</a> is licensed under
+Silva y Christian Ballejo</a> is licensed under
 <a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC
 BY-NC
 4.0<img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/></a>
@@ -482,7 +482,7 @@ Por otra parte, fumadores tiene un coeficiente de 0,17, por lo que la proporció
 Se satisfacen todas las condiciones para la regresión lineal. 
 
 
-## Funciones para modelado automático
+### Funciones para modelado automático
 
 El uso de la función `step()` se enmarca en los procedimientos automáticos y puede ser forward, backward o mixto.
 
