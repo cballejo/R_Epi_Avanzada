@@ -37,8 +37,7 @@ Jara" - ANLIS_**
 
 <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/">
 
-<a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Unidad3/Ecologico/">Estudios
-ecológicos</a> by
+<a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Unidad4/CyC/">Estudios de casos y controles</a> by
 <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://www.ine.gov.ar">Andrea
 Silva y Christian Ballejo</a> is licensed under
 <a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC
@@ -288,7 +287,7 @@ En resumen, para evaluar un modelo de RLog, deberíamos observar:
 
 :::
 
-## Regresion logistica en el lenguaje R
+## Ejemplo práctico en lenguaje R
 
 La regresión logística es uno de los modelos de la familia de modelos lineales generalizados (GLM de las siglas en inglés de *Generalized Linear Models*). Estos modelos son una extensión de los modelos lineales que permiten utilizar distribuciones no normales de los errores (binomiales, Poisson, gamma, etc) y varianzas no constantes.
 
@@ -597,6 +596,15 @@ AIC(modelo_step) # modelo automático idem mod3.1.1
 ```
 El modelo final tiene el AIC más bajo (505,72).
 
+Al igual que en RLM el paquete perfomance muestra en una tabla la comparación de índices AIC entre otros, para los modelos definidos.
+
+```{r, message=F, warning=F}
+library(performance)
+
+compare_performance(mod3, mod3.1, mod3.1.1, 
+                    metrics = "common")
+```
+
 
 ### Bondad de ajuste 
 
@@ -605,8 +613,6 @@ Mencionamos diversas formas medir la bondad de ajuste de un modelo de regresión
 Respecto a test estadísticos, la prueba de razón de verosimilitud (Likelihood ratio test), recién vista, es una de las que podemos utilizar basado en la deviance.
 
 Recordemos que podemos aplicar la función `lrtest()` del paquete lmtest o bien la función `anova()`.
-
-Hagámoslo con el modelo seleccionado del capítulo anterior.
 
 ```{r}
 lrtest(mod3.1.1) # Likelihood ratio test
@@ -630,7 +636,14 @@ HLtest(mod3.1.1)
 
 El test de bondad de ajuste de Hosmer y Lemeshow nos da un p-valor para el __mod3.1.1__ de 0,22, por lo que concluimos que el modelo ajusta adecuadamente los datos (no hay diferencia significativa entre los datos observados en relación a los esperados).
 
-También podemos graficar una __curva ROC__ que es una herramienta más específica de modelos predictivos para comparar diferentes modelos. La curva ROC se obtiene representando, en un cuadrado de lado 1, los valores de 1‐especificidad en el eje de abscisas frente a la sensibilidad en el de las ordenadas para todos los puntos de corte considerados.
+```{r, echo=F}
+library(equatiomatic)  
+
+extract_eq(mod3.1.1, use_coefs = T, coef_digits = 2)
+```
+
+
+También podemos graficar la __curva ROC__ que es una herramienta más específica de modelos predictivos para comparar diferentes modelos. La curva ROC se obtiene representando, en un cuadrado de lado 1, los valores de 1‐especificidad en el eje de abscisas frente a la sensibilidad en el de las ordenadas para todos los puntos de corte considerados.
 
 Si el modelo tiene capacidad predictiva nula la curva coincide con la diagonal principal del cuadrado, y el área bajo la curva toma su valor mínimo de 0,5. Por el contrario, un modelo perfecto tiene una curva ROC con área 1. Cuanto mayor es el área bajo la curva, más eficiente es el modelo.
 
@@ -702,7 +715,33 @@ Podemos también, incorporar intervalos de confianza de los OR agregando la func
 round(exp(confint(mod3.1.1)),2)
 ```
 
-### Interacción
+Algunos paquetes construyen salidas  formateadas para visualizaciones en tablas. Uno de ellos es **gtsummary** mediante la función `tbl_regression()` 
+
+```{r}
+library(gtsummary)
+
+mod3.1.1 %>%  tbl_regression(exponentiate = T)
+```
+Otros paquetes pueden presentar los resultados del modelo seleccionado mediante gráficos.
+
+Por ejemplo, funciones del paquete parameters y see ofrecen la siguiente salida gráfica:
+
+```{r, message=F, warning=F, out.width="60%", fig.align="center"}
+library(parameters)
+library(see)
+
+plot(model_parameters(mod3.1.1, exponentiate = T), 
+     show_labels =T, 
+     size_text = 4)
+```
+
+
+
+### Análisis de residuos
+
+
+### Multicolinealidad
+
 
 
 
@@ -722,18 +761,48 @@ Escuela Nacional de Sanidad (ENS). Instituto de Salud Carlos III. Ministerio de 
 
 Triola, M. Estadística. 10° Edición. Pearson Educación. México. 2009.
 
-Simon J. Sheather, A Modern Approach to Regression with R. Department of Statistics, College Station, TX, USA, Springer Science+Business Media, LLC, 2009
 
-Sanford Weisberg, Applied Linear Regression. School of Statistics, University of Minnesota. John Wiley & Sons, Inc, 2005
 
 R Core Team. R: A language and environment for statistical
 computing. R Foundation for Statistical Computing, Vienna, Austria, 2021. URL
 <https://www.R-project.org/>.
 
-Juergen Gross and Uwe Ligges. nortest: Tests for Normality. R package
-version 1.0-4. 2015 https://CRAN.R-project.org/package=nortest
-
 Wickham et al. Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, Año 2019 https://doi.org/10.21105/joss.01686
 
 Achim Zeileis, Torsten Hothorn. Diagnostic Checking in Regression Relationships. R News 2(3), 7-10. Año 2002. URL https://CRAN.R-project.org/doc/Rnews/
 
+Lüdecke D, Ben-Shachar M, Patil I, Makowski D (2020). “Extracting,
+Computing and Exploring the Parameters of Statistical Models using R.”
+_Journal of Open Source Software_, *5*(53), 2445. doi: 10.21105/joss.02445
+(URL: https://doi.org/10.21105/joss.02445).
+
+Lüdecke, Patil, Ben-Shachar, Wiernik, Waggoner & Makowski (2020).
+Visualisation Toolbox for 'easystats' and Extra Geoms, Themes and Color
+Palettes for 'ggplot2'. CRAN. Available from
+https://easystats.github.io/see/
+
+Andri Signorell et mult. al. (2021). DescTools: Tools for descriptive
+statistics. R package version 0.99.42.
+
+Achim Zeileis, Torsten Hothorn (2002). Diagnostic Checking in Regression
+Relationships. R News 2(3), 7-10. URL
+https://CRAN.R-project.org/doc/Rnews/
+
+Michael Friendly (2021). vcdExtra: 'vcd' Extensions and Additions. R
+package version 0.7-5. https://CRAN.R-project.org/package=vcdExtra
+
+Xavier Robin, Natacha Turck, Alexandre Hainard, Natalia Tiberti,
+Frédérique Lisacek, Jean-Charles Sanchez and Markus Müller (2011). pROC:
+an open-source package for R and S+ to analyze and compare ROC curves.
+BMC Bioinformatics, 12, p. 77.  DOI: 10.1186/1471-2105-12-77
+<http://www.biomedcentral.com/1471-2105/12/77/>
+
+Daniel D. Sjoberg, Michael Curry, Margie Hannum, Joseph Larmarange,
+Karissa Whiting and Emily C. Zabor (2021). gtsummary: Presentation-Ready
+Data Summary and Analytic Result Tables. R package version 1.4.2.
+https://CRAN.R-project.org/package=gtsummary
+
+Elin Waring, Michael Quinn, Amelia McNamara, Eduardo Arino de la Rubia,
+Hao Zhu and Shannon Ellis (2021). skimr: Compact and Flexible Summaries
+of Data. R package version 2.1.3.
+https://CRAN.R-project.org/package=skimr
