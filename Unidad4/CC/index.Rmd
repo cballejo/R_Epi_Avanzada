@@ -1,0 +1,739 @@
+---
+title: "**Estudios de casos y controles**"
+author: ""
+date: ""
+output:
+  html_document:
+    css: style.css
+    toc: true
+    toc_float: true
+    toc_collapsed: false
+    toc_depth: 4
+number_sections: true
+anchor_sections: true
+theme: lumen
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r, message=FALSE, echo=F}
+knitr::opts_chunk$set(comment=NA, dpi = 300)
+```
+
+<br>
+
+<center>
+
+_Este material es parte de la_ **_Unidad 4 del Curso de Epidemiología -
+Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H.
+Jara" - ANLIS_**
+
+</center>
+
+<br>
+
+<center>
+
+<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/">
+
+<a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Unidad3/Ecologico/">Estudios
+ecológicos</a> by
+<a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://www.ine.gov.ar">Andrea
+Silva y Christian Ballejo</a> is licensed under
+<a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC
+BY-NC
+4.0<img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/></a>
+
+</p>
+
+</center>
+
+<br>
+
+## Introducción
+
+Un estudio de casos y controles (cyc) es un estudio analítico observacional que comienza con la identificación de un grupo de casos (personas que sufren algún evento particular de salud) y un grupo de controles (individuos que no tienen esa condición). Entonces, la frecuencia de la exposición a un factor se mide en los dos grupos y se compara. Básicamente, la hipótesis que subyace en un estudio de cyc es que si la  frecuencia de la exposición es mayor en casos que en controles, la exposición podría ser un factor de riesgo, mientras que si es menor, la exposición podría ser un factor protector. 
+
+Los principales aspectos metodológicos a tener en cuenta para llevar adelante un estudio de casos y controles son: 
+
+- Definición precisa de la variable dependiente.
+- Definición de las variables independientes o de la/las exposición/es de interés. 
+- Fuente y criterios de selección de los casos.
+- Definición, fuente y criterios de selección de los controles.
+- Análisis estadístico
+
+Repasaremos algunos de los ítems vinculados al diseño en sí, para luego adentrarnos en la parte del análisis.
+
+Comenzaremos diciendo que es fundamental tener criterios precisos para la definición de caso. Los criterios pueden estar basados en resultados de pruebas de laboratorio o pueden estar basados en la historia clínica o en encuestas. Algunos autores según la definición de  casos,  diferencian dos tipos importantes de estudios de casos y controles:
+
+**Estudios de casos y controles con casos incidentes**. Los casos del estudio se limitan a los casos nuevos de la enfermedad que aparecen durante el periodo de estudio. 
+
+**Estudios de casos y controles con casos prevalentes**. Los casos son todos aquellos pacientes que tienen la enfermedad en un momento determinado. 
+
+Algunos autores consideran a los estudios de casos y controles como una estrategia metodológica para estudiar una cohorte. Esto nos permite visualizar dos modalidades de selección de casos: 
+
+1) los que semejan las cohortes de densidad de incidencia donde los casos se reclutan a medida que se van presentando (incidentes). Generalmente se utilizan en el contexto de casos incidentes con periodos de exposición o latencia prolongados
+
+2) los que semejan cohortes de incidencia acumulada, donde los casos se seleccionan al final del estudio, establecido previamente el período de seguimiento.
+
+**Selección de los controles** La fuente de los controles quedará definida en la medida en que se definan claramente los criterios de selección de casos, así como la población hipotética de origen. Las principales consideraciones serían:
+
+a)	Los controles deben seleccionarse de la misma base poblacional (de la cohorte hipotética) de donde se originaron los casos. La idea sería que si uno de estos controles desarrollara el evento en cuestión, pasaría a formar parte del grupo de los casos. Esto último implica que los controles estuvieron en riesgo de desarrollar el evento en forma simultánea a los casos.
+b)	Los controles deben seleccionarse independientemente de su condición de expuestos o no expuestos.
+c)	La probabilidad de selección para los controles debe ser proporcional al tiempo que el sujeto estuvo en riesgo de desarrollar el evento o enfermedad en estudio
+d)	Para evitar la confusión, es posible aparear por las variables confusoras en la fase de diseño
+e)	Los procedimientos para medir la exposición, deben ser los mismos,  tanto en casos como en controles
+
+Existen diferentes posibilidades de obtención de controles, como: poblacionales, hospitalarios, de vecindario, controles obtenidos de un registro de mortalidad, etc; dependerá de la fuente de casos. 
+
+**Variantes de los estudios de casos y controles**
+
+En los últimos tiempos, se ha profundizado en los aspectos metodológicos de los estudios de casos y controles; y también se ha clarificado la estrecha relación que existe con los estudios de cohorte, lo que ha permitido el desarrollo de diferentes variantes. Describiremos brevemente algunas de ellas a continuación:
+
+**Estudios caso-cohorte**. En esta variante, la definición de casos y controles se encuentra anidada en una cohorte fija, se utiliza un enfoque de incidencia acumulada.
+
+**Estudios de casos y controles anidado o de grupo de riesgo**. Es similar al anterior, sólo que se trata de una cohorte dinámica, y un enfoque de densidad de incidencia.
+
+**Estudios caso-autocontrol**. Esta variante utiliza al mismo sujeto que se consideró como caso, como su propio control. Este tipo de estrategia se suele utilizar  para exposiciones que son de corta duración y que cambian en el tiempo y con eventos que son fáciles de detectar. 
+
+**Estudios de mortalidad proporcional**. Tanto los casos como los controles se obtienen de los registros de mortalidad poblacionales. Rothman dice que este tipo de controles son  aceptables sólo si la distribución de la exposición entre los grupos es similar a la que presenta la base poblacional. 
+
+**Estudios de caso-caso**. En esta estrategia se compara la historia de exposición en subgrupos de casos. En el caso de enfermedades infecciosas, es posible conformar diversos subgrupos de enfermedad, partiendo de datos de vigilancia epidemiológica.
+
+Quienes desean profundizar estos tópicos sobre el diseño de los CyC, pueden leer el capítulo correspondiente de *“Epidemiología. Diseño y análisis de estudios”* de Mauricio Hernández Ávila. Comenzaremos ahora con la parte de análisis de estos diseños.
+
+**Análisis estadístico**
+
+Primeramente, recordemos que la medida de asociación empleada en CyC es el OR (Odds Ratio). Como ustedes ya habrán estudiado previamente, el análisis de los estudios de casos y controles se basa en los conceptos de odds y odds ratios y se realiza mediante la comparación de casos y controles con respecto a la frecuencia de exposición a través del odds ratio de la exposición, que es el odds de la exposición entre los casos dividido por el odds de la exposición entre los controles.
+
+Ahora, en esta nueva versión multivariada, la metodología más apropiada es la regresión logística en estudios de casos y controles no apareados y regresión logística condicional en estudios de casos y controles apareados.
+
+## La Regresión Logística 
+
+Se utiliza cuando la variable dependiente es dicotómica o binaria (éxito-fracaso; Si-No).Las variables independientes pueden ser de cualquier tipo (dicotómicas, categóricas, o numéricas discretas o continuas). Consideremos un evento de salud que puede ocurrir o no (variable dependiente). Por ejemplo:
+
+- Un paciente hospitalizado muere o no antes del alta. 
+- Un niño nace con o sin una malformación congénita. 
+- Un sujeto operado se infecta o no en el postoperatorio. 
+- Un niño camina/no camina a los 11 meses. 
+- Una droga mejora/no mejora síntomas depresivos
+
+Cuando vimos  Regresión Lineal Múltiple, la variable dependiente era continua y nos era posible modelarla mediante la regresión lineal, siguiendo la ecuación de una recta. Ahora, nuestra variable resultado es dicotómica:
+
+$Y= 1$ $\rightarrow$ si el hecho ocurre;  $Y= 0$ $\rightarrow$ si el hecho no ocurre.
+
+La aproximación lineal, no parece representar adecuadamente variables que sigan este tipo de distribución:
+
+```{r,echo=F,  fig.align='center', out.width = "60%"}
+knitr::include_graphics("grafico1.PNG")
+```
+
+Matemáticamente, hay otra función que puede representar mejor esta situación, que es la exponencial:
+
+```{r,echo=F,  fig.align='center', out.width = "60%"}
+knitr::include_graphics("grafico2.png")
+```
+
+En vez de la ecuación de la recta, ahora tenemos otra ecuación que expresa la variable resultado ($Y$) en función de la/las variables independientes, en realidad expresa la probabilidad de que ocurra un hecho en función de ciertas variables que se presumen relevantes.
+
+La expresión analítica es: 
+
+$$P(Y=1)_x=\frac{1}{1+e^{(-\alpha-\beta_1X_1-\beta_2X_2-\dots-\beta_kX_k)}} $$
+Para comprender lo que significan los coeficientes $\beta$ del modelo, vamos a hacer algunas operaciones matemáticas. Comenzaremos dividiendo ambos miembros de la ecuación por $1-P_{(Y=1)}$, lo que se denomina transformación logística:
+
+$$\frac{P(Y=1)_x}{1-P(Y=1)_x}=\frac{\frac{1}{1+e^{(-\alpha-\beta_1X_1-\beta_2X_2-\dots-\beta_kX_k)}}}{1-\frac{1}{1+e^{(-\alpha-\beta_1X_1-\beta_2X_2-\dots-\beta_kX_k)}} } $$
+
+Si ahora aplicamos logaritmo natural (ln) a ambos miembros de la ecuación, y aplicamos propiedades de los logaritmos, nos queda: 
+
+$$ln\bigg[\frac{P_x}{1-P_x}\bigg] = \alpha + \sum\beta_ix_i$$
+Si observamos el término que está entre corchetes, recordaremos que el cociente entre la probabilidad que un suceso ocurra, y la probabilidad de que no ocurra, es lo que conocemos como **Odds**, entonces:
+
+$$ln(Odds) = \alpha+\sum\beta_ix_i$$
+Si despejamos Odds de la ecuación anterior, podemos concluir entonces que:
+
+$$Odds = e^{(\alpha+\sum\beta_ix_i)} $$
+Para comprender mejor cómo se interpretarán los coeficientes en la regresión logística, supongamos que queremos modelar la probabilidad de que un suceso ocurra ($P_{(Y=1)}$) en función de una única variable independiente dicotómica, que toma el valor 0 cuando está ausente ($x=0$) y 1 cuando está presente ($x=1$). Entonces:
+
+Para $x=1$
+
+$$Odds_{enfermar/expuestos}=e^{(\alpha+\beta)} $$
+Para $x=0$
+
+$$Odds_{enfermar/expuestos}=e^{(\alpha)} $$
+Entonces, si queremos calcular el OR:
+
+$$OR = \frac{e^{(\alpha+\beta)}}{e^\alpha}=e^\beta$$
+Por lo tanto: 
+
+$$ln\; OR = \beta$$
+
+De esta forma, vemos que $\beta$ = incremento del logaritmo del (OR) por cada unidad de incremento de $x$.
+
+Extendiendo el razonamiento para la regresión logística múltiple, es decir cuando modelamos en función de más de una variable independiente, ya sea dicotómica, ordinal, nominal o continua, volvemos a la ecuación:
+
+$$ln(Odds) = \alpha + \sum\beta_ix_i $$
+Donde cada $\beta_i$: Incremento en log-odds para una unidad de incremento en xi con todas las otras $x_i$s constantes.
+
+Incluimos esta deducción para facilitar la comprensión del tema, pero para quienes el lenguaje matemático les es adverso, pueden hacer un *“acto de fe”* y quedarse con las conclusiones.
+
+Al igual que hicimos en RLM, exploraremos el significado de una salida de R para modelos de regresión logística, antes de comenzar a modelar.
+
+**Interpretación de modelos de regresión logística múltiple (RLogM)**
+
+Observemos una salida de R, para un modelo de RLogM
+
+```{r,echo=F,  fig.align='center', out.width = "90%"}
+knitr::include_graphics("grafico3.PNG")
+knitr::include_graphics("grafico4.PNG")
+```
+
+Veamos qué significa cada cosa:
+
+- **Test de Wald**: En forma similar al test $F$ parcial de la RLM, el test de Wald testea la $H_0 = \beta_i=0$. Hemos expresado el marco de prueba de hipótesis en términos de la pendiente $\beta_i$ porque esta forma se parece mucho a lo que estudiamos en regresión lineal.En muchas aplicaciones, sin embargo, los resultados se expresan en términos de OR. Una pendiente de 0 es lo mismo que una razón de probabilidades de 1, por lo que a menudo expresamos la hipótesis nula de interés como *"la razón de posibilidades es 1"*. Esto significa que las dos probabilidades son iguales y la variable explicativa no es útil para predecir las probabilidades.
+
+Recordemos que los $\beta$, no se interpretan según los valores que observamos en la salida anterior, sino que debemos calcular el exponencial de los coeficientes.
+
+Para entender lo que es la **Deviance**, debemos explicar algunas cosas antes.
+
+Como recordarán, en la RLM para obtener los $\beta$ lo hacíamos por el método de mínimos cuadrados.  ¿Cómo se estiman los $\beta$ en la regresión logística? La estimación por el método de máxima verosimilitud (o *maximum likelihood ML*) es el método preferido para la estimación de los parámetros en la Regresión Logística no condicionada. Su fundamento consiste en utilizar la información disponible de los datos de la muestra para elegir el valor del parámetro para el cual es más probable haber observado ese resultado muestral. Se calcula mediante un proceso iterativo.
+
+Por tanto, una medida razonable para valorar el grado en que el modelo arroja resultados coherentes con los datos, sería el producto de todas las probabilidades (predichas por el modelo) de que los $n$ sujetos de la muestra empleada para su construcción tengan la condición que realmente tienen. Es decir, que un buen modelo sería el que asigne una $p=1$ a cada sujeto que realmente tenga la condición y  $p=0$ a cada sujeto libre de ella, y correspondería una verosimilitud máxima de 1. Por el contrario, un modelo deficiente tendría una verosimilitud pequeña, cercana a 0. En consecuencia, la proximidad de la verosimilitud a 1 expresa cuán eficiente ha sido el ajuste realizado para modelar la realidad.
+
+Para evaluar la calidad de ajuste de un modelo de regresión logística se puede utilizar:
+
+- Análisis de la función desvío o análisis de Deviance, también llamada **Lejanía**
+- Test de la razón de verosimilitud o likelihood ratio test (LRT)
+
+La **Deviance (D)** se define como:
+
+$D= -2ln V$   ($V$ = Verosimilitud)
+
+Dado que, como ya dijimos, $V<1$,  su logaritmo siempre será negativo; de modo que la Deviance siempre será un número positivo. El grado de ajuste de un modelo será mejor cuanto más próxima a 1 es la verosimilitud y, en consecuencia, cuanto más se aproxima a cero la Deviance.
+
+Al ajustar el modelo se calculan dos D: la que corresponde al *“modelo nulo”* ($D_0$) que es aquel en que no se ha incorporado ninguna variable independiente y la $D_f$ del modelo. La diferencia (cociente) entre estas dos lejanías mide el “aporte” que hacen las variables incorporadas al modelo: $-2ln V_0 – (-2ln V_f)$
+
+La lejanía del modelo nulo es más grande que la de cualquier modelo ampliado. Esto es razonable, debido a que se trata de un modelo mucho menos sofisticado (que no incorpora información alguna de posibles variables “explicativas”) y debe necesariamente tener una incapacidad predictiva mayor. 
+
+Por su parte, el **Likelihood Ratio** usa la diferencia entre la probabilidad de obtener los valores observados con el modelo logístico creado y las probabilidades de hacerlo con un modelo sin relación entre las variables. Para ello, calcula la significancia de la diferencia de residuos entre el modelo con predictores y el modelo nulo (modelo sin predictores). Es equivalente a $D$.
+
+$$D_0 - D = -2lnV_0 + 2lnV = -2ln(V_0-V) = -2ln\bigg(\frac{V_0}{V}\bigg) $$
+$V_0/V$ es el Likelihood Ratio. 
+
+El Likelihood Ratio Test, testea la significancia de incorporar variables al modelo, comparándola con el modelo nulo.El estadístico tiene una distribución chi-cuadrado con grados de libertad equivalentes al número de predictores del modelo generado.
+
+-	**AIC**: lo vimos en RLM, pero ahora que sabemos algunas cosas más, podemos definirlo mejor. El criterio de información de Akaike (AIC) es una medida de la calidad relativa de un modelo estadístico, para un conjunto dado de datos. Como tal, el AIC proporciona un medio para la selección del modelo. Lo definimos como:
+
+$AIC= 2k – 2ln(D)$
+
+donde $k$: número de parámetros del modelo 
+
+Comparación de modelos:
+
+Para comparar modelos de RLog, podemos usar: **AIC**, **LRT** o un **ANOVA** entre los modelos.
+
+En la expresión del AIC : $AIC= 2k – 2ln(D)$; el primer término penaliza por la incorporación de variables al modelo, mientras que el segundo compensa por la bondad del ajuste. Dado un conjunto de modelos candidatos para los datos, el modelo preferido es el que tiene el valor mínimo de AIC.
+
+El **Likelihood Ratio Test**  también permite la comparación entre 2 modelos. En este caso, ya no se trata del cociente entre el modelo nulo y el actual, sino entre la V de dos modelos a comparar. El estadístico tiene una distribución Chi-cuadrado con grados de libertad dados por la diferencia de grados de libertad de los dos modelos comparados.
+
+En R, el comando nos permite también la comparación
+
+```{r,echo=F,  fig.align='center', out.width = "70%"}
+knitr::include_graphics("grafico5.PNG")
+```
+
+
+### Calidad de ajuste en Regresión Logística
+
+De manera análoga al *Coeficiente de Determinación* ($R^2$) que se emplea para la Regresión Lineal, se han desarrollado varios coeficientes para estimar la proporción de varianza de la variable dependiente explicada por las variables independientes, aplicables los modelos de Regresión Logística. 
+
+-	El coeficiente de McFadden
+-	El coeficiente de Cox y Snell
+-	El Coeficiente de Nagelkarkle (este último es una versión corregida del anterior, cuyo valor máximo es menor a 1 incluso para un modelo perfecto, por eso, en muchos casos el $R^2$ de Cox y Snell tiende a subestimar el coeficiente).
+
+En R: la función `PseudoR2()` perteneciente al paquete **DescTools**, nos permite calcularlos.
+
+Estos coeficientes no miden calidad de ajuste, sino proporción de la varianza explicada.
+
+Uno de los test de bondad de ajuste más usados en RLog es el **test de Hosmer-Lemeshow**. Como otros test de bondad de ajuste compara la probabilidad predicha por el modelo con la probabilidad de los datos de la muestra. El estadístico se calcula a través de varios grupos empleando los deciles de las probabilidades predichas por el modelo, y comparando las frecuencias observadas en dichos grupos con las esperadas. Este estadístico sigue una distribución de $\chi^2$ con $n-2$ grados de libertad ($n$= número de casos). Aquí la Hipótesis nula es que el modelo se ajusta a la realidad. En un test de bondad de ajuste siempre en la hipótesis nula se afirma que el modelo propuesto se ajusta a lo observado. Por lo tanto, un $p-valor$ superior a 0.05 implica que lo que observamos se ajusta suficientemente a lo que esperado bajo el modelo. En R podemos aplicar la función `HLtest()` perteneciente al paquete **vcdExtra**.
+
+### Capacidad predictiva de un modelo de RLog
+
+Otro aspecto a evaluar en un modelo de RLog es la *discriminación* (grado en que el modelo distingue entre individuos en los que ocurre el evento y los que no). Como medida de la discriminación se usa el área bajo la **curva ROC** construida para la probabilidad predicha por el modelo, que representa, para todos los pares posibles de individuos formados por un individuo en el que ocurrió el evento y otro en el que no, la proporción de los que el modelo predice una mayor probabilidad para el que tuvo el evento. Para quienes tengan profesiones vinculadas al diagnóstico, los conceptos de sensibilidad, especificidad y curvas ROC, les resultarán muy familiares. Es posible que para el resto no lo sea tanto, por lo que haremos algunas explicaciones adicionales.
+
+Para comprobar la efectividad de un modelo en la clasificación de observaciones, se puede construir una tabla de clasificación donde se cruza el verdadero valor de la observación (1 o 0), con la predicción de la misma según el modelo que se considere. Como nuestro modelo de RLog calculará probabilidades entre 0 y 1, tendremos que fijar un valor de corte en forma arbitraria: por ejemplo podríamos considerar que valores de probabilidad estimados por el modelo superiores a 0,5 serán considerados como que el evento ha ocurrido, mientras que probabilidades de 0,5 o menos, consideraremos que no.
+
+Se resume la capacidad predictiva de un modelo de RLog mediante el concepto de sensibilidad:
+
+$P(\hat{y}= 1|y=1)$
+
+y mediante el concepto de especificidad: $P(\hat{y}= 0|y=0)$
+
+Es decir, la predicción de éxito/de que el suceso ha ocurrido/etc.  cuando es cierto se denomina sensibilidad y la predicción de un fracaso/de que el suceso no ha ocurrido/etc., cuando es, a su vez cierto, se denomina especificidad.
+
+Una curva de tipo *receiver operating characteristic* (**ROC**) es un gráfico en el que se representa la sensibilidad en función de (1 – especificidad). Si vamos modificando los valores del valor de corte y representamos la sensibilidad (en ordenadas) frente a (1 – especificidad) (en abscisas) tenemos la curva ROC. Cuanto mayor sea el área bajo la curva, mejores serán las predicciones.
+
+```{r,echo=F,  fig.align='center', out.width = "50%"}
+knitr::include_graphics("grafico6.PNG")
+```
+
+::: {.b--gray .ba .bw2 .ma2 .pa4 .shadow-1}
+En resumen, para evaluar un modelo de RLog, deberíamos observar:
+
+-	Coeficientes de determinación : % de variabilidad explicada por el modelo
+- Test de Hosmer‐Lemeshow : bondad de ajuste, diferencia entre los valores predichos por el modelo y los valores observados en la muestra.
+-	Comparación de modelos: LRT/ANOVA/AIC
+-	 Curva ROC : capacidad predictiva (especialmente cuando el propósito de la RLog es predictivo)
+-	 Intervalos de confianza (exactitud del coeficiente).
+
+:::
+
+## Regresion logistica en el lenguaje R
+
+La regresión logística es uno de los modelos de la familia de modelos lineales generalizados (GLM de las siglas en inglés de *Generalized Linear Models*). Estos modelos son una extensión de los modelos lineales que permiten utilizar distribuciones no normales de los errores (binomiales, Poisson, gamma, etc) y varianzas no constantes.
+
+Se caracterizan por tener una estructura de errores particular y una función de enlace entre la variable respuesta y la(s) variable(s) independiente(s).
+
+En nuestro caso para las regresiones logísticas, como la variable respuesta es binomial (0-1) la estructura de errores pertenecerá a la familia de distribución binomial y la función de enlace habitual para linealizar la relación entre la variable respuesta y la(s) variable(s) independiente(s) es una transformación logarítmica de la variable respuesta.
+
+
+### Construcción de un modelo de regresión logística en R
+
+El ajuste de un modelo de regresión logística puede hacerse a través de la función `glm()`, que no sirve solo para modelar este tipo de modelos, sino para cualquier modelo lineal generalizado. 
+
+La sintaxis básica de esta función, contenida en el paquete `stats` de R base, es:
+
+> glm(formula, family = binomial(link="logit"), data)
+
+donde:
+
+__formula__: al igual que en la regresión lineal, es la fórmula que describe el modelo a ajustar. Sigue la estructura:
+
+$$variable\_dependiente \sim variable\_indepen_1 + variable\_indepen_2 +\dots+ variable\_indepen_n$$
+
+__family__: hace referencia a la familia de distribuciones y, en link, a la función de enlace elegida para el ajuste de este modelo. 
+
+Las opciones disponibles para __family__ son *binomial, gaussian, Gamma, inverse.gaussian, poisson, quasi, quasibinomial* y *quasipoisson*. 
+
+La familia *gaussian* admite el enlace (link) identity, log e inverse; la *binomial* logit, probit, cauchit, log y cloglog; la familia *Gamma* el link inverse, identity y log; la familia *poisson* el link log, identity, y sqrt; la familia *inverse.gaussian* el link $1/{µ2}$, inverse, identity y log.
+
+Estas posibilidades abarcan a la totalidad de las familias de los modelos lineales generalizados. En nuestro caso utilizaremos la `familia binomial` con el enlace **logit**, que es la función canónica de dicha familia (se denominan funciones de familia/enlace canónicas a las funciones que se aplican por defecto a cada una de las distribuciones de errores)
+
+Si la función de enlace (link) no se especifica, la primera opción de la lista es tomada como opción predeterminada en cada caso. Por ejemplo, si omitimos el argumento (*link="logit"*) de todas maneras quedaría definido ese mismo enlace para la familia binomial.
+
+__data__: indica el nombre de la base de datos (dataframe) que contiene las variables del modelo.
+
+
+La salida de resultados de esta función puede obtenerse a través de la función `summary()` al igual que en la regresión lineal. La sintaxis es `summary(nombre_modelo)`, siendo *nombre_modelo* el nombre del modelo ajustado). 
+
+La resultados mostrados del objeto de regresión están compuesto por:
+
+__Call__: fórmula del modelo
+
+__Deviance Residuals__: distribución de los residuos (mediana, mínimo, máximo y percentilos 25-75) obtenidos en la última iteración
+
+__Coefficients__: coeficientes del Intercept y los asociados a cada variable independiente. Además se agregan los errores estándar y el valor z (*estadístico de Wald* que surge del cociente entre el coeficiente y su error estándar) con el p-valor correspondiente.
+
+Si a estos coeficientes le aplicamos la función `exp()` (exponencial o función inversa del logaritmo natural) obtenemos el *Odds Ratio* (OR). Esto quiere decir que los coeficientes de las variables independientes se interpretan como el OR de que ocurra el suceso para cada incremento de la variable independiente, manteniendo constante o ajustando por el resto de las variables independientes.
+
+__Null deviance__: devianza para el modelo nulo que solo contiene la constante.
+
+__Residual deviance__: devianza del modelo ajustado.
+
+__AIC__: criterio de información de Akaike.
+
+__Number of Fisher Scoring iterations__: cantidad de iteraciones.
+
+Este resumen surge del objeto de regresión construido cuando asignamos la salida de la función `glm()` que pertenece a la clase "glm" y "lm". 
+
+```{r, eval=F}
+class(nombre_modelo)
+```
+
+[1] "glm" "lm" 
+
+Este objeto de regresión está compuesto por 30 componentes que pueden accederse a través del nombre del modelo seguido del signo __$__ y el nombre del componente.  
+
+Entre los componentes más relevantes podemos señalar (usamos *nombre_modelo* como generalización del nombre del objeto creado):
+
+__nombre_modelo$coeficients__:  vector de coeficientes del modelo. También se puede obtener a través de la función `coef(nombre_modelo)`
+
+__nombre_modelo$residuals__: vector que contiene los residuos obtenidos en la última iteración.
+
+__nombre_modelo$fitted.values__: vector con los valores medios ajustados, obtenidos según
+la transformación de los predictores lineales por la inversa de la función de enlace.
+
+__nombre_modelo$family__: devuelve la familia utilizada en la construcción del modelo.
+
+__nombre_modelo$deviance__: devianza del modelo ajustado o -2 veces el máximo de la log
+verosimilitud.
+
+__nombre_modelo$aic__: criterio de información de Akaike (AIC)
+
+__nombre_modelo$null.deviance__: devianza para el modelo nulo que solo contiene la constante.
+
+__nombre_modelo$iter__: número de iteraciones.
+
+### Gestión de variables dicotómicas
+
+Deciamos que el modelo con enlace *logit* es un modelo de regresión típico, $Y=f(X+E)$, en el que la variable respuesta (variable aleatoria $Y$) es dicotómica o binaria (toma dos valores: 0 y 1), habitualmente sobre si nuestra unidad de análisis tiene una característica (1) o no la tiene (0).
+
+Nuestras variables dicotómicas pueden tener originalmente formatos variados y sus categorías también pueden definirse con etiquetas diferentes. Por ejemplo, podemos tener variables dicotómicas con formato lógico (+/-, TRUE-FALSE), con formato caracter (Si-No, Vivo-Muerto, etc.) o con formato numérico codificado (0-1, 1-2 o cualquier combinación personalizada de códigos) 
+
+En R las variables categóricas que utilizamos como dependientes en estos modelos corresponden convenientemente al tipo de datos **factor**. 
+
+Recordemos que un factor es, interna y técnicamente, una variable numérica compuesta de enteros sucesivos a partir de 1. Cada entero es un nivel o categoría de la variable y está acompañado de una etiqueta que nos facilita recordar a qué categoría corresponde. 
+
+Los modelos binomiales asumen las variables dicotómicas codificándolas como 0 y 1, lo cuál podría ser problemático si, como numéricos, los factores comienzan con 1. Como la estructura de los factores es conocida por las funciones que estiman modelos logit, estas funciones convierten internamente la variable categórica/factor en una variable codificada como 0/1, sin que el usuario tenga que hacer nada. 
+
+Por lo tanto, no es necesario recodificar la variable o convertirla en *dummy*, esto se procesa de manera transparente para el usuario. Lo único que debemos asegurarnos es que la variable sea factor y que el **nivel de referencia** sea la **ausencia de la característica** (por ejemplo, enfermedad = NO)
+
+Debemos usar la función `levels()` para consultar los niveles o categorías de un factor e identificar el primer nivel del factor, que será el nivel de referencia en el modelo, es decir, $Y=0$.
+
+También podemos modificar estos niveles de referencia mediante la función `relevel()`, cuando estos se encuentren invertidos.
+
+```{r, eval=F}
+relevel(variable_factor, ref = "categoría_referencia")
+
+## ejemplo:
+relevel(datos$enfermedad, ref = "No")
+```
+
+Este procesamiento es extensivo a las variables categóricas (dicotómica o politómicas) que se incluyen en los modelos de regresión como explicativas.
+
+### Ajuste del modelo en la Regresión Logística
+
+Una vez estimados los parámetros, a través de la función `glm()`, la tarea se centra en la "importancia" de cada variable para el modelo.
+
+Esta evaluación se realiza mediante contrastes de hipótesis cmo el de __Wald__ y la razón de verosimilitud ( __Likelihood Ratio test__ ).
+
+El test de Wald lo visualizamos cuando ejecutamos `summary()` del modelo y aparece detrás de cada variable predictora en la columna "z value" y el valor $p$ correspondiente bajo la columna "Pr(>|z|)"
+
+Es similar al valor $t$ de la salida en las regresiones lineales y lo utilizamos para determinar la significación de la variable dentro del modelo. La interpretación es flexible y común a las situaciones conocidas, valores de $p$ por debajo de 0,1 permiten que tengamos en cuenta el aporte de dicha variable al modelo.
+
+Por otra parte, la razón de verosimilitud ($G^2$) surge de restar la deviance de un modelo y otro con mas o menos variables predictoras y sirve para determinar si hay diferencia significativa entre incluir o no algunas de estas.
+
+Los valores de deviance que surgen del resumen de un modelo se encuentran en la salida bajo el título *Null deviance*, para el modelo nulo y *Residual deviance* para el modelo con los predictores seleccionados.
+
+El cálculo a partir de un modelo de regresión sería:
+
+```{r, eval=F}
+modelo1$null.deviance - modelo1$deviance
+```
+
+En este ejemplo estamos restando la deviance del modelo nulo menos la deviance del modelo con la o las variables, lo que nos calcula la razón de verosimilitud.
+
+Dos funciones útiles relacionadas a este cálculo son:
+
+__Función lrtest() del paquete lmtest__: Calcula el Likelihood Ratio test (prueba de razón de verosimilitud) entre dos modelos o entre un modelo con variables y el modelo nulo.
+
+```{r, eval=FALSE}
+library(lmtest)
+lrtest(modelo1)   # para cálculo contrastando con el modelo nulo
+
+lrtest(modelo1, modelo2)  # para el cálculo contrastando modelo1 con modelo2
+```
+
+
+__Función anova()__: Construye una tabla de análisis de devianza (Analysis of Deviance Table), mediante la forma `anova(nombre_modelo, test = "Chisq")` 
+
+```{r, eval=F}
+anova(modelo1, test = "Chisq")
+```
+
+La ejecución de esta línea brinda los mismo resultados de Likelihood Ratio test, entre la deviance del modelo nulo y del modelo1. La diferencia entre aplicar la función `lrtest()` y `anova()`, es que esta última nos muestra una tabla de análisis detallada donde aparecen cada una de las variables que integra el modelo con sus respectiva deviance que sumada coincide con el resultado de `lrtest()`.
+
+
+### Selección de modelos
+
+En un modelo que incluya una cantidad determinada de variables, es posible que no todas ellas sean relevantes para el problema. En tal caso se deben detectar las variables que menos aportan al modelo para decidir sobre su exclusión, y así obtener un modelo más simple.
+
+En principio conviene partir de la definición de lo que se entiende por "variables relevantes", porque la relevancia no puede ser solamente vista desde el punto estadístico. El marco conceptual es fundamental en el proceso de selección de variables, sobre todo si la finalidad del modelo es analítica, donde el sentido de elección concierne más al área que se estudia que a la estadística.
+
+Esta cuestión es oportuna, dado que algunos investigadores actúan somo si los métodos estadísticos reemplazaran a los conocimientos acerca del tema que tratan, abusando de regresiones donde la técnica no distingue el tipo de asociación o de la significación que puede deberse a motivos más estadísticos mientras que la sustantividad clínica, biológica o social es inexistente.
+
+La estadística ofrece varios procedimientos disponibles para la selección del modelo de regresión logística que, respetando el marco conceptual en el que se viene trabajando, se ajuste adecuadamente a los datos con el número más reducido posible de variables.
+
+Las formas no difieren mucho de los procedimientos vistos en la regresión lineal múltiple, aunque algunos de los estadísticos que nos ayudan a realizar la selección son distintos.
+
+Para ejemplificar tomaremos una tabla de datos denominada `CAMINAR.csv` que contiene observaciones de un estudio de casos y controles donde se evaluó a 800 niños, con el objetivo de identificar qué factores se asociaban al desarrollo de la marcha. 
+
+Las variables consideradas fueron si al momento de la entrevista caminaban ("Camina" SI-NO), a qué edad habían comenzado a caminar ("Edadmeses"
+considerada meses y "Edaddias" medida en días), si la mamá tenía pareja estable ("Parejaest" SI-NO), y si había tomado pecho al menos 6 meses ("Lacto180" SI-NO).
+
+```{r, message=F, warning=F}
+library(tidyverse)
+
+caminar <- read_csv2(file = "CAMINAR.csv")
+
+glimpse(caminar)
+```
+Observamos la estructura de los datos, donde vemos los tipos de variables. Enteros (int) para las numéricas y caracter (chr) para las categóricas.
+
+Primeramente coercionamos los tipos character a factor.
+
+```{r}
+caminar <- caminar %>% mutate(Camina = as.factor(Camina),
+                              Parejaest = as.factor(Parejaest),
+                              Lacto180 = as.factor(Lacto180))
+```
+
+Como las categorías de las tres variables convertidas son "SI" y "NO", y el orden automático del lenguaje R es alfabetico el nivel de referencia de para todas es "NO". Confirmemoslo mediante la visualización de los niveles:
+
+```{r}
+levels(caminar$Camina)
+levels(caminar$Parejaest)
+levels(caminar$Lacto180)
+```
+En segundo lugar efectuamos una breve descripción univariada.
+
+```{r}
+library(skimr)
+
+skim(caminar)
+```
+
+A continuación iniciamos el proceso manual tipo forward ajustando modelos simples con cada una de las cuatro variables independientes.
+
+__Paso 1__: Se ajustan tantos modelos como posibles variables explicativas tengamos. Dos de las variables (Edaddias y Edadmeses) es la misma expresada en unidades diferentes.
+
+```{r}
+mod1 <- glm(Camina ~ Edaddias, data = caminar, family = binomial)
+
+mod2 <- glm(Camina ~ Edadmeses, data = caminar, family = binomial)
+
+mod3 <- glm(Camina ~ Parejaest, data = caminar, family = binomial)
+
+mod4 <- glm(Camina ~ Lacto180, data = caminar, family = binomial)
+```
+
+Se calcula el Likelihood Ratio test de cada uno de ellos.
+
+```{r, message=F, warning=F}
+mod1$null.deviance - mod1$deviance
+
+mod2$null.deviance - mod2$deviance
+
+mod3$null.deviance - mod3$deviance
+
+mod4$null.deviance - mod4$deviance
+```
+Se identifica el mayor de estas $G^2$ y se evalúa si es significativo
+
+```{r, message=F}
+library(lmtest)
+
+lrtest(mod4)
+```
+
+__Paso 2__: Como la variable Lacto180 es significativa, se incorpora como primer variable al modelo y a continuación se generan modelos de dos variables independientes combinando esta variable con cada una de las otras.
+
+```{r}
+mod3.1 <- glm(Camina ~ Lacto180 + Edaddias, 
+              data = caminar, family = binomial)
+
+mod3.2 <- glm(Camina ~ Lacto180 + Edadmeses, 
+              data = caminar, family = binomial)
+
+mod3.3 <- glm(Camina ~ Lacto180 + Parejaest, 
+              data = caminar, family = binomial)
+```
+
+
+Se identifica la pareja para la cual la deviance ($-2lnV_{final}$) es menor.
+
+```{r}
+mod3.1$deviance
+mod3.2$deviance
+mod3.3$deviance
+```
+
+En este caso, el __mod3.1__ con las variables __*Lacto180*__ y __*Edaddias*__ tiene una deviance de 592,43, menor a los otros dos modelos.
+
+Se evalúa si el agregado de la variable __*Edaddias*__ es significativa respecto al modelo con la variable Lacto180 sola.
+
+```{r}
+lrtest(mod3, mod3.1)
+```
+__Paso 3__: Como es significativa, se incorpora al modelo y a continuación se agrega la tercer y última variable posible en el modelo (dado que la variable Edadmeses es la misma que Edaddias que está incorporada).
+
+```{r}
+mod3.1.1 <- glm(Camina ~ Lacto180 + Edaddias + Parejaest, 
+                data = caminar, 
+                family = binomial)
+```
+
+Se evalúa la significación del agregado. Si es significativo el modelo quedaría con las tres variables, de lo contrario quedan las dos iniciales.
+
+```{r}
+lrtest(mod3.1, mod3.1.1)
+```
+
+También se pueden utilizar métodos automáticos, al igual que vimos en la regresión lineal múltiple, partiendo por ejemplo de un modelo saturado y aplicando la función `step()`.
+
+```{r}
+modelo_saturado <- glm(Camina ~ .-ID, 
+                       data = caminar, 
+                       family = binomial)
+
+modelo_step <- step(modelo_saturado, direction = "both")
+```
+
+En este caso la selección automática utiliza el AIC que funciona de manera similar a la regresión lineal y el seleccionado termina siendo el que tiene el AIC más bajo.
+
+```{r}
+summary(modelo_step)
+```
+El modelo automático es coincidente con el forward manual.
+
+Aplicando `AIC()` a la serie de modelos que fuimos realizando de forma manual y automática podemos comparar:
+
+```{r}
+AIC(mod3)  # modelo solo con Lacto180
+AIC(mod3.1) # modelo con Lacto180 y Edaddias
+AIC(mod3.1.1) # modelo con Lacto180, Edaddias y Parejaest
+AIC(modelo_step) # modelo automático idem mod3.1.1
+
+```
+El modelo final tiene el AIC más bajo (505,72).
+
+
+### Bondad de ajuste 
+
+Mencionamos diversas formas medir la bondad de ajuste de un modelo de regresión logística. De forma global, ésta puede ser evaluada a través de medidas tipo $R^2$, de probabilidades estimadas o a través de test estadísticos.
+
+Respecto a test estadísticos, la prueba de razón de verosimilitud (Likelihood ratio test), recién vista, es una de las que podemos utilizar basado en la deviance.
+
+Recordemos que podemos aplicar la función `lrtest()` del paquete lmtest o bien la función `anova()`.
+
+Hagámoslo con el modelo seleccionado del capítulo anterior.
+
+```{r}
+lrtest(mod3.1.1) # Likelihood ratio test
+
+anova(mod3.1.1, test = "Chisq") # ANOVA
+```
+
+Observamos que las dos funciones son complementarias, mientras `lrtest()` nos muestra la razón de verosimilitud entre el modelo completo y el nulo en forma global, la función `anova()` nos detalla en la tabla de análisis de varianzas la deviance entre cada paso del modelo, es decir a partir de incorporar una a una las variables con su respectiva significación.
+
+Entre las pruebas basadas en la agrupación de las probabilidades estimadas bajo el modelo de regresión usaremos el __test de Hosmer y Lemeshow__.
+
+Como en muchas situaciones existen numerosas funciones incluidas en variados paquetes que proveen de esta prueba de bondad de ajuste.
+
+Nosotros mostraremos una denominada `HLtest()` perteneciente al paquete __vcdExtra__ (se debe instalar previamente) que se aplica de la siguiente forma:
+
+```{r, message=F}
+library(vcdExtra)
+
+HLtest(mod3.1.1)
+```
+
+El test de bondad de ajuste de Hosmer y Lemeshow nos da un p-valor para el __mod3.1.1__ de 0,22, por lo que concluimos que el modelo ajusta adecuadamente los datos (no hay diferencia significativa entre los datos observados en relación a los esperados).
+
+También podemos graficar una __curva ROC__ que es una herramienta más específica de modelos predictivos para comparar diferentes modelos. La curva ROC se obtiene representando, en un cuadrado de lado 1, los valores de 1‐especificidad en el eje de abscisas frente a la sensibilidad en el de las ordenadas para todos los puntos de corte considerados.
+
+Si el modelo tiene capacidad predictiva nula la curva coincide con la diagonal principal del cuadrado, y el área bajo la curva toma su valor mínimo de 0,5. Por el contrario, un modelo perfecto tiene una curva ROC con área 1. Cuanto mayor es el área bajo la curva, más eficiente es el modelo.
+
+Encontramos también en el ecosistema del lenguaje R variados paquetes que la implementan. Uno de ellos es __pROC__, mediante su función `roc()`:
+
+```{r, out.width="60%", fig.align="center"}
+
+## almacenamos los valores ajustados por el modelo dentro del dataframe
+caminar$prob <- mod3.1.1$fitted.values
+
+library(pROC)
+
+plot(roc(Camina ~ prob, data = caminar)) # ploteamos salida de roc()
+```
+
+Podemos visualizar el valor del área bajo la curva (AUC de *Area under the curve*) mediante la misma función e incorporar, por ejemplo, su intervalo de confianza:
+
+```{r}
+roc(Camina ~ prob, data = caminar, ci = TRUE)
+```
+Los valores de AUC se pueden interpretar siguiendo el criterio:
+
+- entre 0,5 y 06     Mala capacidad predictiva
+- entre 0,6 y 0,75   Regular capacidad predictiva
+- entre 0,75 y 0,9   Buena capacidad predictiva
+- entre 0,9 y 0,97   Muy buena capacidad predictiva
+- entre 0,97 y 1     Excelente capacidad predictiva
+
+En el grupo de coeficientes que calculan el grado de “explicación de la variabilidad de la variable de respuesta” conseguido con el modelo por parte de las variables independientes, similar al coeficiente de determinación $R^2$ para los modelos lineales encontramos varios implementados en el lenguaje R.
+
+Una función interesante es `PseudoR2()` perteneciente al paquete __DescTools__ (se debe instalatar previamente). Esta función contiene un grupo de coeficientes desarrollados por autores como *McFadden, Cox y Snell, Efron* y *Nagelkerke*, entre otros.
+
+Para utilizar la función solo debemos activar el paquete (previa instalación) y en sus argumentos incorporar el modelo sobre el que queremos realizar el cálculo y que coeficiente deseamos.
+
+
+```{r,message=F}
+library(DescTools)
+
+# con which ="all" obtenemos todos los coeficientes que calcula la función
+
+PseudoR2(mod3.1.1, which = "all") 
+```
+
+Todos estos coeficientes, excepto los 5 últimos, devuelven un número que se encuentra entre 0 y 1. Alcanzan el valor 1 cuando el vaticinio es perfecto (esto quiere decir, que alcanzarían el valor máximo sólo si el modelo atribuyera probabilidad 1 a aquellos sujetos de la muestra que efectivamente tuvieron el evento, y valores iguales a 0 a quienes no lo tuvieron) y  se aproxima a 0 en la medida que las probabilidades atribuidas por el modelo disten más, respectivamente, de 1 y 0.
+
+### Calculo de OR
+
+Los valores de las odds-ratio se obtienen como el resultado de calcular el valor del número $e$ elevado a los coeficientes estimados del modelo (la inversa del logaritmo natural).
+
+La función matemática en R aplicada al mod3.1.1 (con redondeo de 2 decimales) es:
+
+```{r}
+round(exp(coef(mod3.1.1)),2)
+```
+
+Cuando estamos frente a una regresión logística múltiple como en este caso, nos permite obtener las odds-ratio ajustadas por otras variables.
+
+La interpretación sería:
+
+- Si mantenemos constantes las otras variables, la probabilidad de caminar aumentó 20 veces cuando el lactante fue amamantado por 6 meses.
+
+- Si mantenemos constantes las otras variables, la probabilidad de caminar aumentó 1,01 veces por cada día de vida.
+
+- Si mantenemos constantes las otras variables, la probabilidad de caminar aumentó 9,42 veces cuando la madre tenía pareja estable.
+
+Podemos también, incorporar intervalos de confianza de los OR agregando la función `confint()`.
+
+```{r}
+round(exp(confint(mod3.1.1)),2)
+```
+
+### Interacción
+
+
+
+
+
+
+
+## Bibliografía
+
+Daniel W. Bioestadística: Base para el análisis de las ciencias de la salud. 4° Edición. Ed. Limusa Wiley, 2002.
+
+Ballester F. y Tenías Burrillo J. M. Estudios ecológicos. Quaderns de Salut Pública i Administració de Serveis de Salut 20. Valencia: Escola Valenciana d´Estudis per a la Salut, 2003.
+
+Epidemiología. Diseño y análisis de estudios. Mauricio Hernández Ávila. Editorial Médica Panamericana, 2007.
+
+Escuela Nacional de Sanidad (ENS). Instituto de Salud Carlos III. Ministerio de Ciencia e Innovación. Manual Docente de la Escuela Nacional de Sanidad .Método epidemiológico. Madrid, 2009.
+
+Triola, M. Estadística. 10° Edición. Pearson Educación. México. 2009.
+
+Simon J. Sheather, A Modern Approach to Regression with R. Department of Statistics, College Station, TX, USA, Springer Science+Business Media, LLC, 2009
+
+Sanford Weisberg, Applied Linear Regression. School of Statistics, University of Minnesota. John Wiley & Sons, Inc, 2005
+
+R Core Team. R: A language and environment for statistical
+computing. R Foundation for Statistical Computing, Vienna, Austria, 2021. URL
+<https://www.R-project.org/>.
+
+Juergen Gross and Uwe Ligges. nortest: Tests for Normality. R package
+version 1.0-4. 2015 https://CRAN.R-project.org/package=nortest
+
+Wickham et al. Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, Año 2019 https://doi.org/10.21105/joss.01686
+
+Achim Zeileis, Torsten Hothorn. Diagnostic Checking in Regression Relationships. R News 2(3), 7-10. Año 2002. URL https://CRAN.R-project.org/doc/Rnews/
+
