@@ -302,7 +302,7 @@ El ajuste de un modelo de regresión logística puede hacerse a través de la fu
 
 La sintaxis básica de esta función, contenida en el paquete `stats` de R base, es:
 
-> glm(formula, family = binomial(link="logit"), data)
+> glm(formula, family = binomial(link = "logit"), data)
 
 donde:
 
@@ -644,27 +644,20 @@ Como en muchas situaciones existen numerosas funciones incluidas en variados paq
 
 Nosotros mostraremos una denominada `HLtest()` perteneciente al paquete __vcdExtra__ (se debe instalar previamente) que se aplica de la siguiente forma:
 
-```{r, message=F}
+```{r, message=F, warning=F}
 library(vcdExtra)
 
 HLtest(mod3.1.1)
 ```
 
-El test de bondad de ajuste de Hosmer y Lemeshow nos da un p-valor para el __mod3.1.1__ de 0,22, por lo que concluimos que el modelo ajusta adecuadamente los datos (no hay diferencia significativa entre los datos observados en relación a los esperados).
+El test de bondad de ajuste de Hosmer y Lemeshow nos da un p-valor para el __mod3.1.1__ de 0.22, por lo que concluimos que el modelo ajusta adecuadamente los datos (no hay diferencia significativa entre los datos observados en relación a los esperados).
 
-Por lo tanto podemos decir que nuestro modelo seleccionado transformado a fórmula es:
-
-```{r, echo=F}
-library(equatiomatic)  
-
-extract_eq(mod3.1.1, use_coefs = T, coef_digits = 2)
-```
 
 ### Curva ROC
 
 En R podemos graficar la __curva ROC__ que es una herramienta más específica de modelos predictivos para comparar diferentes modelos. La función `roc()` del paquete __pROC__ se aplica de la siguiente manera:
 
-```{r, out.width="60%", fig.align="center"}
+```{r, out.width="60%", fig.align="center", message=F, warning=F}
 
 ## almacenamos los valores ajustados por el modelo dentro del dataframe
 caminar$prob <- mod3.1.1$fitted.values
@@ -719,7 +712,7 @@ round(exp(confint(mod3.1.1)),2)
 
 Algunos paquetes construyen salidas  formateadas para visualizaciones en tablas. Uno de ellos es **gtsummary** mediante la función `tbl_regression()` 
 
-```{r}
+```{r, message=F, warning=F}
 library(gtsummary)
 
 mod3.1.1 %>%  tbl_regression(exponentiate = T)
@@ -738,24 +731,66 @@ plot(model_parameters(mod3.1.1, exponentiate = T),
 ```
 
 
+### Residuos
 
-### Análisis de residuos
+Como en toda regresión, podemos examinar los residuos para asegurarnos que el modelo se ajusta bien a los datos observados.
+
+El principal propósito de examinar los residuos es:
+
+- Detectar los puntos en los que el modelo se ajusta mal.
+- Detectar los puntos que ejercen una influencia excesiva sobre el modelo.
+
+Para buscar los casos conflictivos podemos fijarnos en lo siguiente:
+
+- Mirar los residuos estandarizados y asegurarnos que no hay valores atípicos.
+
+- Observar el gráfico *Residuals vs Leverage* incluído en la salida de `plot(modelo)` donde se presentan distancias de Cook.
+
+Los residuos se almacenan dentro del objeto de regresión del modelo bajo el nombre **residuals**.
+
+Se puede extraer los residuos estandarizados con la función `rstandar()` y luego clasificar por su valor absoluto y cuantificar.
 
 
-### Multicolinealidad
+```{r}
+caminar$rstandar <- rstandard(mod3.1.1)
 
+caminar %>% mutate(clasif = case_when(
+  between(abs(rstandar),2, 2.5) ~ "> 2",
+  between(abs(rstandar),2.5, 3)  ~ "> 2.5",
+  between(abs(rstandar),3, +Inf) ~ "> 3")) %>% 
+  count(clasif) %>% 
+  mutate(prop = n/sum(n))
+```
 
+Observamos que las proporciones de valores residuales estandarizados por encima de 2.5 y 3 son muy pequeños. Solo hay un caso mayor de 3 que podríamos revisar.
 
+El gráfico para observar distancia de Cook se obtiene ejecutando:
 
+```{r, out.width="70%", fig.align="center"}
+plot(mod3.1.1, which = 5)
+```
+De forma similar a la evaluación de residuos de la regresión lineal, estaremos atentos a valores periféricos en la esquina superior e inferior. Esos lugares, fuera de las líneas punteadas rojas, son los lugares donde los puntos influyentes aparecen.
 
+En este ejemplo no se observa ninguno, por lo que en definitiva, no pareciese existir observaciones influyentes que tengan efecto sobre el modelo.
 
+### Colinealidad
+
+Se dice que existe colinealidad o multicolinealidad cuando dos o más de las covariables del modelo mantienen una relación lineal.
+
+Normalmente lo que se tolera es una multicolinealidad moderada, es decir, una mínima correlación entre covariables. Si esta correlación fuese de mayor importancia, su efecto sería el incremento exagerado de los errores estándar, y en ocasiones, del valor estimado para los coeficientes de regresión, lo que hace las estimaciones poco creíbles. Podemos verificar este supuesto con el estadístico VIF (función `vif()` del paquete **car**):
+
+```{r, message=F, warning=F}
+library(car)
+
+vif(mod3.1.1)
+```
+Los resultados para cada una de las variables independientes es cercano a 1 por lo que descartamos problemas de multicolinealidad.
 
 
 ## Bibliografía
 
 Daniel W. Bioestadística: Base para el análisis de las ciencias de la salud. 4° Edición. Ed. Limusa Wiley, 2002.
 
-Ballester F. y Tenías Burrillo J. M. Estudios ecológicos. Quaderns de Salut Pública i Administració de Serveis de Salut 20. Valencia: Escola Valenciana d´Estudis per a la Salut, 2003.
 
 Epidemiología. Diseño y análisis de estudios. Mauricio Hernández Ávila. Editorial Médica Panamericana, 2007.
 
@@ -767,6 +802,8 @@ Triola, M. Estadística. 10° Edición. Pearson Educación. México. 2009.
 
 Luis Carlos Silva Aycaguer. Excursión a la regresión logística en ciencias de la salud. Ediciones Díaz de Santos, 1995.
 
+Field, A., Miles, J., & Field, Z. Discovering statistics using r (1st edition.). Sage Publications Ltd, 2012
+
 R Core Team. R: A language and environment for statistical
 computing. R Foundation for Statistical Computing, Vienna, Austria, 2021. URL
 <https://www.R-project.org/>.
@@ -775,36 +812,24 @@ Wickham et al. Welcome to the tidyverse. Journal of Open Source Software, 4(43),
 
 Achim Zeileis, Torsten Hothorn. Diagnostic Checking in Regression Relationships. R News 2(3), 7-10. Año 2002. URL https://CRAN.R-project.org/doc/Rnews/
 
-Lüdecke D, Ben-Shachar M, Patil I, Makowski D (2020). “Extracting,
-Computing and Exploring the Parameters of Statistical Models using R.”
+Lüdecke D, Ben-Shachar M, Patil I, Makowski D (2020). “Extracting, Computing and Exploring the Parameters of Statistical Models using R.”
 _Journal of Open Source Software_, *5*(53), 2445. doi: 10.21105/joss.02445
 (URL: https://doi.org/10.21105/joss.02445).
 
-Lüdecke, Patil, Ben-Shachar, Wiernik, Waggoner & Makowski (2020).
-Visualisation Toolbox for 'easystats' and Extra Geoms, Themes and Color
-Palettes for 'ggplot2'. CRAN. Available from
+Lüdecke, Patil, Ben-Shachar, Wiernik, Waggoner & Makowski. Visualisation Toolbox for 'easystats' and Extra Geoms, Themes and Color Palettes for 'ggplot2', 2020. CRAN. Available from
 https://easystats.github.io/see/
 
-Andri Signorell et mult. al. (2021). DescTools: Tools for descriptive
-statistics. R package version 0.99.42.
+Andri Signorell et mult. al. DescTools: Tools for descriptive statistics. 2021. R package version 0.99.42.
 
-Achim Zeileis, Torsten Hothorn (2002). Diagnostic Checking in Regression
-Relationships. R News 2(3), 7-10. URL
-https://CRAN.R-project.org/doc/Rnews/
+Achim Zeileis, Torsten Hothorn. Diagnostic Checking in Regression Relationships. R News 2(3), 7-10, 2002. URL https://CRAN.R-project.org/doc/Rnews/
 
-Michael Friendly (2021). vcdExtra: 'vcd' Extensions and Additions. R
+Michael Friendly. vcdExtra: 'vcd' Extensions and Additions, 2021. R
 package version 0.7-5. https://CRAN.R-project.org/package=vcdExtra
 
-Xavier Robin, Natacha Turck, Alexandre Hainard, Natalia Tiberti,
-Frédérique Lisacek, Jean-Charles Sanchez and Markus Müller (2011). pROC:
-an open-source package for R and S+ to analyze and compare ROC curves.
-BMC Bioinformatics, 12, p. 77.  DOI: 10.1186/1471-2105-12-77
+Xavier Robin, Natacha Turck, Alexandre Hainard, Natalia Tiberti, Frédérique Lisacek, Jean-Charles Sanchez and Markus Müller. pROC: an open-source package for R and S+ to analyze and compare ROC curves. BMC Bioinformatics, 12, p. 77. 2011  DOI: 10.1186/1471-2105-12-77
 <http://www.biomedcentral.com/1471-2105/12/77/>
 
-Daniel D. Sjoberg, Michael Curry, Margie Hannum, Joseph Larmarange,
-Karissa Whiting and Emily C. Zabor (2021). gtsummary: Presentation-Ready
-Data Summary and Analytic Result Tables. R package version 1.4.2.
-https://CRAN.R-project.org/package=gtsummary
+Daniel D. Sjoberg, Michael Curry, Margie Hannum, Joseph Larmarange, Karissa Whiting and Emily C. Zabor. gtsummary: Presentation-Ready Data Summary and Analytic Result Tables. 2021 R package version 1.4.2. https://CRAN.R-project.org/package=gtsummary
 
 Elin Waring, Michael Quinn, Amelia McNamara, Eduardo Arino de la Rubia,
 Hao Zhu and Shannon Ellis (2021). skimr: Compact and Flexible Summaries
