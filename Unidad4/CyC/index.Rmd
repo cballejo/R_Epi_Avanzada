@@ -817,7 +817,7 @@ compare_models(modA, modB, exponentiate = T)
 ```
 Observamos en la comparación del modelo aplicado a los dos estratos que la variable Edaddias se mantiene igual en ambos, pero la variable **Lacto180** posee OR´s bien diferentes.
 
-En R, la forma de incluir y probar un término de interacción dentro de un modelo es mediante el uso del símbolo __\*__ en lugar del __+__. Esto provoca que se tengan en cuenta cada una de las variables individualmente y la interacción.
+En R, la forma de incluir y probar un término de interacción dentro de un modelo es mediante el uso del símbolo $*$ en lugar del $+$. Esto provoca que se tengan en cuenta cada una de las variables individualmente y la interacción.
 
 ```{r}
 ## modelo con termino de interación entre Lacto180 y Parejaest
