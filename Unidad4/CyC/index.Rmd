@@ -323,7 +323,7 @@ Si la función de enlace (link) no se especifica, la primera opción de la lista
 __data__: indica el nombre de la base de datos (dataframe) que contiene las variables del modelo.
 
 
-La salida de resultados de esta función puede obtenerse a través de la función `summary()` al igual que en la regresión lineal. La sintaxis es `summary(nombre_modelo)`, siendo *nombre_modelo* el nombre del modelo ajustado). 
+La salida de resultados de esta función puede obtenerse a través de la función `summary()` al igual que en la regresión lineal. La sintaxis es `summary(nombre_modelo)`, siendo `nombre_modelo` el nombre del modelo ajustado). 
 
 La resultados mostrados del objeto de regresión están compuesto por:
 
@@ -719,9 +719,9 @@ mod3.1.1 %>%  tbl_regression(exponentiate = T)
 ```
 Otros paquetes pueden presentar los resultados del modelo seleccionado mediante gráficos.
 
-Por ejemplo, funciones del paquete parameters y see ofrecen la siguiente salida:
+Por ejemplo, funciones del paquete **parameters** y **see** ofrecen la siguiente salida:
 
-```{r, message=F, warning=F, out.width="60%", fig.align="center"}
+```{r, message=F, warning=F, out.width="70%", fig.align="center"}
 library(parameters)
 library(see)
 
@@ -786,23 +786,79 @@ vif(mod3.1.1)
 ```
 Los resultados para cada una de las variables independientes es cercano a 1 por lo que descartamos problemas de multicolinealidad.
 
+### Interacción
+
+En este punto aplica el mismo concepto y explicación que la expresada en el material de RLM de la Unidad 3.
+
+Ante la pregunta de existencia de una variables modificadora de efecto dentro de la regresión múltiple podemos realizar un análisis comparativo separando por estratos o subgrupos.
+
+El objetivo es identificar si la relación de la variable respuesta y una variable independiente cambia de acuerdo al nivel de otra variable independiente.
+
+Tomemos, por ejemplo las variables **Lacto180** y **Parejaest**. Ambas son estadísticamente significativas dentro del modelo **mod3.1.1**.
+
+Construyamos dos modelos que contengan **Lacto180** y **Edaddias** aplicado en dos subgrupos de la tabla caminar, uno con niños de madres con pareja estable y otro con madres sin pareja estable. 
+
+```{r}
+
+caminar %>% count(Parejaest) ## n en cada estrato
+
+
+# modelo aplicado a observaciones con madres sin pareja estable
+modA <- glm(Camina ~ Lacto180 + Edaddias,
+                data = caminar[caminar$Parejaest == "NO",], 
+                family = binomial)
+
+# modelo aplicado a observaciones con madres son pareja estable
+modB <- glm(Camina ~  Lacto180 + Edaddias,
+                data = caminar[caminar$Parejaest == "SI",],
+                family = binomial)
+
+compare_models(modA, modB, exponentiate = T)
+```
+Observamos en la comparación del modelo aplicado a los dos estratos que la variable Edaddias se mantiene igual en ambos, pero la variable **Lacto180** posee OR´s bien diferentes.
+
+En R, la forma de incluir y probar un término de interacción dentro de un modelo es mediante el uso del símbolo __\*__ en lugar del __+__. Esto provoca que se tengan en cuenta cada una de las variables individualmente y la interacción.
+
+```{r}
+## modelo con termino de interación entre Lacto180 y Parejaest
+
+modI <- glm(Camina ~  Edaddias + Lacto180*Parejaest,
+                data = caminar,
+                family = binomial)
+
+summary(modI)
+
+## comparación del modelo sin y con el termino de interacción
+compare_models(mod3.1.1, modI, exponentiate = T)
+```
+Observamos en los resultados que la interacción es estadísticamente significativa con un AIC global menor al modelo sin interacción (501.42 contra 505.72).
+
+El término de interacción implica el exceso de la variabilidad de los datos que no puede ser explicada por la suma de las variables consideradas. En este caso la interacción es positiva (se dice que existe "sinergia" entre las variables) con un OR de 3,67.
+
+
+### Tamaño de la muestra y número de variables independientes
+
+En el ámbito epidemiológico habitualmente se aplica una fórmula clásica propuesta por Freeman DH (1987), que en términos generales define que el tamaño de la muestra debe ser 10 veces el numero de variables independientes a estimar más uno.
+
+$$n = 10*(k+1)$$
+
+Se ha sugerido asimismo que la variable dicotómica de respuesta debe tener al menos 10 casos para cada uno de los valores (0 y 1). Si esto no sucede las estimaciones no son confiables. 
+
+Podemos decir que nuestro ejemplo supera ampliamente los requisitos del tamaño muestral, dado que la tabla caminar tiene 800 observaciones (419 SI y 381 NO) y el modelo con más variables propuesto (`modI`) incluye 4 variables independientes (lo que define 50 observaciones mínimas.)
+
+```{r}
+# n = 10*(k+1) 
+
+10*(4+1)
+```
 
 ## Bibliografía
 
-Daniel W. Bioestadística: Base para el análisis de las ciencias de la salud. 4° Edición. Ed. Limusa Wiley, 2002.
-
-
-Epidemiología. Diseño y análisis de estudios. Mauricio Hernández Ávila. Editorial Médica Panamericana, 2007.
-
-Escuela Nacional de Sanidad (ENS). Instituto de Salud Carlos III. Ministerio de Ciencia e Innovación. Manual Docente de la Escuela Nacional de Sanidad .Método epidemiológico. Madrid, 2009.
-
-Triola, M. Estadística. 10° Edición. Pearson Educación. México. 2009.
-
-
-
-Luis Carlos Silva Aycaguer. Excursión a la regresión logística en ciencias de la salud. Ediciones Díaz de Santos, 1995.
+Luis Carlos Silva Ayçaguer. Excursión a la regresión logística en ciencias de la salud. Ediciones Díaz de Santos, 1995.
 
 Field, A., Miles, J., & Field, Z. Discovering statistics using r (1st edition.). Sage Publications Ltd, 2012
+
+Ortega Calvo, Manuel  y  Cayuela Dominguez, Aurelio. Regresión logística no condicionada y tamaño de muestra: una revisión bibliográfica. Rev. Esp. Salud Publica [online]. 2002, vol.76, n.2 [citado  2021-07-30], pp.85-93. Disponible en: <http://scielo.isciii.es/scielo.php?script=sci_arttext&pid=S1135-57272002000200002&lng=es&nrm=iso>. ISSN 2173-9110.
 
 R Core Team. R: A language and environment for statistical
 computing. R Foundation for Statistical Computing, Vienna, Austria, 2021. URL
