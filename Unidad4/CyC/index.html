@@ -367,7 +367,7 @@ div.tocify {
 <p>Para comparar modelos de RLog, podemos usar: <strong>AIC</strong>, <strong>LRT</strong> o un <strong>ANOVA</strong> entre los modelos.</p>
 <p>En la expresión del AIC : <span class="math inline">\(AIC= 2k – 2ln(D)\)</span>; el primer término penaliza por la incorporación de variables al modelo, mientras que el segundo compensa por la bondad del ajuste. Dado un conjunto de modelos candidatos para los datos, el modelo preferido es el que tiene el valor mínimo de AIC.</p>
 <p>El <strong>Likelihood Ratio Test</strong> también permite la comparación entre 2 modelos. En este caso, ya no se trata del cociente entre el modelo nulo y el actual, sino entre la <span class="math inline">\(V\)</span> de dos modelos a comparar. El estadístico tiene una distribución Chi-cuadrado con grados de libertad dados por la diferencia de grados de libertad de los dos modelos comparados.</p>
-<p>En R, el función <code>anova()</code> nos permite también la comparación:</p>
+<p>En R, la función <code>anova()</code> nos permite también la comparación:</p>
 <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAp8AAAFYCAYAAAAV7ZeZAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAADIWSURBVHhe7dqNcSM5z2hhJzKROBVHMqk4ksnE2cyts5+xF4sXZP+oRVn2eaq6bLXY/AHZJMa7L38lSZKkRUw+JUmStIzJpyRJkpYx+ZQkSdIyJp+S9ETe39///vr16/OTJD0fk8+Dfv/+/c/1CG9vb39fXl5Ot//x8fHP83H9+fPn85vbcSBeXec90U/6e8sh/vr6+m8smZur0Keolzb0deR3ML9P/H5UvDNH5/gRyWceKyIO3bp/5B4p6TmYfB4Um++jcPBcsbFzaFyRKMYhxAF6VZ0rXXGIM+buED6D/jDHgblemYCuTmqyZ1g/zAfrPeaI30d7QvwDJy7GRxKX1wqfn+UfGIwh1kfEYbQX8Z0kjbhDHMBGe1WScdZXSz6zZ0geqq+UfI7mluTkzF/WzjD5nGOOSKyin8Srixnl6v1I2PJaeabkk/FEXyMO/Owwxiv2KUnf06XJZ2yu+aqHZmxabGJs4LOyodZbNzXqyt9Tb607b/BsoqPvZnguH47RBvfZbPmdn4wj6u42563xhDoG6uKq5XN7ceV+dvYc9F1cZ/bUORPzkuOD6Ec3T3Xs1DGS5z3q6srXcTOuGca8VSbW/d46M/ozejeuUsecr25Ocyy5RmsYuSy/xzoO9X3I16zeRyAW9Cvmg7jFWsq6e2Dcee6ph7J1fXTznePUrdusvhe0ydXVW8vlZzP6GX2POIzed+5v9VHSz3Vp8tltRN0GxeYWB1IYbVaxaWbdPTbv0SGQDzrU/vD91kbJM3UzDtyP/vCTz4wxxpl1fe/udX1iLNyrB3LXL8rVcWe0181X6J6/tc49qCPGEzGP8TL+XH83J909cC8/G/Hlymi/jpH2u7UVqLfOX9Y9v1VnoO495a5S49Gp8wDG38WgluV35qJbRzxf6z2LcdDO6Dob00jMAn2u7yNjq/dGor4cd2KwNQ9b3+c+gv5wj/ZCtJ3vxbrs4pPHWuPQ4fur5lPS9zLfPS7QbcTdpgc2vHyP37sDDdRZNzY25Pr81iYdatsV4xgdWLkN+pUP1vzdkfGM2qqHHb+P+j2qA9QzOhjofx5DdrbOvXIdjCu3V2M76kuNc41t4F6dnxzbbFQHuJ/bq0b9nMUZ9Gfv+r3KVnuMddRnYlDXIvXVeyNXrJ+voK7TmdEcs2ZmcZvN0951080X6P/sPd+LOvbGQdLPcmnyyUZGUlmveqBTrtvc6oY7O5y5X+vlc75XPwfudf3sNuLAM6MNOW/0lMt9zt/tHQ/9GCUzddz0qRtLXKMxzQ760aGEreduTR5yHfQhx7zGdjQfyHHfW466uxjGleOe0V/63eG7M88xdtpcbStpYSw1Lvnq1nctM1ojV6yfr6Cu05m6xgP3Ru8gtuaJONa4V6M6Rn06ijpGa1/Sz3bZ6RaHZd0wa7KEvRsuz4428VG9eZPt+sMze9quaK97DnkTrwdPTW72jId+jJKSXA5b/R6ZHfR8N6pz67lbk4dcB33IMa+xHc0Hctz3lqux3Yv+0u8O343qHD3H/S5ZWGGUkIQ6B2fQRsxxdsX6CbRBDEfXbE3c6sg6qms8cG/2Xm/NU0VdjDsb1THq01HUcetakfQ9XXbCjQ6lbiPeu+Hy++hQp87uoIoNj6trY7Th1rarWUKQ66xxyN8dGU/Xd/B8jmcX3z1mB33ErzPqF/YkD9RLHEfzkOuo66TGdtSXGuca28C92o9Rv2aoJ7dXjfrZxZnPe/vAOCOZmq3dI7barnNyxihee9bPszgyh108uTeb0zPrtL4/xLtrgzK3zjFYl99lPiVd67Lks9uw2NzYgGpydGTDpY7ugO4OL0Q/uOpz6O7vPcDZ8LvNNB8EdYOvh8Te8XCvxogy1Ffj2d3DbEzUNTsYqHPPXGRbdYIys0Mp11HXSY0t5WqMQP1VjQXPMsY6P7RR74F+dTEGdfH9CM/VZ7u+U6YbD3V380gsGNeoX2fQfo5xtJHbpz9dP+uzo/nhHt9VjCPHkTZpO9f5LGJ9VTV2dY0H7nVzHrq6Q7feUN+Lrm1iTd1dn44YjV+ScFnyCTY8Nri4+ByHV2xm8TmukO/Vw4Zn8/dbGyOb3mzj47tcX2zC/D476OrhyAZb64kYRLloKx+2e8dTY9XFM9BeLstVD6867nx1465laL+K8XZXd3jSh9F4c/+ol+fjM2psUWPE1bWLXIa28r38TJ1Xrjr22bi78dX5ifazui7y1Y0p6rxabrfrJ7q41zUUCchWuazGYDSXz2BrHdUYhnwvYtXVla+MNrq4d7GsfSD+lBu9o3uxNus7I0nh+pPrm2OD1jkcasQvJ+I6jwTDA15XuyL5dJ+UNOMOcRCHvQf+OcTt1kNN/yf+EiZd7dbk0z1S0hZPL0lS+5/2Jeke3F0kSZK0jMmnJEmSljH5lCRJ0jImn5IkSVrG5FOSJEnLmHxKkiRpGZNPSZIkLWPyKUmSpGVMPiVJkrSMyackSZKWMfmUJEnSMiafkiRJWsbkU5IkScuYfEqSJGkZk09JkiQtY/IpSZKkZUw+JUmStIzJpyRJkpYx+ZQkSdIyJp+SJElaxuRTkiRJy5h8SpIkaRmTT0mSJC1j8ilJkqRlTD4lSZK0jMnnxd7e3v65tNavX7/+vr+/f36SJElf1bdKPl9eXv69HpWIPEvy+fv37//Ei+uZmXyeR9yY/9fX1887c3/+/PnPuvn4+Pj8RpKkbZdlHPVA4iLBeQTaNREZY672JhozkbTUi0RQ98PcdXGPi/k9igTyzJrgGZNPSdIRd/lzF8kHB+CjkhCTzzlic9U/DLqkJf4hovvICR+xzn9p53eTT0nSV3Z5hpCTzu4gzP+JL5KUuLpDjDpyGa4to+ST+rt6RvdR+0jd3SHNvSiz9Z/dqSPXSRtnDv6sxqkbf8S+u+o87TVKWqivxqFrP6vzkNdRvp/HNrpf5fnh6v5hFO0wP3mOZv+Iqn3jua4892q5sxhLvCs1zvye55Lfc7tcXZzyPOayue5O7ktna84lST/P5ScBh1UcrF0CAg6rOIwDZbtDOx+kiARlduDR/igRicO4inqz6GfGeGYH6GjMgX7V72mjS+D24tmazHT3An24JfnJiNGo7zl2xKWWG80l5er8dfOTzeYcdR2N1gF11Pmg7m5Ouxh364NytX3KzdbJDPVFzOp64/fcVm0XXb9jHut8bPUz96Wibb7PYh5Hz0iSvr/xaX5SPVi6hHJ0AM0Osmwr0dj6vjt8OWDrve7w3FKTgYo2aju3oL1RffSjiyexuaoP1D+KUZ7PUUz4vn7XxX0rbnw3m/MO7dJWFslnVe/N4p5RbtSv0fwcQf2j2I50c8a9UVLYxSnkOa5G/aL80T5Lkr6PS5NPDtkuaaiHb3f4oTvIOPQ4FOs1SzS2EhHaoI6Mz90hSj253S4xyfYkA3yf67zlIGaso8RgFAfu7Umc9hjNJfJ85vHWa5Ts5fmon6utOa/zGFeN3Sg2tY+zuGeU69qNa9bnPfasN/pe261zNptH+jjqZ/fOhtpmvro5lyT9DJcmnxxE3UGz96CrBxkHK89XW4nG1vfgwI4kg597E0D6NDs49yQD1ZH2K54dJUGjOHAvxn6rWdKS43Q02cgxob+jNsJorOB+1z7119iNYlOfp8wo7tmsX1fYWm/0u7bfzdlsHnl+NIb6zmZH51yS9DNclnxyAHWJIuoBNTroarkuOcDWgb7nwM/95Wdud8uoX9hKBkbOHtS01yVLoB/duIjN6JmjRnPJ/RyHWcw6eX6of2s+Z3Ne11Xo+jSKTZ0fyu2Z51F8rjJbb6Pvuj5FvEdx6u5jFFt08ZUk6bLkkwN7dAjWA707/FAPsq5OynBIzpKRWSKSUTd1jfrN/VoP/ZslirNkADxbD+u9icwIMamHPDHIMc/qfNxiNJc1RpQj1rWffB7Fk3rpZyShM7M5J7Z1vLTZ9WcUm66P9K9bH7Ve2u9i1D1/FO2M1k70JaM97tX+xDzyHb8HYjFbmzyTy2ddLDCbc0nS93dJ8hmHVlz5sMn347DN90K+lw9kDr76XSQk+VCsfchXl0wgDsfR4Un9kaTkq4r+dBf9yrp+1jJn1H52CUONZb7OqHOZr5pwhNrPWRJCHZQZzd+ROa9lqTviEWVzfGJOog9x1bXS9aHTxSqv86O6NdfFsvaf/sa650L0LcYc33F16yh/X69u3o/MuSTp+zuXdXwTHLpx4EqSJOn+fnTyyV9gur/USJIk6T5+XPLZ/WfS7j8tSpIk6Xo/+i+fkiRJWsvkU5IkScuYfEqSJGkZk09JkiQtY/IpSZKkZUw+JUmStIzJpyRJkpYx+ZQkSdIyJp+SJElaxuRTkiRJy5h8SpIkaRmTT0mSJC1j8ilJkqRlTD4lSZK0jMmnJEmSljH5lCRJ0jImn5IkSVrG5FOSJEnLmHxKkiRpGZNPSZIkLWPyKUmSpGVMPiVJkrSMyackSZKWMfmUJEnSMiafkiRJWsbkU5IkScs8XfL58fHx9+Xl5Z/rrLe3t3/reH19/bx7jV+/fl1ep67358+ff+af+brK79+//6mT9SVJknqXJJ9xkHO9v79/3v0/s+9ucUXSQCJ7RaKYE2LGaPJ5f5HojS7W3R5XJp+gXZNPSZLGLvvLZyRd9TDnIOY+ycKVvlLymd2jTvVGiR73TD4lSfqaLk0+STA5zPPBz1+h4ruq/rVqhGQuykSy0CUNHPq5vq0k8JHJZ4zpqkSFGNex1ySsluHK3+e/4MZfFmMs+f5XMUr06rgDaybGEeOq62grRlmOFxexyX2KOY5YcvEM3/N7t4Zz2VGZEPXENYtHLhdj70Sf46LOrzTnkqTnd3nyyc843PjMwRffhTi0+Rm6e+Dw5fnAYUi5eihTfz0keW52eNPW7CA+Y2+dcch3ycJRjLu2ydgjeQj591DjC+7lOcz18PtXQZ8ifltxr7GItVHXx94YUa7Ggr5QNs9pxI/+cfF7fM/PXC+/52fRtYNuvee6Q1cuxl7V/kR/6/OSJN3i8uQTHGwcmvEzfwcOOQ62Tk4geC4fhiEOxaweumFUB6hnlrCccY86t9zSHvNTY5cTkzp3tDWauy20w7xdFZ9IzOIa1Uv/KVvFGt3SxWjWVi7L57z+ZrEdrWHaz+VA2dG6zkZ18mx9njF1cZIk6Up3ST75ySEbB209ZGfJRz6cOThHiU4ux4GZk5B6jQ7g75B8donJzJ74zBIkxnYm+aSOaIffI0bUfzZeOSmcxX1Wfx5r2BOjUZ25T2CsOckbxZb+d+3G1bXHvVwmzxPOvBf0L5fJfZck6Qp3ST7BwRWf63d7kwEOx1Gik8vVA3+veySK96hz5kjyyZxQPutiN0qQwNhGc3IE9dKf3NZRo3mv9/euN+yN0ajOWpbY5QRuFNsr1g3t5rkaxecI+pT7L0nSre6WfGb1Ow7EUQKTD2Ce6w4+niVJyM4kMfdIFO9R5wzt7Rn7aH66BGWUIIGxjeZutVFy1SWA3Ku4Nxtr6NoZzTHP17bzGr53bOta2LM2ZlavZ0nS9/eQ5HOUMHGvHr7cy4kD33d/MaONmpCiJgPZPQ7WvXVShv6O+nbEaIzEKOJeEy3wXdeHXO4eCdJVuqQQ3X3Gmfsd8chjPRKjUVnu5bLcI4YhP1NjS521n6BcXVOUq6gr14e97wVt1vGAMrn/kiTd6pLkkwOKAy4uDlFwoOX7+QCNgzZf8VzFoZjL5Xv5mdoeV00a4jDuru7w3aurj6u2H65MPkEyUduu8axjp+2YB8Ze48d38UzMXfT70QlJN958dXHN38dcx+dI+LZilMX9UdmIVXyH+Ex7NbYhysRVvwf113LdmLHnvaBMV2dNZiVJutUlyackSZK0h8mnJEmSljH5lCRJ0jImn5IkSVrG5FOSJEnLmHxKkiRpGZNPSZIkLWPyKUmSpGVMPiVJkrSMyackSZKWMfmUJEnSMiafkiRJWsbkU5IkScuYfEqSJGkZk09JkiQtY/IpSZKkZUw+JUmStIzJpyRJkpYx+ZQkSdIyJp+SJElaxuRTkiRJy5h8SpIkaRmTT0mSJC1j8ilJkqRlTD4lSZK0jMmnJEmSljH5lCRJ0jImn5IkSVrG5FOSJEnLPF3y+fHx8ffl5eWf66y3t7d/63h9ff28ezvqinp//fr1eVdf0Z8/fy6fp9+/f/9TJ+tLOmrP2nl/f/93j+GaifW4p15JWumS5DMOci42x2z23S2uSBpIZK9KPqmHzT4wVhPQ+8kHa3ex7va4eo5o14P+f10Rl5p4xbXalWum7o+zGFE271fsX6O+8H7kuvh85f4rSbe4bOdmY2NjrJshG2BNzK5wxQFwVfI5Oli5x3e6jyvibvK5xpVxufIfjWdcvWbCVoz4jrFn7KvdWu/i88iYSVJ2afLJRsjGnDfD+Bd9l3zGv/jjGmHTjDKx8XcHAJtzrm9rs733IUZ/uoMBMaarDmRiXMde269luPL3xCPuM1/8jPjk+18Ffe/iN4o7aybGEeOq62grRlmOF1ckAtGnmOOIJRfP8D2/d2s4lx2VCVFPXLN45HIx9k70OS7qvGLOR307Y+97W8cyiyVyWS7WQu5zXj/1ok9VXUtb49+KEd/VdmLNZaM5656XpEe4PPnkZxwMfGbDi+8CG2DdsLt7YMPn+cDGSrl6kFB/3XB5bnbg0NaeQ+wM6p61HQfj1oG0B+Ou42Ds1J8PpnpIocYX3MtzmOvh96+CPkX8tuayxiLWRp2jvTGiXI0FfaFsntOIH/3j4vf4np+5Xn7Pz6JrB916z3WHrlyMvar9if7W58/Ic3WrrbkOdS5HsYxx8jPr4okudhUxq33s7mVbMaJ/dS668tTTzRlla0wk6REuTz7B5swmFz/zd2ATrBt9yJszz+XDMMRhkY027VEdoJ49h9gZ3SF3L7eMoTvw8uFa5462RnO3hXaIy1Uxp+/UF9eoXvrfHbqxRrd0MZq1lcvyOa+/WWxHa5j2czlQdrSus1GdPFufZ0xdnM5irHl+6nV2Hd3y3hKPOkbuHenLnjUz6l8X99Cts4rvcwy7+aL+ul7QjV2SHuEuySc/2aBjk66b4ezgyBv77FDI5dhQ84Zcr9GGfsshNkObZw/Woxh7d9CM1Nhw1fjk2HZzd2Zs1BHt8HvEnfrPzkE+rGdzOas/jzXsidGoztwnMFbGGEaxpf9du3F17XEvl8nzhDPvBf3LZXLfb1Hjcou97y19z2OJi75ke+rKujWTUX+dizCLw1aMqLPWS1/q+zhqn7rr2CXpEe6SfIJNPj7X72abfd7Y2SxHiU4ut7Vpj+w9xPaKBGLU53sYHTSd7uDtYpdj283dFeOLxGDrIJ8ZzXu9v3e9YW+MRnXWssSOsYZRbK9Yi7Sb52oUnyPoU+7/WVf0JYxixb1Ym/S5W1v0oc7v0bhvrVnqH72TszhsxajrJ+Os8zOqh3sr9yZJGrlb8pnV72abYN5gu40VPEuSkJ1JYkaH2Bls+LVPKzCGPWMfzU93UI0SJOQD/tFGh2y9T/+5V3FvNtbQtTNaNzxf285r+N6xrWthz9qYueodGc3VGaM+5fiNYkkf6lqgbLc+RvbEdBQz5jyvh2wrRt13PNPVN4qPJH0FD0k+ORS6DZx79cDgXj4Y+L77ixltdMlfTQYy6rpiQ6btbjy0PTrUaJf+XnEgj8ZInyLu9KP2ke+6PuRyde7od3eoP8LosO7uM87c74hHHuuRGI3Kci+X5R4xDPmZGlvqrP0E5eo6pVxFXbk+8OyobO4nbdbxgDK5/2d1c3LW6L3Na5O2aiwYH7GgLxnPjGLUxYR7uQ7K1ee5V9vnma7fYStGzEOdi1F9lMt97J6VpEf53x33BDZMNt+4YtOLTT2uvFFSJn/HlTfLLA6NuPK9/Extj6tu5mzAtUxc3UGzRx1/vkZjIhZ8PztsjogDcNZ2HTttxzww9ho/votnYu6i348+yLrx5quLa/4+5jo+R9KyFaMs7o/KRqziO8Rn2quxDVEmrvo9qL+W68aMPe8FZbo6awL1SHVuuivmETn+XMwN4+b3Oq49MQq1bDc/iLbiqusHXbtxdbGvY5q9h3k+R32UpEe4JPmUJEmS9jD5lCRJ0jImn5IkSVrG5FOSJEnLmHxKkiRpGZNPSZIkLWPyKUmSpGVMPiVJkrSMyackSZKWMfmUJEnSMiafkiRJWsbkU5IkScuYfEqSJGkZk09JkiQtY/IpSZKkZUw+JUmStIzJpyRJkpYx+ZQkSdIyJp+SJElaxuRTkiRJy5h8SpIkaRmTT0mSJC1j8ilJkqRlTD4lSZK0jMmnJEmSljH5lCRJ0jImn5IkSVrG5FOSJEnLmHzu9PLy8vfPnz+fn/TV/Pr16+/7+/vnJ+kc33ON/P79++/r6+vnJ0m3MPnc6eihxEbFM29vb593vpboX76e2dHkk7lkzDyn81jfeQ09ezwZg8nn45Dc3Tv+sWbZA4/Yk3xSr6RtX/pN4SCLQy1fz/IXLjbReyef9fCPa9Yu/briX/DU0bV9dFN/pHsnS6zVLkZfLUk7M5eM7Yr13f1DiOuKNaprjPbiK9/1q/alup5Yp3EFfr/HPkWd96hX+m6+/D/TONzqv4TZCPNG8lWtSD7RbaR8Hm3kV2681FPngnafZQNekQR+fHz8z1ywNjgYv5JuLlm/ozXclT+re1eo+6sl6T9Ztxdz76o1wDvS1cX90RqsKFfL8nwkoYHf77FH8a5/tfda+oqeMvnsDnNQNv61y9WVCbEhxUUbdTOKjSSXGallqas7UO9htJHW5IDfcx/zNRvbTG0jdElD1/4I9eZy9K+bz1ym60eW/3oTdT0q+US3Puq4a/94Jn8f9Xbr+ajRXNZ3sPYxX4z1jC4WoD+0l22950djdOQ9z+W4uj5HO/Q997X2M6t949k697WfXLO+Xq2ug5DHlWMfayk+d7EKMbaRWHPd+gy0XddKoO38LL9TNs/PaC/YO4eBMrN+Snri5LNuZGwkdeNhA+g2lLoRxcY32rjQ9SPEhptRnrZrP+8hNtKKcXWb5aj8GdTTbbS1XWJU70Xc+ZlRX40bsZxt/KN+BNrJ80dZ6hwdOFcazQNy+924u7UFnqvrkc+3jGcUQ+rt1vFWzI8YtYE8JtrkymIuqzMxog/1mcA81rVKX7q55T7t5DHxe+07KFfjSJ21n6N1cNUcbOliM1rbjJPy+f2exXYUx4oyXRwwq78iZtTDMyH6PDJ7j7O9Y5F+sqdLPtkA8oYWRpsGm0y3se/dpMJsYxttNFub2VUYH211uoN2Vv4o6qnxZX5qrEZxYB7rd9R5tH9dPwLfdXPHvS4+V5sdWtyPtTyKEf2s8WCstTyfRzHYYxTDUf9nMT+KMY7Gn+doVIZ+1L7w+WiM+L5bKzPdGiI2NWZdHLt+d6gv1kk1WltX62Iziif9PfJuUQ/P7EEc2GPquPk8ilHVrQ3M+jx6D6pV+4r0zJ4i+WSjyVfFy17L5Gu0yeQyWwcAdYwOpdGGRPmu7avR99HG3W2Cs/JHUU+OI1d3ANQy+er6WOd9K470YzSHswNjxSExO7TiwOTK461X9zz3s/r5qFEMR/2fxfyo2bsSc3TmPed+Vj9X1DF6z1HXZVxVF5sujtTH/S0817Ub1546btWNnXF2jq4Nxjeqa4Ty9CHaoY69ceCZrr3ZfjB6D6pYp5LGvvwbUg+DbpOaHVx7Ue9ss6z9yEYb0hX92mO0kY42y1H5M6gnx43xdmO+NcmjnVksaz+y2YHx6OQz2t97sGXEI+ZxKz57jGI4WsezmB81e1dy8nl0jEdjxPej95zvuue7NdTFpptj6uP+Fp7bU+6eZrGpjq4N6o552kIcSO66WO7tH33r2pvtB3vfUfqwYl+RntnTJZ9gA6j3bn3ZtzaW2cY2em7PYXeF0UbK/e4AGJU/g3pqG4y5u7f3YBiZzXHXj8B3XdvcW3FIjNYW9/P6oAz39sr95+et8R3FcBS/WcyPov7uXeE+7YSj83U0RrN1Omq7u9/FplsHlMvjG6GuPeXu6cg73I1/hvKz/TdQZvRXRfrWraHOKJ6z9bV1RoS9Y5F+sqdMPtkE6gbEZtJtSmwEeUPi2W6Docxss5xtvNyvddIu90abYWyio++P6DbS2UY52njPoJ4uboyNPoSYsxrDLnZ8zs+CNmaxGvUj1P5Eu7XtQH08M/r+iNFc1LrpU+0nGNdoLqmDvl7Rzy6G9GkU962YHzFqp46L9ohRRV9G/TwSI+qgLx2ez9/Fmh71p8Zmtg5qm3yuayHGUXVr5h5msamOro2I5Qj18f1WnZQbraMcO+rpYjlbI6P5qyhzZOzSTzR+278ANgI2nLiy2IxGh0FcdSOiTK2Xa7QR1XJx1c0lDou4YqPm925DY4Piuz2b2Qzt5HbzVR0pu0eMIa58ABIf7tU41ZjOYpOvLk5dubi6+czfR7vxOfcdsb64bhFx6K7RQV7LzdbIKM5HjWK5d35GZffIsa5XnRfsec+zrRjVNZmv+kz9HvF8zGeOT/Qr+hBXVfswimX3DncxuloXo67dW/YY4tbNEW3P5rfq1lN+13If492q+3eMrc5bvro5irUpac63RJL0cCSAkQw+KxLf7h++kv7L5FOS9CWQfI7+i8Az8K+e0j6+KZIkSVrG5FOSJEnLmHxKkiRpGZNPSZIkLWPyKUmSpGVMPiVJkrSMyackSZKWMfmUJEnSMiafkiRJWsbkU5IkScuYfEqSJGkZk09JkiQtY/IpSZKkZUw+JUmStIzJpyRJkpYx+ZQkSdIyJp+SJElaxuRTkiRJy5h8SpIkaRmTT0mSJC1j8ilJkqRlTD4lSZK0jMmnJEmSljH5lCRJ0jImn5IkSVrG5FOSJEnLmHxKkiRpmbskn+/v739fXl7+/vnz5/OOjvr9+/c/MeyuzsfHx3/K8Hkkl2OufopYl3HtQbm3t7fPT/+L76K+19fXz7vn5fri+vXr1+e3/1XHM5tzSZK+ikuTzzg4OYT53eTzPJLPLjEcJSI1+RglIzyf7zNXP2GeGGNODonBKJaBOaDMKPnke67AfI3K7rX3vWEsdTwmoJKkZ3C3/+xu8nk9EosuuSHp6RLVWpb5yMkSRnV+N4yxJmbEYrRGI5nj+1F8cvIXuntH0NbZ94Y1UOdXkqSvxuTziZBYdEnmKImqiRBlTD7/v1nySfn4fhQfk09Jko4z+XwiJDY1gQIJR5eU8pe7qiZSPNvV+d0wxpqYjZJK1m38J/lZ8knM8xrv2jiKtpi3fO2dnyNlJUl6FJPPJ0FSMfurWk48iDufu/+nMb6La5RYfUc1sRutT+IcyTxlZjEixrnOe6DeUVJJshttm3hKkp6ByeeT2PpPqiQekYRwoSarlKkJKXXe+te6Z9CNk1jUhI0457jNkk/K5TXexfcKtLFnjph33zlJ0ldn8vkkSHSO/mWrJkIkVvEXvawmqd9RN8YuHvWvo3F1CWhXJ+WOztOWvcknfsJcSpKem8nnkzj6FzWSlZpY8bmbky6x+m66MRKLLhnPKDOKT3efuF+dfHZzOXKPv7xKknQlk88nQBz3/uULlB0lTPUvYyQ1exObZ9aNc89fCbeSz5pozuqkPH9FHZVh3rq/VvNMRpvcq+8Xz/6EuZQkPbdLk08Oz/jPlPW6+q9BP8lWIh8JSlyjZAm17E/6z7SMNY99K1HLZUdxymW4Zus8ks/ZXyeZ51zfrCzf5bImnpKkZ3C3v3xKkiRJlcmnJEmSljH5lCRJ0jImn5IkSVrG5FOSJEnLmHxKkiRpGZNPSZIkLWPyKUmSpGVMPiVJkrSMyackSZKWMfmUJEnSMiafkiRJWsbkU5IkScuYfEqSJGkZk09JkiQtY/IpSZKkZUw+JUmStIzJpyRJkpYx+ZQkSdIyJp+SJElaxuRTkiRJy5h8SpIkaRmTT0mSJC1j8ilJkqRlTD4lSZK0jMmnJEmSljH5lCRJ0jImn5IkSVrG5FOSJEnLXJ58/vnz5+/Ly8u/1/v7++c3OuL379//iWO+Oh8fH/8pw+fq9fX1P2Xi4v53V9dlXNzv5FgxFyNvb2//lvv169fn3fNyfaN661zna+X7Rlu0OYrhV1Dfo+69ADHO5biYi5mYqyvkfu55H/eO61Hy+3PFe4E8R4/Ys2hz71jucQ7ubZt1ueedpMzWGpfu5dLkM164jBfGBPQ4DpcubqMNiLjnA6h+BptnvcfnR2zkqx3ZaCmXE876ORDjfJ/52ntAjOw5OEZzNlozV6OPjJ0+7OnvoxCPHCfi1r0XODpvUdet8w3mLPezfq5ok7h/VfT96veC5/ParnN7T8wz195xMDdXrItqb51738kje6J0tUuTTzaDurGPDkodRyy7zYJNMW/MYc/GMnr2uzmy0Xbrde+zlLslGbvl+Ue8Z7eO9566w5q1nhOjcDRZINbUdUWS0c0bdXdxXRFv2ibZOtMOz3Tvyi39Hs0Zcev+IXFPW/M96utZjDHiGW3neyHmDBHrfC+LRDrPVdyTVrk0+eyYfF6HTa3bILjfbex74v6IDfwRRodiNUrwRzGuYuM/6+zzj3rPbh3varw/XXJwJIlkvFH+XsknbdR+jtbmlUhC7rGO7rFOur2Lz4whX1e2uzXf94gd6yCPZ5Qk1rHP+sJ3uWyNo3Rvd08+2XT8F9U1us0WbE5djNlUtlxxeD4DDqC82XJ1SQjx7TbtPes4JyVn0U7t556DYZRU3ds9kop7Yn66eHI/x3w2j3wXY751vtHVwXwS24x7cUU/r0p2Ihm5RxJCnVfEKSP+3dgZQ0XbxOwKs3EwTuaMnzE/XX/OiDmva6Kzt93Ya66KjXTEXZNPDsNHHIjfERva7KBhE4mDIxKtrQ2fTecnzw+bbzf+ep84zg6wOLi34n1WntsR+rBV5h6I1bMkn8Rob18p180nayC/h1fMea2TmFIvPzPKcY/1EOLeWTxPffy8l9zfK7DOu7jzzo7egRzfW8zmm7ZjfmKdjfp6RF6LW3sB5ShPP2Z7O99RZrTOpXu7W/IZi1vX4HCYbSZsSGxMcWFrw43N5ycbxYj7EUtiH9cMsYzYX4l6Z3OPRx0gz7KGmM+jCRYxr2NjfvPhf1XcaSvWGzGNRCbjc20fPDtLSDqxX1yVlI10/b1F9LuT39nuyv1g3royXLN3bTbfrC+er+uMNXR07WV5jqhn1D++y+3M+prr9BzQI9wl+WQx141Tt2GzOLqJbx2MVx2cz2zv4bt3g6bM7PA6Y6vO2YF0b89wcLHOzxz+xDSPjd9rohLX1bo55XO3XpmDswke7dD/M/GZiSTxbL86Ef+RM3vkUbM9c9Q/Ynt1fKVnd/muyQbwqIPwOzuaKDIHsw2PjfKn/wOBg2pP8rm3HO4R1625fGQC+NWTT5KBs/3bk8zc6x9wo3q75OaK/ZaxXpUsEu9ZkngG638r1pS599mz1QfiWNcbn7/yOyI9wqU7BC9md0juPbjVY+M6sqlSdisBosxP2RA5ULskhHuzpA7xbMVz9X6UHR3gzAnfj94H5qQebl071SPfr6+afI7monuXiF99X/i8J65bycjWnHeocxTT+m6zPmrfb3G0rxX96WIy229oj3ZH4+DZrk+Ur/NL23V+0a2FM7bmmzHmMrS59Yz0E12WfMZm3123bGbaPuAjQYlrz2H0EzdExpzjNIppLsM10q352QHHvFBmFnv6lOvbmifK75nvK3G45z7m64oD/gr1nchXl5zUMW3FNOYyrtG498x5JF9xzd515L7eY2+N2J2ZyxqXfI3GFeMfjaXGJ19dH7s+3LIu674R16i/9R2W9L98MyRJkrSMyackSZKWMfmUJEnSMiafkiRJWsbkU5IkScuYfEqSJGkZk09JkiQtY/IpSZKkZUw+JUmStIzJpyRJkpYx+ZQkSdIyJp+SJElaxuRTkiRJy5h8SpIkaRmTT0mSJC1j8ilJkqRlTD4lSZK0jMmnJEmSljH5lCRJ0jImn5IkSVrG5FOSJEnLmHxKkiRpGZNPSZIkLWPyKUmSpGVMPiVJkrSMyackSZKWMfmUJEnSMiafkiRJWsbkU5IkScuYfEqSJGkZk09JkiQtY/IpSZKkZUw+JUmStIzJpyRJkpYx+ZQkSdIylyafLy8vw+v9/f2z1N+/b29vbRmu19fXz1J//358fLRl4vrz589nSUmSJD0D//IpSZKkZUw+JUmStIzJpyRJkpYx+ZQkSdIyJp+SJElaxuRTkiRJy5h8SpIkaRmTT0mSJC1j8ilJkqRlTD4lSZK0jMmnJEmSljH5lCRJ0jImn5IkSVrG5FOSJEnLmHxKkiRpGZNPSZIkLWPyKUmSpGVMPiVJkrSMyackSZKWMfmUJEnSMiafkiRJWsbkU5IkScuYfEqSJGkZk09JkiQtY/IpSZKkZUw+JUmStIzJpyRJkpYx+ZQkSdIyJp+SJElaxuRTkiRJy5h8SpIkaRmTT0mSJC3z8OTz9fX17+/fvz8/rUW7tC9JkqQ1TD53Jp+UfXl5+c/1Hfz69eufsfz58+fzzveW5+/j4+Pz7m1ibRDLLXvKgDrf398/P40xhj1rOOb5yneNdiOWe/q6R/STa7Ym8/v49vb2ebfH95S70qPmnO9j3FdhDUWdV9XL3EV9W+OPWF71PiK3v1Uv63irzJH53ivP5d5zaMue9yK3m68r4n91nGKP2XrHj4j9gIv+XiFieuU5mt/LK+q9xxoG9Z1Zv5dnUHVhM+CrXqxHYeKffQwzvIxXvjRfFesxb7BXvoTUVevv7G2T94Z3aQvtba3N2MSuXMPUlfvH562xbyE2eR2OYkVs8mE0ilXMCd/vjfsRUf/KOY+D86r3NdZG2LOettC3PGY+d8kD7dA2312xfqqI1VZM97Qdfb2qj/Qpx5nPzP8t9r4XV7Q1s/e92IN6rnx3iU8eO59veZdijTGXt9bVoa/Uf8V8XbmGqYO6uOpa3uvS5JPA107E5Fz10j7CvV/WR7vHS/PVMH91jMxrtzmfQT3xIlbEN96L2EjzvUD/4l2hv9SV72XUQxnu57q7dRp9u2qOqae2Qz8Y01n0scauawfdRtfdy648wELEtfYb95hzUNfWWI+gT7Ud+nHLWun617WT8czs+zOojzh265IxxrxE2/leNarnrC5Gt87r3jpZY917dZXZe3FEvAe31hOY424Ob417oO5b3psRYnBFH69ew4G4nunfpcnnaNPqOsZLTjC4tl4Eno+yBC82FS7wfHwXCz9/X1Euvp8FrdaVr3sssk4eOxd96jbIPKYo14lYxRUvZB1PvPi1bKfGic+juOa5WxVDdP2JsV+FeRnVV2M0W/O53OgwRJ3zUTwpN1vnRx15z/eij936qnXSbhe70fNhFsdbrJzzeHeufG+6ORvFeK+uTmLBNcIzs/k7i7kZxZNx5riP5jHKXdU/6unaGr1Xe4zmrHsvmIdb5neP2XuxF3288r0drcFb9q2M8Z6dvxniwPq7xdVrOKPOMzG8NPlkYo8ulq0XgfrygqEsA62DJbiUze3z3Cwoe4O21cd7qWMH/a0x5l7tX3ePl6NuCCxI6ssvDXGpbYCy9eXic41h18dA3dTT1XVPtY84+9KMMFejcYPxMu49bVIPZenjDHNMudn6rPN7K9rq6puNfUt3SKLWSbvdWLc2/lv6NrNyzrf2szO6+uhz3SeO6Orc2kN5Zmutn0Gds5jG97M5pN+3xKOiza4+2qn7/V5H3gvaYMz5OtvuCPXd+s6xJq7sF3V19V219rb2oFswR7fUffUazohd985vuTT5BAHKi3prwCyG0aY0+o57dbDRbjV7AfYGbdbHexm9KBXjHvWN2MdLNdrwQIzywp7NWY0XfbzXor5Stw7OvjRn0Faszxrvij7FmpvFljKUzXWvQJ+6/t9y2MQ4qlpnxKUa9Snc0rez7jHnV+viQj/P9mH0To3mLYzm/96Yn+gzfVxhFF/ic7YPZ9+LsHL8jzKK71Vrb2+sv5vRO7/l7icWEz7b+EcvDUaT2Q129ELP2t4btFkf74Wx7Hkh6NdoweeXjZ/di4caZ2LGpjy6KtrJ359ZiPfW9ensS3NGns/RWgXf5bU2W7+573mu72205mZ93TJa77XOGp9Q13B1S9/OusecX61b/7O+7tHVubWH8sye/e5KeR2v3Atoq4sv/Tn7Dtc1FLbei2zV+B9ldAZetfaOxPo7OfvuLPlzyWxSZpvS6LlusJTrXujZRr43aFsb5z0wlj0vRN5Aq7yZjV481DjfevjRzlfbyLoNhs/dmtFcXlfZLXM+etf3vudb78sjks9n0MWFGN+y33V1zvYfdO/nd8U4u3dltpdvOfteZLe8v8+A9det66vGPdrDvrvRet5yafI52uBnkzJaEBh9x7062NHLNzt09gZt1sd7ob09bTLuUbm88fCziw+IUZ4f6psdFHsQ172b3gqMqa5BxnjrOH+ibs3N1tce3VyM1nb3zm69x7N94CfLe0To3pUjurno2sm+2n5xb2fW8JZb6mS+b3l/n8Foj7o17oG6b3lvnhVxPRPDS5PP7j+5bnWMA6c7YAKHRt6UmFzu1TpHL8/K5JP64j89X7EIa1IIPlN/jgljqOXob+0z8an3aKNrhzZqMhDjy7q2+TyK69UxOqKujz1zr16NJZ/zmsz2zvne+WFd5nr4XNdqNdsHfroj7wVlmcdZGeY77zN8rm1U1DdaP98R6zevWT7PzhjiQ9xncdzzXvA99eRYx/uZn723PeO5B2Kcx87n2bjpI9fW/gLGsjKGXwXxnO0HI5f/5ZNJigmLq4oNrLu6xZi/p406WBZQ/h7xQsUVi6LrX1z1gJr1s5Pb3LNY96BPud3ax1DLjV7qOibiEvfq5hcbRL4qyuztI3KMVr+ode5/4kZxlfp+zQ7Ove8F85HrnJXNa2608XXrl2u2Pn+ivH9yMV8jsVdsxbDuM51aJl8/QV6fW/GMsqO1Hva8F4gycc3m/B72juce8rhZgzNRbrS/1XcnX6tjulo3Zq6tmIanfMuZ1L0DlCRJ0tfxlMkniedVf1mUJEnSOk+RfMaf6OOa/Sc+SZIkfV0/43+ukSRJ0pdg8ilJkqRlTD4lSZK0jMmnJEmSljH5lCRJ0iJ///4/HMXrFtWBOBoAAAAASUVORK5CYII=" width="70%" style="display: block; margin: auto;" /></p>
 <div id="calidad-de-ajuste-en-regresión-logística" class="section level3">
 <h3>Calidad de ajuste en Regresión Logística</h3>
@@ -425,7 +425,7 @@ div.tocify {
 <p>Si la función de enlace (link) no se especifica, la primera opción de la lista es tomada como opción predeterminada en cada caso. Por ejemplo, si omitimos el argumento (<em>link=“logit”</em>) de todas maneras quedaría definido ese mismo enlace para la familia binomial.</p>
 <p><strong>data</strong>: indica el nombre de la base de datos (dataframe) que contiene las variables del modelo.</p>
 <p>La salida de resultados de esta función puede obtenerse a través de la función <code>summary()</code> al igual que en la regresión lineal. La sintaxis es <code>summary(nombre_modelo)</code>, siendo <code>nombre_modelo</code> el nombre del modelo ajustado).</p>
-<p>La resultados mostrados del objeto de regresión están compuesto por:</p>
+<p>La resultados del objeto de regresión mostrados están compuesto por:</p>
 <p><strong>Call</strong>: fórmula del modelo</p>
 <p><strong>Deviance Residuals</strong>: distribución de los residuos (mediana, mínimo, máximo y percentilos 25-75) obtenidos en la última iteración</p>
 <p><strong>Coefficients</strong>: coeficientes del Intercept y los asociados a cada variable independiente. Además se agregan los errores estándar y el valor z (<em>estadístico de Wald</em> que surge del cociente entre el coeficiente y su error estándar) con el p-valor correspondiente.</p>
@@ -447,7 +447,7 @@ div.tocify {
 </div>
 <div id="gestión-de-variables-dicotómicas" class="section level3">
 <h3>Gestión de variables dicotómicas</h3>
-<p>Deciamos que el modelo con enlace <em>logit</em> es un modelo de regresión típico, <span class="math inline">\(Y=f(X+E)\)</span>, en el que la variable respuesta (variable aleatoria <span class="math inline">\(Y\)</span>) es dicotómica o binaria (toma dos valores: 0 y 1), habitualmente sobre si nuestra unidad de análisis tiene una característica (1) o no la tiene (0).</p>
+<p>Decíamos que el modelo con enlace <em>logit</em> es un modelo de regresión típico, <span class="math inline">\(Y=f(X+E)\)</span>, en el que la variable respuesta (variable aleatoria <span class="math inline">\(Y\)</span>) es dicotómica o binaria (toma dos valores: 0 y 1), habitualmente sobre si nuestra unidad de análisis tiene una característica (1) o no la tiene (0).</p>
 <p>Nuestras variables dicotómicas pueden tener originalmente formatos variados y sus categorías también pueden definirse con etiquetas diferentes. Por ejemplo, podemos tener variables dicotómicas con formato lógico (+/-, TRUE-FALSE), con formato caracter (Si-No, Vivo-Muerto, etc.) o con formato numérico codificado (0-1, 1-2 o cualquier combinación personalizada de códigos)</p>
 <p>En R las variables categóricas que utilizamos como dependientes en estos modelos corresponden convenientemente al tipo de datos <strong>factor</strong>.</p>
 <p>Recordemos que un factor es, interna y técnicamente, una variable numérica compuesta de enteros sucesivos a partir de 1. Cada entero es un nivel o categoría de la variable y está acompañado de una etiqueta que nos facilita recordar a qué categoría corresponde.</p>
@@ -466,8 +466,8 @@ relevel(datos$enfermedad, ref = &quot;No&quot;)</code></pre>
 <p>Una vez estimados los parámetros, a través de la función <code>glm()</code>, la tarea se centra en la “importancia” de cada variable para el modelo.</p>
 <p>Esta evaluación se realiza mediante contrastes de hipótesis como el de <strong>Wald</strong> y la razón de verosimilitud ( <strong>Likelihood Ratio test</strong> ).</p>
 <p>El test de Wald lo visualizamos cuando ejecutamos <code>summary()</code> del modelo y aparece detrás de cada variable predictora en la columna “z value” y el valor <span class="math inline">\(p\)</span> correspondiente bajo la columna “Pr(&gt;|z|)”</p>
-<p>Es similar al valor <span class="math inline">\(t\)</span> de la salida en las regresiones lineales y lo utilizamos para determinar la significación de la variable dentro del modelo. La interpretación es flexible y común a las situaciones conocidas, valores de <span class="math inline">\(p\)</span> por debajo de 0,5 (o 0,1 siendo tolerantes) permiten que tengamos en cuenta el aporte de dicha variable al modelo.</p>
-<p>Por otra parte, la razón de verosimilitud (<span class="math inline">\(G^2\)</span>) surge de restar la deviance de un modelo y otro con mas o menos variables predictoras y sirve para determinar si hay diferencia significativa entre incluir o no algunas de estas.</p>
+<p>Es similar al valor <span class="math inline">\(t\)</span> de la salida en las regresiones lineales y lo utilizamos para determinar la significación de la variable dentro del modelo. La interpretación es flexible y común a las situaciones conocidas, valores de <span class="math inline">\(p\)</span> por debajo de 0,05 (o 0,1 siendo tolerantes) permiten que tengamos en cuenta el aporte de dicha variable al modelo.</p>
+<p>Por otra parte, la razón de verosimilitud (<span class="math inline">\(G^2\)</span>) surge de restar la deviance de un modelo y otro con más o menos variables predictoras y sirve para determinar si hay diferencia significativa entre incluir o no algunas de estas.</p>
 <p>Los valores de deviance que surgen del resumen de un modelo se encuentran en la salida bajo el título <em>Null deviance</em>, para el modelo nulo y <em>Residual deviance</em> para el modelo con los predictores seleccionados.</p>
 <p>El cálculo a partir de un modelo de regresión sería:</p>
 <pre class="r"><code>modelo1$null.deviance - modelo1$deviance</code></pre>
@@ -490,7 +490,7 @@ lrtest(modelo1, modelo2)  # para el cálculo contrastando modelo1 con modelo2</c
 <h3>Selección de modelos</h3>
 <p>En un modelo que incluya una cantidad determinada de variables, es posible que no todas ellas sean relevantes para el problema. En tal caso se deben detectar las variables que menos aportan al modelo para decidir sobre su exclusión, y así obtener un modelo más simple.</p>
 <p>En principio conviene partir de la definición de lo que se entiende por “variables relevantes”, porque la relevancia no puede ser solamente vista desde el punto estadístico. El marco conceptual es fundamental en el proceso de selección de variables, sobre todo si la finalidad del modelo es analítica, donde el sentido de elección concierne más al área que se estudia que a la estadística.</p>
-<p>Esta cuestión es oportuna, dado que algunos investigadores actúan somo si los métodos estadísticos reemplazaran a los conocimientos acerca del tema que tratan, abusando de regresiones donde la técnica no distingue el tipo de asociación o de la significación que puede deberse a motivos más estadísticos mientras que la sustantividad clínica, biológica o social es inexistente.</p>
+<p>Esta cuestión es oportuna, dado que algunos investigadores actúan como si los métodos estadísticos reemplazaran a los conocimientos acerca del tema que tratan, abusando de regresiones donde la técnica no distingue el tipo de asociación o de la significación que puede deberse a motivos más estadísticos mientras que la sustantividad clínica, biológica o social es inexistente.</p>
 <p>La estadística ofrece varios procedimientos disponibles para la selección del modelo de regresión logística que, respetando el marco conceptual en el que se viene trabajando, se ajuste adecuadamente a los datos con el número más reducido posible de variables.</p>
 <p>Las formas no difieren mucho de los procedimientos vistos en la regresión lineal múltiple, aunque algunos de los estadísticos que nos ayudan a realizar la selección son distintos.</p>
 <p>Para ejemplificar tomaremos una tabla de datos denominada <strong>CAMINAR.csv</strong> que contiene observaciones de un estudio de casos y controles donde se evaluó a 800 niños, con el objetivo de identificar qué factores se asociaban al desarrollo de la marcha.</p>
@@ -515,7 +515,7 @@ $ Lacto180  &lt;chr&gt; &quot;SI&quot;, &quot;SI&quot;, &quot;NO&quot;, &quot;SI
 <pre class="r"><code>caminar &lt;- caminar %&gt;% mutate(Camina = as.factor(Camina),
                               Parejaest = as.factor(Parejaest),
                               Lacto180 = as.factor(Lacto180))</code></pre>
-<p>Como las categorías de las tres variables convertidas son “SI” y “NO”, y el orden automático del lenguaje R es alfabetico el nivel de referencia de para todas es “NO”. Confirmemoslo mediante la visualización de los niveles:</p>
+<p>Como las categorías de las tres variables convertidas son “SI” y “NO”, y el orden automático del lenguaje R es alfabético el nivel de referencia de para todas es “NO”. Confirmémoslo mediante la visualización de los niveles:</p>
 <pre class="r"><code>levels(caminar$Camina)</code></pre>
 <pre><code>[1] &quot;NO&quot; &quot;SI&quot;</code></pre>
 <pre class="r"><code>levels(caminar$Parejaest)</code></pre>
@@ -792,7 +792,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <pre class="r"><code>AIC(modelo_step) # modelo automático idem mod3.1.1</code></pre>
 <pre><code>[1] 505.7191</code></pre>
 <p>El modelo final tiene el AIC más bajo (505,72).</p>
-<p>Al igual que en RLM el paquete perfomance muestra en una tabla la comparación de índices AIC entre otros, para los modelos definidos.</p>
+<p>Al igual que en RLM el paquete <strong>perfomance</strong> muestra en una tabla la comparación de índices AIC entre otros, para los modelos definidos.</p>
 <pre class="r"><code>library(performance)
 
 compare_performance(mod3, mod3.1, mod3.1.1, 
@@ -899,8 +899,8 @@ Area under the curve: 0.9407
 </ul>
 <p>Nuestro modelo logra un AUC de 94,07 (IC95% 92,5-95,6).</p>
 </div>
-<div id="calculo-de-or" class="section level3">
-<h3>Calculo de OR</h3>
+<div id="cálculo-de-or" class="section level3">
+<h3>Cálculo de OR</h3>
 <p>Los valores de las odds-ratio se obtienen como el resultado de calcular el valor del número <span class="math inline">\(e\)</span> elevado a los coeficientes estimados del modelo (la inversa del logaritmo natural).</p>
 <p>La función matemática en R aplicada al mod3.1.1 (con redondeo de 2 decimales) es:</p>
 <pre class="r"><code>round(exp(coef(mod3.1.1)),2)  # función exp()</code></pre>
@@ -909,9 +909,9 @@ Area under the curve: 0.9407
 <p>Cuando estamos frente a una regresión logística múltiple como en este caso, nos permite obtener las odds-ratio ajustadas por otras variables.</p>
 <p>La interpretación sería:</p>
 <ul>
-<li><p>Si mantenemos constantes las otras variables, la probabilidad de caminar aumentó 20 veces cuando el lactante fue amamantado por 6 meses.</p></li>
-<li><p>Si mantenemos constantes las otras variables, la probabilidad de caminar aumentó 1,01 veces por cada día de vida.</p></li>
-<li><p>Si mantenemos constantes las otras variables, la probabilidad de caminar aumentó 9,42 veces cuando la madre tenía pareja estable.</p></li>
+<li><p>La probabilidad de caminar de los bebés que fueron amamantados por al menos 6 meses fue 20 veces (OR = 20,23) que la de los bebés que no fueron amamantados ese tiempo, ajustada por las variables edad (en días) y pareja estable.</p></li>
+<li><p>La probabilidad de caminar de los bebés cuyas madres tenían pareja estable fue aproximadamente 9 veces (OR = 9,42) que la de los bebés cuyas madres no tenían pareja estable, ajustada por las variables edad (en días) y lactancia a los 6 meses.</p></li>
+<li><p>La probabilidad de caminar de los bebés se incrementa un 1% por cada día más de vida (OR = 1,01), ajustada por las variables lactancia a los 6 meses y pareja estable.</p></li>
 </ul>
 <p>Podemos también, incorporar intervalos de confianza de los OR agregando la función <code>confint()</code>.</p>
 <pre class="r"><code>round(exp(confint(mod3.1.1)),2)</code></pre>
@@ -925,12 +925,12 @@ ParejaestSI  5.84  15.59</code></pre>
 <pre class="r"><code>library(gtsummary)
 
 mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
-<div id="jgbxaniygq" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="nhbrppkuzr" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#jgbxaniygq .gt_table {
+#nhbrppkuzr .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -955,7 +955,7 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#jgbxaniygq .gt_heading {
+#nhbrppkuzr .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -967,7 +967,7 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#jgbxaniygq .gt_title {
+#nhbrppkuzr .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -977,7 +977,7 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   border-bottom-width: 0;
 }
 
-#jgbxaniygq .gt_subtitle {
+#nhbrppkuzr .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -987,13 +987,13 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   border-top-width: 0;
 }
 
-#jgbxaniygq .gt_bottom_border {
+#nhbrppkuzr .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#jgbxaniygq .gt_col_headings {
+#nhbrppkuzr .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1008,7 +1008,7 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#jgbxaniygq .gt_col_heading {
+#nhbrppkuzr .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1028,7 +1028,7 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   overflow-x: hidden;
 }
 
-#jgbxaniygq .gt_column_spanner_outer {
+#nhbrppkuzr .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1040,15 +1040,15 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   padding-right: 4px;
 }
 
-#jgbxaniygq .gt_column_spanner_outer:first-child {
+#nhbrppkuzr .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#jgbxaniygq .gt_column_spanner_outer:last-child {
+#nhbrppkuzr .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#jgbxaniygq .gt_column_spanner {
+#nhbrppkuzr .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1060,7 +1060,7 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   width: 100%;
 }
 
-#jgbxaniygq .gt_group_heading {
+#nhbrppkuzr .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1082,7 +1082,7 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   vertical-align: middle;
 }
 
-#jgbxaniygq .gt_empty_group_heading {
+#nhbrppkuzr .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1097,15 +1097,15 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   vertical-align: middle;
 }
 
-#jgbxaniygq .gt_from_md > :first-child {
+#nhbrppkuzr .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#jgbxaniygq .gt_from_md > :last-child {
+#nhbrppkuzr .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#jgbxaniygq .gt_row {
+#nhbrppkuzr .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1124,7 +1124,7 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   overflow-x: hidden;
 }
 
-#jgbxaniygq .gt_stub {
+#nhbrppkuzr .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1136,7 +1136,7 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   padding-left: 12px;
 }
 
-#jgbxaniygq .gt_summary_row {
+#nhbrppkuzr .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1146,7 +1146,7 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   padding-right: 5px;
 }
 
-#jgbxaniygq .gt_first_summary_row {
+#nhbrppkuzr .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1156,7 +1156,7 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#jgbxaniygq .gt_grand_summary_row {
+#nhbrppkuzr .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1166,7 +1166,7 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   padding-right: 5px;
 }
 
-#jgbxaniygq .gt_first_grand_summary_row {
+#nhbrppkuzr .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1176,11 +1176,11 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#jgbxaniygq .gt_striped {
+#nhbrppkuzr .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#jgbxaniygq .gt_table_body {
+#nhbrppkuzr .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1189,7 +1189,7 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#jgbxaniygq .gt_footnotes {
+#nhbrppkuzr .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1203,13 +1203,13 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#jgbxaniygq .gt_footnote {
+#nhbrppkuzr .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#jgbxaniygq .gt_sourcenotes {
+#nhbrppkuzr .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1223,41 +1223,41 @@ mod3.1.1 %&gt;%  tbl_regression(exponentiate = T)</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#jgbxaniygq .gt_sourcenote {
+#nhbrppkuzr .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#jgbxaniygq .gt_left {
+#nhbrppkuzr .gt_left {
   text-align: left;
 }
 
-#jgbxaniygq .gt_center {
+#nhbrppkuzr .gt_center {
   text-align: center;
 }
 
-#jgbxaniygq .gt_right {
+#nhbrppkuzr .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#jgbxaniygq .gt_font_normal {
+#nhbrppkuzr .gt_font_normal {
   font-weight: normal;
 }
 
-#jgbxaniygq .gt_font_bold {
+#nhbrppkuzr .gt_font_bold {
   font-weight: bold;
 }
 
-#jgbxaniygq .gt_font_italic {
+#nhbrppkuzr .gt_font_italic {
   font-style: italic;
 }
 
-#jgbxaniygq .gt_super {
+#nhbrppkuzr .gt_super {
   font-size: 65%;
 }
 
-#jgbxaniygq .gt_footnote_marks {
+#nhbrppkuzr .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 65%;
@@ -1459,7 +1459,7 @@ Observations                   |                     800 |                    80
 </div>
 <div id="tamaño-de-la-muestra-y-número-de-variables-independientes" class="section level3">
 <h3>Tamaño de la muestra y número de variables independientes</h3>
-<p>En el ámbito epidemiológico habitualmente se aplica una fórmula clásica propuesta por Freeman DH (1987), que en términos generales define que el tamaño de la muestra debe ser 10 veces el numero de variables independientes a estimar más uno.</p>
+<p>En el ámbito epidemiológico habitualmente se aplica una fórmula clásica propuesta por Freeman DH (1987), que en términos generales define que el tamaño de la muestra debe ser 10 veces el número de variables independientes a estimar más uno.</p>
 <p><span class="math display">\[n = 10*(k+1)\]</span></p>
 <p>Se ha sugerido asimismo que la variable dicotómica de respuesta debe tener al menos 10 casos para cada uno de los valores (0 y 1). Si esto no sucede las estimaciones no son confiables.</p>
 <p>Podemos decir que nuestro ejemplo supera ampliamente los requisitos del tamaño muestral, dado que la tabla caminar tiene 800 observaciones (419 SI y 381 NO) y el modelo con más variables propuesto (<code>modI</code>) incluye 4 variables independientes (lo que define 50 observaciones mínimas.)</p>
@@ -1471,8 +1471,13 @@ Observations                   |                     800 |                    80
 </div>
 <div id="bibliografía" class="section level2">
 <h2>Bibliografía</h2>
+<p>Epidemiología. Diseño y análisis de estudios. Mauricio Hernández Ávila, 2007 - Editorial Médica Panamericana S.A.</p>
+<p>Escuela Nacional de Sanidad (ENS). Instituto de Salud Carlos III. Ministerio de Ciencia e Innovación. Manual Docente de la Escuela Nacional de Sanidad .Método epidemiológico. 2009, Madrid</p>
 <p>Luis Carlos Silva Ayçaguer. Excursión a la regresión logística en ciencias de la salud. Ediciones Díaz de Santos, 1995.</p>
+<p>Thompson WD. Statistical analysis of case-control studies. Epidemiol Rev 1994; 16: 3</p>
+<p>Epidat: Material de ayuda programa para análisis epidemiológico de datos. Versión 4.2, julio 2016. Consellería de Sanidade, Xunta de Galicia, España; Organización Panamericana de la salud (OPS-OMS); Universidad CES, Colombia.</p>
 <p>Field, A., Miles, J., &amp; Field, Z. Discovering statistics using r (1st edition.). Sage Publications Ltd, 2012</p>
+<p>Rothman, Kenneth J. Epidemiology: An Introduction. New York, NY: Oxford University Press, 2012.</p>
 <p>Ortega Calvo, Manuel y Cayuela Dominguez, Aurelio. Regresión logística no condicionada y tamaño de muestra: una revisión bibliográfica. Rev. Esp. Salud Publica [online]. 2002, vol.76, n.2 [citado 2021-07-30], pp.85-93. Disponible en: <a href="http://scielo.isciii.es/scielo.php?script=sci_arttext&amp;pid=S1135-57272002000200002&amp;lng=es&amp;nrm=iso" class="uri">http://scielo.isciii.es/scielo.php?script=sci_arttext&amp;pid=S1135-57272002000200002&amp;lng=es&amp;nrm=iso</a>. ISSN 2173-9110.</p>
 <p>R Core Team. R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria, 2021. URL <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>.</p>
 <p>Wickham et al. Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, Año 2019 <a href="https://doi.org/10.21105/joss.01686" class="uri">https://doi.org/10.21105/joss.01686</a></p>
