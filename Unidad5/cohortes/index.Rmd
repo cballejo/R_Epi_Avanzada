@@ -1,0 +1,443 @@
+---
+title: "**Estudios de cohortes**"
+author: ""
+date: ""
+output:
+  html_document:
+    css: style.css
+    toc: true
+    toc_float: true
+    toc_collapsed: false
+    toc_depth: 4
+number_sections: true
+anchor_sections: true
+theme: lumen
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r, message=FALSE, echo=F}
+knitr::opts_chunk$set(comment=NA, dpi = 300)
+```
+
+<br>
+
+<center>
+
+_Este material es parte de la_ **_Unidad 5 del Curso de Epidemiología -
+Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H.
+Jara" - ANLIS_**
+
+</center>
+
+<br>
+
+<center>
+
+<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/">
+
+<a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Unidad5/cohortes/">Estudios de cohortes</a> by
+<a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://www.ine.gov.ar">Andrea
+Silva y Christian Ballejo</a> is licensed under
+<a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC
+BY-NC
+4.0<img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/></a>
+
+</p>
+
+</center>
+
+<br>
+
+## Introducción
+
+< AQUÍ VA LA PARTE TEORICA DE ESTUDIOS DE COHORTES Y POISSON >
+
+
+## Regresión de Poisson con R
+
+La regresión de Poisson se encuentra implementada en lenguaje R como otro de los modelos de la familia de modelos lineales generalizados (GLM de las siglas en inglés de *Generalized Linear Models*) similar a la regresión logística vista en la unidad anterior. 
+
+Un criterio importante en la elección de la función de enlace para varias familias de distribuciones es asegurar que los valores ajustados del modelado permanezcan dentro de límites razonables. La especificación de un enlace logaritmico (predeterminado para Poisson) garantiza que los recuentos ajustados sean todos mayores o iguales a cero (propio de los conteos).
+
+Por lo tanto, en este caso el ajuste tiene errores de Poisson y la función de enlace para linealizar la relación entre la variable respuesta y la(s) variable(s) independiente(s) es el `log`. 
+
+
+### Construcción de un modelo de regresión de Poisson en R
+
+Como es de imaginar utilizaremos la misma función general `glm()`, cambiando los argumentos en familia y enlace.
+
+La sintaxis básica de esta función, contenida en el paquete `stats` de R base, es:
+
+> glm(formula, family = poisson(link = "log"), data)
+
+o lo mismo si omitimos el enlace, dado que el valor `log` es el predeterminado para esta familia.
+
+> glm(formula, family = poisson), data)
+
+donde:
+
+__formula__: al igual que en la regresión logística o lineal, es la fórmula que describe el modelo a ajustar. Sigue la estructura:
+
+$$variable\_dependiente \sim variable\_indepen_1 + variable\_indepen_2 +\dots+ variable\_indepen_n$$
+
+__family__: hace referencia a la familia de distribuciones y, en link, a la función de enlace elegida para el ajuste de este modelo. 
+
+
+__data__: indica el nombre de la base de datos (dataframe) que contiene las variables del modelo.
+
+
+La salida de resultados de esta función puede obtenerse a través de la función `summary()` al igual que en las otras regresiones vistas. La sintaxis es `summary(nombre_modelo)`, siendo `nombre_modelo` el nombre del modelo ajustado. 
+
+La resultados del objeto de regresión de Poisson mostrados están compuesto por:
+
+__Call__: fórmula del modelo
+
+__Deviance Residuals__: distribución de los residuos (mediana, mínimo, máximo y percentilos 25-75) obtenidos en la última iteración
+
+__Coefficients__: coeficientes del Intercept y los asociados a cada variable independiente. Además se agregan los errores estándar y el valor z (*estadístico de Wald* que surge del cociente entre el coeficiente y su error estándar) con el p-valor correspondiente.
+
+__Dispersion parameter for poisson family taken to be 1__: Significa que el modelo asume el supuesto de igualdad entre la media y la varianza (dispersión = 1)
+
+__Null deviance__: devianza para el modelo nulo que solo contiene la constante.
+
+__Residual deviance__: devianza del modelo ajustado.
+
+__AIC__: criterio de información de Akaike.
+
+__Number of Fisher Scoring iterations__: cantidad de iteraciones.
+
+Este resumen surge del *objeto de regresión* construido cuando asignamos la salida de la función `glm()` que pertenece a la clase "glm" y "lm". 
+
+El objeto de regresión está compuesto por 30 componentes que pueden accederse a través del nombre del modelo seguido del signo __$__ y el nombre del componente.  
+
+Entre los componentes más relevantes podemos señalar (usamos *nombre_modelo* como generalización del nombre del objeto creado):
+
+__nombre_modelo$coeficients__:  vector de coeficientes del modelo. También se puede obtener a través de la función `coef(nombre_modelo)`
+
+__nombre_modelo$residuals__: vector que contiene los residuos obtenidos en la última iteración.
+
+__nombre_modelo$fitted.values__: vector con los valores medios ajustados, obtenidos según
+la transformación de los predictores lineales por la inversa de la función de enlace.
+
+__nombre_modelo$family__: devuelve la familia utilizada en la construcción del modelo.
+
+__nombre_modelo$deviance__: devianza del modelo ajustado o -2 veces el máximo de la log
+verosimilitud.
+
+__nombre_modelo$aic__: criterio de información de Akaike (AIC)
+
+__nombre_modelo$null.deviance__: devianza para el modelo nulo que solo contiene la constante.
+
+### Ejemplo práctico
+
+A fin de mostrar las funciones y la metodología de análisis con R vamos a utilizar datos que se tomaron de un estudio de cohorte ocupacional realizado para probar la asociación entre las muertes respiratorias y la exposición al arsénico en la industria, después de ajustar por varios otros factores de riesgo. 
+
+La variable principal es `muertes`. Este es el número de muertes por persona-años (persona.anio) de sujetos en cada categoría, por lo que finalmente nos interesa la tasa de incidencia (mortalidad) como variable resultado.
+
+Las otras variables son covariables independientes que incluyen el grupo de edad `grupo.edad`, el período de empleo `periodo`, el año de inicio del empleo `comienzo` y el nivel de exposición al arsénico durante el período de estudio `arsenico`.
+
+Activemos paquetes y leamos los datos.
+
+```{r, message=F, warning=F}
+library(tidyverse)
+
+datos <- read_csv2("cohorte_ocupacional.csv")
+
+glimpse(datos)
+```
+Observamos la estructura de los datos, donde vemos que los tipos de variables son todos numéricos. 
+
+Nos acercan el diccionario de datos de estas variables y entonces sabemos que algunas de ellas estan codificadas numéricamente pero responden a categorías. Es el caso de las últimas cuatro variables que tienen un numero entero.
+
+Necesitamos decirle a R que los interprete como variables categóricas (factores) y adjunte etiquetas a cada uno de los niveles. Esto se puede hacer de la misma forma que vimos en unidades anteriores como gestión de variables.
+
+```{r}
+datos <- datos %>% 
+  mutate(grupo.edad = factor(grupo.edad, labels=c("40-49","50-59","60-69","70-79")),
+         periodo = factor(periodo, labels=c("1938-1949", "1950-1959", "1960-1969", "1970-1977")),
+         comienzo = factor(comienzo, labels=c("< 1925", "1925 y post")),
+         arsenico = factor(arsenico, labels=c("<1 año", "1-4 años","5-14 años", "15+ años"))) 
+```
+
+Veamos como quedaron los niveles de estos factores:
+
+```{r}
+levels(datos$grupo.edad)
+levels(datos$periodo)
+levels(datos$comienzo)
+levels(datos$arsenico)
+```
+
+Exploremos los datos de la base organizando la información de persona-años por edad y período
+
+```{r, eval=F}
+datos %>% count(periodo, grupo.edad, wt = persona.anio) %>% 
+  pivot_wider(names_from = grupo.edad, values_from = n)
+```
+
+```{r, echo=F, message=F, warning=F}
+library(flextable)
+
+datos %>% count(periodo, grupo.edad, wt = persona.anio) %>% 
+  pivot_wider(names_from = grupo.edad, values_from = n) %>% 
+  flextable() %>% autofit()
+```
+Ahora hacemos lo mismo para el número de muertes y calculamos la incidencia por 10000 personas-año para cada celda.
+
+```{r, eval=F}
+personas_años <- datos %>% count(periodo, grupo.edad, 
+                                 wt = persona.anio,
+                                 name = "p.a")
+
+datos %>% count(periodo, grupo.edad, wt = muertes) %>% 
+  left_join(personas_años, by = c("periodo", "grupo.edad")) %>% 
+  mutate(incidencia = round(n/p.a*10000,2)) %>% dplyr::select(-n, -p.a)
+```
+
+
+```{r, echo=F}
+personas_años <- datos %>% count(periodo, grupo.edad, 
+                                 wt = persona.anio,
+                                 name = "p.a")
+
+datos %>% count(periodo, grupo.edad, wt = muertes) %>% 
+  left_join(personas_años, by = c("periodo", "grupo.edad")) %>% 
+  mutate(incidencia = round(n/p.a*10000,2)) %>% dplyr::select(-n, -p.a) %>% 
+  flextable() %>% autofit()
+```
+Podemos verlo mejor en un gráfico:
+
+```{r, echo=F, out.width="70%", fig.align="center"}
+datos %>% count(periodo, grupo.edad, wt = muertes) %>% 
+  left_join(personas_años, by = c("periodo", "grupo.edad")) %>% 
+  mutate(incidencia = round(n/p.a*10000,2)) %>% dplyr::select(-n, -p.a) %>% 
+  ggplot(aes(x = periodo, y = incidencia, color = grupo.edad, group = grupo.edad)) +
+  geom_point() +
+  geom_line() +
+  labs(title = "Incidencia de muertes (mortalidad) por edad y período") +
+  scale_color_brewer(palette = "Set1", name = "Edad") +
+  xlab(label = "Período") +
+  ylab(label = "10.000 personas-año")
+```
+Este gráfico muestra, como es esperable, que el grupo de mayor edad generalmente se asocia con un mayor riesgo de morir, pero necesitamos ajustar los efectos de las demás covariables para examinar mejor esta relación.
+
+Dado que en este ejemplo nos interesa modelar la tasa de incidencia vamos a necesitar incorporar dentro del modelo un termino de desplazamiento (en inglés *"offset"*).
+
+Creamos el modelo saturado para trazar iteraciones backward.
+
+```{r}
+modelo <- glm(muertes ~ periodo + grupo.edad + arsenico, offset = log(persona.anio),
+              family = poisson,
+              data = datos)
+```
+
+El término `offset = log(persona.anio)` permite que la variable persona.anio sea el denominador de los recuentos de `muertes`. Se necesita una transformación logarítmica ya que, para un modelo lineal generalizado de Poisson, la función enlace es el log.
+
+Veamos la salida resumen del modelo:
+
+```{r}
+summary(modelo)
+```
+Este  primer modelo con todas las covarables muestra como significativas a casi todos los niveles de las variables respecto a las referencias.
+
+Un problema del ajuste de la regresión de Poisson, es el no cumplimiento del supuesto "media es igual a la varianza". Generalmente se presente en forma de dispersión excesiva y a veces insuficiente, donde la varianza es mayor o menor que el valor medio, respectivamente.
+
+Podemos probar esa bondad de ajuste del `mod1`, en función de la significancia de la sobredispersión de los errores de un modelo de Poisson, aplicando la función `poisgof()` del paquete **epiDisplay**.
+
+```{r, message=F, warning=F}
+library(epiDisplay)
+
+poisgof(modelo)
+```
+El componente `$chisq` se calcula a partir de la deviance del modelo. Cómo toda prueba de bondad de ajuste buscamos que el valor p sea mayor a 0,05.
+
+Si solo se desea el valor p, la salida se puede acortar.
+
+```{r}
+poisgof(modelo)$p.value 
+```
+Por ahora el valor de p indica un buen ajuste.
+
+Ahora probamos quitar de a una variable en la primer tanda iterativa.
+
+```{r}
+mod1 <- glm(muertes ~ periodo + grupo.edad, offset = log(persona.anio),
+              family = poisson,
+              data = datos)
+
+mod2 <- glm(muertes ~ periodo + arsenico, offset = log(persona.anio),
+              family = poisson,
+              data = datos)
+         
+mod3 <- glm(muertes ~ grupo.edad + arsenico, offset = log(persona.anio),
+              family = poisson,
+              data = datos)      
+```
+
+Para comparar performance podemos usar `compare_perfomance()` del paquete **performance**.
+
+```{r}
+library(performance)
+
+compare_performance(modelo, mod1, mod2, mod3, metrics = "common")
+```
+Buscamos el menor AIC, que en este caso es mod3 (modelo con variables grupo.edad y arsenico)
+
+En la segunda fase de iteración partimos de este modelo y quitamos otra variable, lo que signica en nuestro ejemplo construir regresiones simples:
+
+```{r}
+mod3.1 <- glm(muertes ~ grupo.edad, offset = log(persona.anio),
+              family = poisson,
+              data = datos) 
+
+mod3.2 <- glm(muertes ~ arsenico, offset = log(persona.anio),
+              family = poisson,
+              data = datos) 
+```
+
+Volvemos a comparar:
+
+```{r}
+compare_performance(mod3, mod3.1, mod3.2, metrics = "common")
+```
+El mejor modelo continúa siendo `mod3`, por lo que vamos a probar su bondad de ajuste:
+
+```{r}
+poisgof(mod3)$p.value
+```
+El p valor del test confirma un buen ajuste.
+
+```{r}
+summary(mod3)
+```
+Todos los niveles de las variables son significativos respecto a sus niveles de referencia.
+
+```{r}
+round(exp(coef(mod3)),2)  # función exp()
+```
+
+Traducidos a riesgo, mediante la exponenciación de los coeficientes, observamos que los diferentes categorías de años de exposición al arsénico no varían entre sí. Esto nos hace pensar que puede valer la pena agruparlo en solo dos niveles.
+
+```{r}
+datos <- datos %>% mutate(arsenico2 = if_else(arsenico == "<1 año", "<1 año", "1+ años"),
+                          arsenico2 = factor(arsenico2)) 
+
+mod4 <- glm(muertes ~ grupo.edad + arsenico2,
+                offset=log(persona.anio), 
+               family=poisson, 
+               data = datos)
+
+compare_performance(mod3, mod4, metrics = "common")
+```
+La perfomance del `mod4` mejora respecto del anterior.
+
+```{r}
+poisgof(mod4)$p.value
+```
+El ajuste continúa sigue bueno.
+
+```{r}
+summary(mod4)
+```
+Las variables incluídas son significativas.
+
+En esta etapa, aceptaríamos el `mod4` como el mejor modelo, ya que tiene el AIC más pequeño entre todos los modelos que hemos probado. 
+
+```{r}
+round(exp(coef(mod4)),2)  
+```
+Concluimos que la exposición al arsénico durante al menos un año aumentaría el riesgo de la muerte por enfermedad respiratoria en 2,25 veces con significación estadística.
+
+Expliquemos de donde deriva este cálculo. En los modelos de Poisson de este tipo, la estructura de la compensación (offset) definida como  **log(persona-tiempo)** convierte al resultado en **log(densidad de incidencia)**.
+
+La tabla creada al comienzo del ejemplo proporciona la densidad de incidencia bruta por grupo de edad y período. Cada uno de los modelos de regresión de Poisson anteriores se puede utilizar para calcular la densidad de incidencia prevista cuando se dan las variables del modelo. Por ejemplo, para calcular la densidad de incidencia de una población de 100.000 personas de entre 40 y 49 años 
+que estuvieron expuestas al arsénico durante menos de un año utilizando `mod4`, podemos ejecutar:
+
+```{r}
+newdata <- as.data.frame(list(grupo.edad = "40-49",
+                              arsenico2 = "<1 año", persona.anio = 100000))
+
+predict(mod4, newdata, type="response") 
+```
+Esta población tendría una densidad de incidencia estimada de 33,26 por 100.000 personas-año.
+
+En un estudio de casos y controles, como los vistos en la Unidad 4, el OR se utiliza para comparar la prevalencia de exposición entre casos y controles. En un estudio de cohorte, este valor es igual 
+a la relación entre las probabilidades de contraer una enfermedad entre el grupo expuesto 
+y el no expuesto. La razón de los riesgos para los dos grupos se denomina entonces "razón de riesgo" o "riesgo relativo".
+
+En un estudio de cohorte real, los sujetos no siempre tienen la misma duración de seguimiento. El riesgo relativo ignora la duración del seguimiento. Por tanto, no es una buena medida de comparación del riesgo entre los dos grupos. 
+
+En este ejercicio, todos los sujetos agrupan sus tiempos de seguimiento y este número se denomina "tiempo-persona", que luego se utiliza como denominador del evento, lo que da como resultado una "densidad de incidencia". 
+
+Comparar la densidad de incidencia entre dos grupos de sujetos por su estado de exposición es más justo que comparar los riesgos crudos. La relación entre las densidades de incidencia de dos grupos se denomina razón de densidades de incidencia (RDI), que es una forma mejorada de riesgo relativo.
+
+En el `mod4`, para calcular la razón de densidad de incidencia entre los sujetos expuestos al arsénico durante uno o más años frente a los expuestos durante menos de un año, podemos dividir la incidencia entre los primeros por la del segundo grupo.
+
+```{r}
+newdata <- as.data.frame(list(grupo.edad = c("40-49", "40-49"),
+                              arsenico2 = c("<1 año", "1+ años"), 
+                              persona.anio = c(100000, 100000)))
+
+di <- predict(mod4, newdata, type="response")
+
+rdi.arsenico <- di[2] / di[1]
+
+rdi.arsenico 
+```
+El código anterior comienza agregando una nueva fila al dataframe **newdata** que tiene lo mismo que la primera fila, excepto que la variable `arsenico2` es "1+ años". 
+
+A continuación, se calculan las respuestas o densidades de incidencia de las dos condiciones. 
+
+La RDI se obtiene luego de la división de las densidades de incidencia para arsenico2 = "<1 año" 
+con arsenico2 = "1+ años". Una forma más corta de obtener esta RDI es obtener el coeficiente de la variable específica `arsenico`, que es el quinto coeficiente en el modelo.
+
+```{r}
+exp(coef(mod4)[5])
+```
+El paquete epiDisplay incluye una función útil para obtener una salida completa del modelo.
+
+```{r}
+idr.display(mod4)
+```
+
+También podemos utilizar las funciones de los paquetes **parameters** y **see** para graficar esta salida.
+
+```{r, out.width="60%", fig.align="center", message=F, warning=F}
+library(parameters)
+library(see)
+
+plot(model_parameters(mod4, exponentiate = T))
+```
+
+
+
+
+
+
+## Bibliografía
+
+Epidemiología. Diseño y análisis de estudios. Mauricio Hernández Ávila, 2007 - Editorial Médica Panamericana S.A.
+
+Andreu Nolasco. Estadística avanzada en ciencias de la salud - Universidad de Alicante - 2016
+
+R Core Team. R: A language and environment for statistical
+computing. R Foundation for Statistical Computing, Vienna, Austria, 2021. URL
+<https://www.R-project.org/>.
+
+Wickham et al. Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, Año 2019 https://doi.org/10.21105/joss.01686
+
+
+Lüdecke D, Ben-Shachar M, Patil I, Makowski D (2020). “Extracting, Computing and Exploring the Parameters of Statistical Models using R.”
+_Journal of Open Source Software_, *5*(53), 2445. doi: 10.21105/joss.02445
+(URL: https://doi.org/10.21105/joss.02445).
+
+Lüdecke, Patil, Ben-Shachar, Wiernik, Waggoner & Makowski. Visualisation Toolbox for 'easystats' and Extra Geoms, Themes and Color Palettes for 'ggplot2', 2020. CRAN. Available from
+https://easystats.github.io/see/
+
+Virasakdi Chongsuvivatwong (2018). epiDisplay: Epidemiological Data Display Package. R
+package version 3.5.0.1. https://CRAN.R-project.org/package=epiDisplay
+
+
+
