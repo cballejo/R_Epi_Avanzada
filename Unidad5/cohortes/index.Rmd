@@ -52,8 +52,121 @@ BY-NC
 
 ## Introducción
 
-< AQUÍ VA LA PARTE TEORICA DE ESTUDIOS DE COHORTES Y POISSON >
+En su concepción más simple, un diseño de cohorte implica la selección de un grupo de personas expuestas al factor de estudio y la selección de un grupo similar, pero sin la exposición, considerado como no expuesto. El seguimiento de ambos grupos se pautará para un lapso determinado, y se evaluará en dicho período si se produjo o no el evento de interés. Finalmente se realiza una comparación entre ambos grupos.
 
+La esencia de los estudios de cohortes es el seguimiento. Por tratarse de estudios longitudinales, los mismos podrán ser prospectivos, retrospectivos o mixtos. La cohorte podrá ser una cohorte fija o dinámica. En las primeras, se fija un período de reclutamiento de participantes y una vez finalizado dicho período, no se incluyen más sujetos para el seguimiento. En una cohorte abierta, o dinámica, se permite el ingreso y egreso de participantes  en toda la extensión del estudio. 
+
+Como recordarán, los criterios de selección están en la exposición, por lo cual la misma debe estar claramente definida. Como dijimos anteriormente, la idea clásica de un estudio de cohorte es comparar dos grupos, expuestos y no expuestos. Pero los grupos de referencia pueden ser otros: 
+
+- **Estudios de comparación con la población general**: El estudio identifica y sigue a una determinada cohorte de exposición. La frecuencia de aparición de la enfermedad en dicha cohorte es comparada con la observada en la población general. Para ello es necesario disponer de registros poblacionales que suministren dicha información. 
+
+- **Comparaciones internas**: La cohorte a estudio supone una mezcla de personas expuestas y no expuestas. Las comparaciones se realizan dentro de la propia cohorte.
+
+Por otra parte, el evento a observar puede tomar distintas formas: puede tratarse de un evento fijo, eventos múltiples, cambio en una medida de función (la cual se evalúa mediante tasa de cambio) o marcadores intermedios del evento, esto también impactará en la forma de análisis.
+
+A la hora de diseñar un estudio de cohortes es importante, entonces, definir de forma clara los siguientes aspectos:
+
+- Criterios de inclusión
+- Fecha de entrada y de salida de los participantes en el estudio
+- Seguimiento
+- Eventos finales de interés
+- La exposición
+- Factores de confusión
+- Consideraciones éticas 
+- Estrategias de análisis
+- Potencia estadística
+
+
+En la siguiente tabla se remarcan ventajas y desventajas de estos estudios.
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-amwm{font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-amwm">Ventajas  </th>
+    <th class="tg-amwm">Desventajas   </th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0lax">• Más cercanos a un experimento<br>   <br>• La relación temporal causa efecto es verificable<br>   <br>• Se pueden estimar medidas de incidencia<br>   <br>• Eficientes para evaluar exposiciones poco frecuentes<br>   <br>• Se pueden estudiar varios eventos<br>   <br>• Se pueden fijar criterios de calidad en la medición del evento<br>   <br>• Bajo riesgo de sesgo de selección (en especial en estudios prospectivos)   </td>
+    <td class="tg-0lax">• Cuando se trata de eventos poco frecuentes la complejidad y el costo pueden aumentar considerablemente, ya que requiere estudiar y seguir un número grande de participantes<br>   <br>• Son estudios difíciles de realizar<br>   <br>    </td>
+  </tr>
+</tbody>
+</table>
+
+### ¿Cómo analizar un estudio de cohortes?
+
+Seguramente ustedes recordarán de otros cursos de epidemiología, que en su forma más simple, podemos calcular Riesgos Relativos (RR) en un estudio de cohortes. Vamos a profundizar otros aspectos de este diseño.
+
+El análisis de los estudios de cohortes ha de tener en cuenta la variable tiempo. La existencia de pérdidas de participantes por diferentes motivos y la diferente duración del seguimiento de los distintos miembros de la cohorte, implican la necesidad de técnicas analíticas especiales que, a la vez, permitan considerar toda la información aportada por los integrantes de la cohorte. Existen dos estrategias diferentes de análisis en los estudios de cohortes: el análisis supervivencia y el análisis personas-tiempo, pero ambas requieren disponer de información precisa sobre el inicio y el final del seguimiento de cada participante y conocer el status del participante en el momento de finalización o salida del estudio (desarrollo o no el evento de interés). Asimismo será necesario definir una escala temporal adecuada.
+
+La estrategia de **análisis de supervivencia**, la abordaremos en la próxima unidad, de la mano de los estudios experimentales, pero tengan presente que la podemos emplear en cualquier estudio de cohorte, que contemos con la información puntualizada anteriormente.
+
+Las técnicas de **personas-año** utilizan como unidad de análisis estratos o grupos homogéneos en los que es razonable asumir una misma tasa de incidencia. Las técnicas clásicas de análisis “personas tiempo” incluyen la comparación de tasas, la estandarización directa y las razones estandarizadas de incidencia o mortalidad (denominadas en la literatura RIE o SIR, para la incidencia y RME o SMR para la mortalidad). RIE y RME comparan el número de casos observados con el número esperado teniendo en cuenta la frecuencia de enfermedad en la población utilizada como referencia. La técnica multivariada por excelencia para la modelización de las tasas es la regresión de Poisson, que utiliza la distribución de Poisson para modelizar la variabilidad aleatoria del numerador de las tasas y es lo que aprenderemos en este capítulo.
+
+A modo de resumen, compartimos esta tabla, extraída del libro de Hernández Avila:
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-cnoz{background-color:#C0C0C0;text-align:left;vertical-align:middle}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+.tg .tg-nrix{text-align:center;vertical-align:middle}
+.tg .tg-byb7{background-color:#C0C0C0;text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-0lax">&nbsp;&nbsp;&nbsp;<br> &nbsp;&nbsp;&nbsp;</th>
+    <th class="tg-nrix"><span style="color:black">Análisis de supervivencia</span>   </th>
+    <th class="tg-nrix"><span style="color:black">Análisis basado en tiempo-persona</span> </th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-cnoz"><span style="color:black">Tamaño de la muestra</span></td>
+    <td class="tg-byb7"><span style="color:black">Relativamente pequeño</span><span style="background-color:silver">  </span></td>
+    <td class="tg-byb7"><span style="color:black">Relativamente grande</span><span style="background-color:silver">   </span></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax"><span style="color:black">Tipo de eventos</span>   </td>
+    <td class="tg-0lax"><span style="color:black">Frecuentes</span>   </td>
+    <td class="tg-0lax"><span style="color:black">Raros</span>   </td>
+  </tr>
+  <tr>
+    <td class="tg-byb7"><span style="color:black">Escala temporal</span><span style="background-color:silver">   </span></td>
+    <td class="tg-byb7"><span style="color:black">Única</span><span style="background-color:silver">   </span></td>
+    <td class="tg-byb7"><span style="color:black">Única o múltiple</span><span style="background-color:silver">   </span></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax"><span style="color:black">Tipos de medida</span>  </td>
+    <td class="tg-0lax"><span style="color:black">Probabilidad  (condicional y acumulada)</span>   </td>
+    <td class="tg-0lax"><span style="color:black">Tasa (densidad)</span>   </td>
+  </tr>
+  <tr>
+    <td class="tg-byb7"><span style="color:black">Análisis bivariado</span><span style="background-color:silver"> </span><br></td>
+    <td class="tg-byb7"><span style="color:black">Comparación de curvas de supervivencia</span><br><br><span style="background-color:#C0C0C0">Lo</span><span style="color:black">g-rank test</span><br><span style="background-color:silver">   </span><br><span style="color:black">Razón de riesgos</span><span style="background-color:silver">   </span></td>
+    <td class="tg-byb7"><span style="color:black">Comparación de tasas</span><br><br><span style="color:black">Razón de tasas</span><br><span style="background-color:silver">   </span><br><span style="color:black">REM</span><span style="background-color:silver">   </span></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax"><span style="color:black">Análisis multivariado</span>   </td>
+    <td class="tg-0lax"><span style="color:black">Regresión de Cox</span>   </td>
+    <td class="tg-0lax"><span style="color:black">Regresión de Poisson</span>   </td>
+  </tr>
+</tbody>
+</table>
 
 ## Regresión de Poisson con R
 
