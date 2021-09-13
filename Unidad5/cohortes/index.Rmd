@@ -511,7 +511,7 @@ La perfomance del `mod4` mejora respecto del anterior.
 ```{r}
 poisgof(mod4)$p.value
 ```
-El ajuste continúa sigue bueno.
+El ajuste continúa siendo bueno.
 
 ```{r}
 summary(mod4)
