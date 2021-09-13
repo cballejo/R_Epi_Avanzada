@@ -168,11 +168,71 @@ A modo de resumen, compartimos esta tabla, extraída del libro de Hernández Avi
 </tbody>
 </table>
 
-## Regresión de Poisson con R
+## Regresión de Poisson
+
+La distribución de Poisson es una distribución que modeliza bien situaciones de conteo. Por ejemplo: números de accidentes, número de personas que tienen un infarto, número de personas que asisten a una consulta, número de hijos, etc. La característica es que son números finitos, no muy grandes, siempre positivos. Los mismos transcurren dentro de un intervalo, habitualmente de tiempo, pero también se puede considerar intervalos de población. Es decir que busca modelar el número de veces en que ocurre un evento en un intervalo determinado. 
+
+La distribución de Poisson toma, pues, valores enteros no negativos: 0, 1, 2, 3, 4... La distribución de Poisson tiene un único parámetro,  lambda ($\lambda$), que coincide con la Esperanza y la Varianza de la distribución. O sea, es una distribución que cuanto más grande es el valor esperado más dispersión tienen los valores.
+
+Vamos a entender cómo se aplica la regresión de Poisson en el marco de un estudio de cohortes. Supongamos entonces que tenemos un estudio de cohortes clásico, con dos grupos de comparación: un grupo expuesto y otro no expuesto. Para cada grupo se dispone el número de eventos ($d$) y la cantidad de personas-tiempo seguidas ($n$). Como recordarán, la tasa de incidencia ($\lambda$), la podemos calcular como el cociente: 
+
+$$\lambda = \frac{d}{n}$$
+Se asume que el número de eventos observados en cada grupo sigue una distribución de Poisson, con un valor esperado igual al producto de la tasa de incidencia por las personas tiempo. $E(d)= \lambda*n$. Así, la probabilidad de observar $d$ eventos, sería:
+
+$$P(x=d)= \frac{(\lambda n)^d e^{-\lambda n}}{d} $$
+
+Omitiendo el desarrollo matemático, la modelización de la regresión de Poisson consiste en establecer un modelo de efectos lineales de distintas covariables sobre el logaritmo de la tasa del subgrupo correspondiente.En general, el modelo de Poisson se expresa como: 
+
+$$ln\lambda = \alpha+\beta_1x_1+\beta_2x_2+\dots+\beta_nx_n \qquad (*)$$ 
+
+En forma equivalente, podemos decir:
+
+$$\lambda=e^{\beta_0+\beta_1x_1+\dots+\beta_nx_n} $$
+Si operamos en forma análoga a lo que hicimos en la regresión logística, concluiremos que los parámetros del modelo son interpretables a través de potencias de base $e$ como riesgos relativos (cocientes de tasas). La expresión formal es:
+
+$$RR_{x*/x}=e^{\sum^k_i=1\beta_i(x^*_i-x_i)}=\prod^k_{i=1}e^{\beta_i(x^*_i-x_i)} $$
+El símbolo $\prod$ significa productoria. Se simboliza con la letra Pi en mayúscula e implica una secuencia de productos.
+
+Nuevamente, si volvemos a la ecuación: 
+
+$$\lambda = \frac{d}{n}$$
+
+Entonces, si aplicamos logaritmo natural:
+
+$$ln\lambda=ln \frac{d}{n}=ln(d)-ln(n)$$
+Si igualamos con (*)
+
+$$ln\lambda=\alpha+\beta_1x_1+\beta_2x_2+\dots+\beta_nx_n$$
+$$ln(d)=ln(n)+\alpha+\beta_1x_1+\beta_2x_2+\dots+\beta_nx_n $$
+Al término $ln(n)$ se lo llama **offset**. En general, es un valor que debemos darle al software para que ajuste un modelo de Poisson, no se estima a partir de los datos.
+
+Ahora que tenemos la ecuación del modelo, será necesario estimar los coeficientes y luego evaluar la calidad del ajuste.
+
+Los coeficientes se calculan utilizando métodos como la Estimación de máxima verosimilitud (MLE). A partir de los coeficientes que nos produce la estimación de máximo-verosimilitud podemos realizar las siguientes inferencias: el test de Wald, para testear la $H_0 : β_i=0$, sus IC, y de ahí calcular los RR, con sus respectivos IC.
+
+La bondad de ajuste del modelo se evaluará a través de la función Deviance siguiendo el mismo esquema jerárquico de evaluación que en el caso de la regresión logística
+
+### Supuestos del modelo de Poisson
+
+Como dijimos, la idea de Poisson es contar eventos en intervalos de tiempo o de población (también podría ser espacial). La variable desenlace toma valores positivos. Depende de un solo parámetro: $\lambda$. La distribución de Poisson tiene iguales la media y la varianza. Este es un supuesto muy importante de este modelo, y se conoce como supuesto de equidispersión. Si la variación de los casos observados en una población excede a la variación esperada por Poisson, se está ante la presencia de un problema conocido como sobredispersión y, en tal caso, la distribución binomial negativa es más adecuada (que no abordaremos aquí).
+
+Los principales supuestos de Poisson son:
+
+- Las observaciones deben ser independientes.
+-	El parámetro $\lambda$ debe ser constante a lo largo del tiempo: esto se garantiza si se cumple con el principio de equidispersión.
+-	La cantidad de eventos en un intervalo es proporcional al tamaño del intervalo
+-	Dos o más eventos no pueden ocurrir en un mismo momento puntual
+
+En la práctica, no siempre se cumple el principio de equidispersión, y lo más frecuente es la sobredispersión, es decir que la varianza sea superior a la media. Esto conduce a sesgos en la estimación de los desvíos estándares de los coeficientes. Por eso es importante diagnosticar la sobredispersión. *Lindsay* propone aplicar el coeficiente de variación (CV) como indicador para evaluar sobredispersión. El CV se define como el cociente entre la varianza estimada y la media estimada. Otros autores sugieren otros indicadores, veremos en el ejemplo como podemos evaluar sobredispersión en R.
+
+Otras situaciones en las cuales el modelo de Poisson no es adecuado es cuando existe un número excesivo de ceros, esto es, una frecuencia observada de ceros que no es consistente con el modelo Poisson. Esto se debe a que el $ln(0)$ no está definido.  Como se señaló previamente, si bien es cierto que el modelo binomial negativo se ha desarrollado para modelar la heterogeneidad no observada, también es cierto que esa misma heterogeneidad es originada por un número excesivo de ceros. De manera particular, es posible que el mecanismo aleatorio que dio origen a los datos de conteo muestre una mayor concentración para algún valor específico, que puede ser el cero (como ocurre con algunas variables vinculadas a salud) o cualquier otro valor positivo. Esto implica que dicho valor tiene una mayor probabilidad de ocurrencia que la especificada por la distribución Poisson o cualquier otra distribución. En estos casos, se suele utilizar un modelo para datos de conteo cero-inflado, que le confiere mayor peso a la probabilidad de que la variable de conteo sea igual a cero. 
+
+
+## Aplicación en R
 
 La regresión de Poisson se encuentra implementada en lenguaje R como otro de los modelos de la familia de modelos lineales generalizados (GLM de las siglas en inglés de *Generalized Linear Models*) similar a la regresión logística vista en la unidad anterior. 
 
-Un criterio importante en la elección de la función de enlace para varias familias de distribuciones es asegurar que los valores ajustados del modelado permanezcan dentro de límites razonables. La especificación de un enlace logaritmico (predeterminado para Poisson) garantiza que los recuentos ajustados sean todos mayores o iguales a cero (propio de los conteos).
+Un criterio importante en la elección de la función de enlace para varias familias de distribuciones es asegurar que los valores ajustados del modelado permanezcan dentro de límites razonables. La especificación de un enlace logarítmico (predeterminado para Poisson) garantiza que los recuentos ajustados sean todos mayores o iguales a cero (propio de los conteos).
 
 Por lo tanto, en este caso el ajuste tiene errores de Poisson y la función de enlace para linealizar la relación entre la variable respuesta y la(s) variable(s) independiente(s) es el `log`. 
 
@@ -293,6 +353,8 @@ datos %>% count(periodo, grupo.edad, wt = persona.anio) %>%
 ```{r, echo=F, message=F, warning=F}
 library(flextable)
 
+set_flextable_defaults(big.mark = "")
+
 datos %>% count(periodo, grupo.edad, wt = persona.anio) %>% 
   pivot_wider(names_from = grupo.edad, values_from = n) %>% 
   flextable() %>% autofit()
@@ -346,7 +408,7 @@ modelo <- glm(muertes ~ periodo + grupo.edad + arsenico, offset = log(persona.an
               data = datos)
 ```
 
-El término `offset = log(persona.anio)` permite que la variable persona.anio sea el denominador de los recuentos de `muertes`. Se necesita una transformación logarítmica ya que, para un modelo lineal generalizado de Poisson, la función enlace es el log.
+El término `offset = log(persona.anio)` permite que la variable `persona.anio` sea el denominador de los recuentos de `muertes`. Se necesita una transformación logarítmica ya que, para un modelo lineal generalizado de Poisson, la función enlace es el log.
 
 Veamos la salida resumen del modelo:
 
@@ -533,24 +595,29 @@ plot(model_parameters(mod4, exponentiate = T))
 
 Epidemiología. Diseño y análisis de estudios. Mauricio Hernández Ávila, 2007 - Editorial Médica Panamericana S.A.
 
-Andreu Nolasco. Estadística avanzada en ciencias de la salud - Universidad de Alicante - 2016
+Andreu Nolasco. Estadística avanzada en ciencias de la salud - Universidad de Alicante, 2016
+
+Pérez Hoyos S. Introducción a la regresión de Poisson. Quaderns de saut pública i administració de serveis de salut, 17. Valencia: Escola Valenciana d´Estudis per a la Salut, 2001.
+
+Salinas-Rodríguez Aarón, Manrique-Espinoza Betty, Sosa-Rubí Sandra G. Análisis estadístico para datos de conteo: aplicaciones para el uso de los servicios de salud. Salud pública Méx  [revista en la Internet,. 2009  Oct [citado  2021  Sep  12] ;  51( 5 ): 397-406. Disponible en: <http://www.scielo.org.mx/scielo.php?script=sci_arttext&pid=S0036-36342009000500007&lng=es>
+
 
 R Core Team. R: A language and environment for statistical
 computing. R Foundation for Statistical Computing, Vienna, Austria, 2021. URL
 <https://www.R-project.org/>.
 
-Wickham et al. Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, Año 2019 https://doi.org/10.21105/joss.01686
+Wickham et al. Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, 2019 <https://doi.org/10.21105/joss.01686>
 
 
-Lüdecke D, Ben-Shachar M, Patil I, Makowski D (2020). “Extracting, Computing and Exploring the Parameters of Statistical Models using R.”
+Lüdecke D, Ben-Shachar M, Patil I, Makowski D. “Extracting, Computing and Exploring the Parameters of Statistical Models using R.”, 2020
 _Journal of Open Source Software_, *5*(53), 2445. doi: 10.21105/joss.02445
-(URL: https://doi.org/10.21105/joss.02445).
+<https://doi.org/10.21105/joss.02445>.
 
 Lüdecke, Patil, Ben-Shachar, Wiernik, Waggoner & Makowski. Visualisation Toolbox for 'easystats' and Extra Geoms, Themes and Color Palettes for 'ggplot2', 2020. CRAN. Available from
-https://easystats.github.io/see/
+<https://easystats.github.io/see/>
 
-Virasakdi Chongsuvivatwong (2018). epiDisplay: Epidemiological Data Display Package. R
-package version 3.5.0.1. https://CRAN.R-project.org/package=epiDisplay
+Virasakdi Chongsuvivatwong. epiDisplay: Epidemiological Data Display Package. R
+package version 3.5.0.1., 2018 <https://CRAN.R-project.org/package=epiDisplay>
 
 
 
