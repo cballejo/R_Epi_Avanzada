@@ -78,15 +78,11 @@ es asignada a los participantes por el investigador, para que podamos
 hablar de un experimento válido desde el punto de vista científico, es
 preciso que además se cumplan las siguientes condiciones:
 
--   La única razón por la que los sujetos reciben la intervención bajo
-    estudio es el cumplimiento del protocolo del estudio.
+-   La única razón por la que los sujetos reciben la intervención bajo estudio es el cumplimiento del protocolo del estudio.
 
--   En el estudio existe una serie de sujetos, denominados grupo
-    control, que no reciben la intervención cuyo efecto se desea
-    analizar.
+-   En el estudio existe una serie de sujetos, denominados grupo control, que no reciben la intervención cuyo efecto se desea analizar.
 
--   La asignación de la intervención a una serie de sujetos, grupo de
-    intervención, se lleva a cabo por un mecanismo debido al azar
+-   La asignación de la intervención a una serie de sujetos, grupo de intervención, se lleva a cabo por un mecanismo debido al azar
 
 **Tipos de estudios clínicos experimentales (ECE)**. Las clasificaciones
 referidas a estudios experimentales, pueden ser diferentes según los
