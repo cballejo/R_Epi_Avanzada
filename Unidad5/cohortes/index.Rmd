@@ -52,14 +52,187 @@ BY-NC
 
 ## Introducción
 
-< AQUÍ VA LA PARTE TEORICA DE ESTUDIOS DE COHORTES Y POISSON >
+En su concepción más simple, un diseño de cohorte implica la selección de un grupo de personas expuestas al factor de estudio y la selección de un grupo similar, pero sin la exposición, considerado como no expuesto. El seguimiento de ambos grupos se pautará para un lapso determinado, y se evaluará en dicho período si se produjo o no el evento de interés. Finalmente se realiza una comparación entre ambos grupos.
+
+La esencia de los estudios de cohortes es el seguimiento. Por tratarse de estudios longitudinales, los mismos podrán ser prospectivos, retrospectivos o mixtos. La cohorte podrá ser una cohorte fija o dinámica. En las primeras, se fija un período de reclutamiento de participantes y una vez finalizado dicho período, no se incluyen más sujetos para el seguimiento. En una cohorte abierta, o dinámica, se permite el ingreso y egreso de participantes  en toda la extensión del estudio. 
+
+Como recordarán, los criterios de selección están en la exposición, por lo cual la misma debe estar claramente definida. Como dijimos anteriormente, la idea clásica de un estudio de cohorte es comparar dos grupos, expuestos y no expuestos. Pero los grupos de referencia pueden ser otros: 
+
+- **Estudios de comparación con la población general**: El estudio identifica y sigue a una determinada cohorte de exposición. La frecuencia de aparición de la enfermedad en dicha cohorte es comparada con la observada en la población general. Para ello es necesario disponer de registros poblacionales que suministren dicha información. 
+
+- **Comparaciones internas**: La cohorte a estudio supone una mezcla de personas expuestas y no expuestas. Las comparaciones se realizan dentro de la propia cohorte.
+
+Por otra parte, el evento a observar puede tomar distintas formas: puede tratarse de un evento fijo, eventos múltiples, cambio en una medida de función (la cual se evalúa mediante tasa de cambio) o marcadores intermedios del evento, esto también impactará en la forma de análisis.
+
+A la hora de diseñar un estudio de cohortes es importante, entonces, definir de forma clara los siguientes aspectos:
+
+- Criterios de inclusión
+- Fecha de entrada y de salida de los participantes en el estudio
+- Seguimiento
+- Eventos finales de interés
+- La exposición
+- Factores de confusión
+- Consideraciones éticas 
+- Estrategias de análisis
+- Potencia estadística
 
 
-## Regresión de Poisson con R
+En la siguiente tabla se remarcan ventajas y desventajas de estos estudios.
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-amwm{font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-amwm">Ventajas  </th>
+    <th class="tg-amwm">Desventajas   </th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0lax">• Más cercanos a un experimento<br>   <br>• La relación temporal causa efecto es verificable<br>   <br>• Se pueden estimar medidas de incidencia<br>   <br>• Eficientes para evaluar exposiciones poco frecuentes<br>   <br>• Se pueden estudiar varios eventos<br>   <br>• Se pueden fijar criterios de calidad en la medición del evento<br>   <br>• Bajo riesgo de sesgo de selección (en especial en estudios prospectivos)   </td>
+    <td class="tg-0lax">• Cuando se trata de eventos poco frecuentes la complejidad y el costo pueden aumentar considerablemente, ya que requiere estudiar y seguir un número grande de participantes<br>   <br>• Son estudios difíciles de realizar<br>   <br>    </td>
+  </tr>
+</tbody>
+</table>
+
+### ¿Cómo analizar un estudio de cohortes?
+
+Seguramente ustedes recordarán de otros cursos de epidemiología, que en su forma más simple, podemos calcular Riesgos Relativos (RR) en un estudio de cohortes. Vamos a profundizar otros aspectos de este diseño.
+
+El análisis de los estudios de cohortes ha de tener en cuenta la variable tiempo. La existencia de pérdidas de participantes por diferentes motivos y la diferente duración del seguimiento de los distintos miembros de la cohorte, implican la necesidad de técnicas analíticas especiales que, a la vez, permitan considerar toda la información aportada por los integrantes de la cohorte. Existen dos estrategias diferentes de análisis en los estudios de cohortes: el análisis supervivencia y el análisis personas-tiempo, pero ambas requieren disponer de información precisa sobre el inicio y el final del seguimiento de cada participante y conocer el status del participante en el momento de finalización o salida del estudio (desarrollo o no el evento de interés). Asimismo será necesario definir una escala temporal adecuada.
+
+La estrategia de **análisis de supervivencia**, la abordaremos en la próxima unidad, de la mano de los estudios experimentales, pero tengan presente que la podemos emplear en cualquier estudio de cohorte, que contemos con la información puntualizada anteriormente.
+
+Las técnicas de **personas-año** utilizan como unidad de análisis estratos o grupos homogéneos en los que es razonable asumir una misma tasa de incidencia. Las técnicas clásicas de análisis “personas tiempo” incluyen la comparación de tasas, la estandarización directa y las razones estandarizadas de incidencia o mortalidad (denominadas en la literatura RIE o SIR, para la incidencia y RME o SMR para la mortalidad). RIE y RME comparan el número de casos observados con el número esperado teniendo en cuenta la frecuencia de enfermedad en la población utilizada como referencia. La técnica multivariada por excelencia para la modelización de las tasas es la regresión de Poisson, que utiliza la distribución de Poisson para modelizar la variabilidad aleatoria del numerador de las tasas y es lo que aprenderemos en este capítulo.
+
+A modo de resumen, compartimos esta tabla, extraída del libro de Hernández Avila:
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-cnoz{background-color:#C0C0C0;text-align:left;vertical-align:middle}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+.tg .tg-nrix{text-align:center;vertical-align:middle}
+.tg .tg-byb7{background-color:#C0C0C0;text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-0lax">&nbsp;&nbsp;&nbsp;<br> &nbsp;&nbsp;&nbsp;</th>
+    <th class="tg-nrix"><span style="color:black">Análisis de supervivencia</span>   </th>
+    <th class="tg-nrix"><span style="color:black">Análisis basado en tiempo-persona</span> </th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-cnoz"><span style="color:black">Tamaño de la muestra</span></td>
+    <td class="tg-byb7"><span style="color:black">Relativamente pequeño</span><span style="background-color:silver">  </span></td>
+    <td class="tg-byb7"><span style="color:black">Relativamente grande</span><span style="background-color:silver">   </span></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax"><span style="color:black">Tipo de eventos</span>   </td>
+    <td class="tg-0lax"><span style="color:black">Frecuentes</span>   </td>
+    <td class="tg-0lax"><span style="color:black">Raros</span>   </td>
+  </tr>
+  <tr>
+    <td class="tg-byb7"><span style="color:black">Escala temporal</span><span style="background-color:silver">   </span></td>
+    <td class="tg-byb7"><span style="color:black">Única</span><span style="background-color:silver">   </span></td>
+    <td class="tg-byb7"><span style="color:black">Única o múltiple</span><span style="background-color:silver">   </span></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax"><span style="color:black">Tipos de medida</span>  </td>
+    <td class="tg-0lax"><span style="color:black">Probabilidad  (condicional y acumulada)</span>   </td>
+    <td class="tg-0lax"><span style="color:black">Tasa (densidad)</span>   </td>
+  </tr>
+  <tr>
+    <td class="tg-byb7"><span style="color:black">Análisis bivariado</span><span style="background-color:silver"> </span><br></td>
+    <td class="tg-byb7"><span style="color:black">Comparación de curvas de supervivencia</span><br><br><span style="background-color:#C0C0C0">Lo</span><span style="color:black">g-rank test</span><br><span style="background-color:silver">   </span><br><span style="color:black">Razón de riesgos</span><span style="background-color:silver">   </span></td>
+    <td class="tg-byb7"><span style="color:black">Comparación de tasas</span><br><br><span style="color:black">Razón de tasas</span><br><span style="background-color:silver">   </span><br><span style="color:black">REM</span><span style="background-color:silver">   </span></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax"><span style="color:black">Análisis multivariado</span>   </td>
+    <td class="tg-0lax"><span style="color:black">Regresión de Cox</span>   </td>
+    <td class="tg-0lax"><span style="color:black">Regresión de Poisson</span>   </td>
+  </tr>
+</tbody>
+</table>
+
+## Regresión de Poisson
+
+La distribución de Poisson es una distribución que modeliza bien situaciones de conteo. Por ejemplo: números de accidentes, número de personas que tienen un infarto, número de personas que asisten a una consulta, número de hijos, etc. La característica es que son números finitos, no muy grandes, siempre positivos. Los mismos transcurren dentro de un intervalo, habitualmente de tiempo, pero también se puede considerar intervalos de población. Es decir que busca modelar el número de veces en que ocurre un evento en un intervalo determinado. 
+
+La distribución de Poisson toma, pues, valores enteros no negativos: 0, 1, 2, 3, 4... La distribución de Poisson tiene un único parámetro,  lambda ($\lambda$), que coincide con la Esperanza y la Varianza de la distribución. O sea, es una distribución que cuanto más grande es el valor esperado más dispersión tienen los valores.
+
+Vamos a entender cómo se aplica la regresión de Poisson en el marco de un estudio de cohortes. Supongamos entonces que tenemos un estudio de cohortes clásico, con dos grupos de comparación: un grupo expuesto y otro no expuesto. Para cada grupo se dispone el número de eventos ($d$) y la cantidad de personas-tiempo seguidas ($n$). Como recordarán, la tasa de incidencia ($\lambda$), la podemos calcular como el cociente: 
+
+$$\lambda = \frac{d}{n}$$
+Se asume que el número de eventos observados en cada grupo sigue una distribución de Poisson, con un valor esperado igual al producto de la tasa de incidencia por las personas tiempo. $E(d)= \lambda*n$. Así, la probabilidad de observar $d$ eventos, sería:
+
+$$P(x=d)= \frac{(\lambda n)^d e^{-\lambda n}}{d} $$
+
+Omitiendo el desarrollo matemático, la modelización de la regresión de Poisson consiste en establecer un modelo de efectos lineales de distintas covariables sobre el logaritmo de la tasa del subgrupo correspondiente.En general, el modelo de Poisson se expresa como: 
+
+$$ln\lambda = \alpha+\beta_1x_1+\beta_2x_2+\dots+\beta_nx_n \qquad (*)$$ 
+
+En forma equivalente, podemos decir:
+
+$$\lambda=e^{\beta_0+\beta_1x_1+\dots+\beta_nx_n} $$
+Si operamos en forma análoga a lo que hicimos en la regresión logística, concluiremos que los parámetros del modelo son interpretables a través de potencias de base $e$ como riesgos relativos (cocientes de tasas). La expresión formal es:
+
+$$RR_{x*/x}=e^{\sum^k_i=1\beta_i(x^*_i-x_i)}=\prod^k_{i=1}e^{\beta_i(x^*_i-x_i)} $$
+El símbolo $\prod$ significa productoria. Se simboliza con la letra Pi en mayúscula e implica una secuencia de productos.
+
+Nuevamente, si volvemos a la ecuación: 
+
+$$\lambda = \frac{d}{n}$$
+
+Entonces, si aplicamos logaritmo natural:
+
+$$ln\lambda=ln \frac{d}{n}=ln(d)-ln(n)$$
+Si igualamos con (*)
+
+$$ln\lambda=\alpha+\beta_1x_1+\beta_2x_2+\dots+\beta_nx_n$$
+$$ln(d)=ln(n)+\alpha+\beta_1x_1+\beta_2x_2+\dots+\beta_nx_n $$
+Al término $ln(n)$ se lo llama **offset**. En general, es un valor que debemos darle al software para que ajuste un modelo de Poisson, no se estima a partir de los datos.
+
+Ahora que tenemos la ecuación del modelo, será necesario estimar los coeficientes y luego evaluar la calidad del ajuste.
+
+Los coeficientes se calculan utilizando métodos como la Estimación de máxima verosimilitud (MLE). A partir de los coeficientes que nos produce la estimación de máximo-verosimilitud podemos realizar las siguientes inferencias: el test de Wald, para testear la $H_0 : β_i=0$, sus IC, y de ahí calcular los RR, con sus respectivos IC.
+
+La bondad de ajuste del modelo se evaluará a través de la función Deviance siguiendo el mismo esquema jerárquico de evaluación que en el caso de la regresión logística
+
+### Supuestos del modelo de Poisson
+
+Como dijimos, la idea de Poisson es contar eventos en intervalos de tiempo o de población (también podría ser espacial). La variable desenlace toma valores positivos. Depende de un solo parámetro: $\lambda$. La distribución de Poisson tiene iguales la media y la varianza. Este es un supuesto muy importante de este modelo, y se conoce como supuesto de equidispersión. Si la variación de los casos observados en una población excede a la variación esperada por Poisson, se está ante la presencia de un problema conocido como sobredispersión y, en tal caso, la distribución binomial negativa es más adecuada (que no abordaremos aquí).
+
+Los principales supuestos de Poisson son:
+
+- Las observaciones deben ser independientes.
+-	El parámetro $\lambda$ debe ser constante a lo largo del tiempo: esto se garantiza si se cumple con el principio de equidispersión.
+-	La cantidad de eventos en un intervalo es proporcional al tamaño del intervalo
+-	Dos o más eventos no pueden ocurrir en un mismo momento puntual
+
+En la práctica, no siempre se cumple el principio de equidispersión, y lo más frecuente es la sobredispersión, es decir que la varianza sea superior a la media. Esto conduce a sesgos en la estimación de los desvíos estándares de los coeficientes. Por eso es importante diagnosticar la sobredispersión. *Lindsay* propone aplicar el coeficiente de variación (CV) como indicador para evaluar sobredispersión. El CV se define como el cociente entre la varianza estimada y la media estimada. Otros autores sugieren otros indicadores, veremos en el ejemplo como podemos evaluar sobredispersión en R.
+
+Otras situaciones en las cuales el modelo de Poisson no es adecuado es cuando existe un número excesivo de ceros, esto es, una frecuencia observada de ceros que no es consistente con el modelo Poisson. Esto se debe a que el $ln(0)$ no está definido.  Como se señaló previamente, si bien es cierto que el modelo binomial negativo se ha desarrollado para modelar la heterogeneidad no observada, también es cierto que esa misma heterogeneidad es originada por un número excesivo de ceros. De manera particular, es posible que el mecanismo aleatorio que dio origen a los datos de conteo muestre una mayor concentración para algún valor específico, que puede ser el cero (como ocurre con algunas variables vinculadas a salud) o cualquier otro valor positivo. Esto implica que dicho valor tiene una mayor probabilidad de ocurrencia que la especificada por la distribución Poisson o cualquier otra distribución. En estos casos, se suele utilizar un modelo para datos de conteo cero-inflado, que le confiere mayor peso a la probabilidad de que la variable de conteo sea igual a cero. 
+
+
+## Aplicación en R
 
 La regresión de Poisson se encuentra implementada en lenguaje R como otro de los modelos de la familia de modelos lineales generalizados (GLM de las siglas en inglés de *Generalized Linear Models*) similar a la regresión logística vista en la unidad anterior. 
 
-Un criterio importante en la elección de la función de enlace para varias familias de distribuciones es asegurar que los valores ajustados del modelado permanezcan dentro de límites razonables. La especificación de un enlace logaritmico (predeterminado para Poisson) garantiza que los recuentos ajustados sean todos mayores o iguales a cero (propio de los conteos).
+Un criterio importante en la elección de la función de enlace para varias familias de distribuciones es asegurar que los valores ajustados del modelado permanezcan dentro de límites razonables. La especificación de un enlace logarítmico (predeterminado para Poisson) garantiza que los recuentos ajustados sean todos mayores o iguales a cero (propio de los conteos).
 
 Por lo tanto, en este caso el ajuste tiene errores de Poisson y la función de enlace para linealizar la relación entre la variable respuesta y la(s) variable(s) independiente(s) es el `log`. 
 
@@ -180,6 +353,8 @@ datos %>% count(periodo, grupo.edad, wt = persona.anio) %>%
 ```{r, echo=F, message=F, warning=F}
 library(flextable)
 
+set_flextable_defaults(big.mark = "")
+
 datos %>% count(periodo, grupo.edad, wt = persona.anio) %>% 
   pivot_wider(names_from = grupo.edad, values_from = n) %>% 
   flextable() %>% autofit()
@@ -233,7 +408,7 @@ modelo <- glm(muertes ~ periodo + grupo.edad + arsenico, offset = log(persona.an
               data = datos)
 ```
 
-El término `offset = log(persona.anio)` permite que la variable persona.anio sea el denominador de los recuentos de `muertes`. Se necesita una transformación logarítmica ya que, para un modelo lineal generalizado de Poisson, la función enlace es el log.
+El término `offset = log(persona.anio)` permite que la variable `persona.anio` sea el denominador de los recuentos de `muertes`. Se necesita una transformación logarítmica ya que, para un modelo lineal generalizado de Poisson, la función enlace es el log.
 
 Veamos la salida resumen del modelo:
 
@@ -336,7 +511,7 @@ La perfomance del `mod4` mejora respecto del anterior.
 ```{r}
 poisgof(mod4)$p.value
 ```
-El ajuste continúa sigue bueno.
+El ajuste continúa siendo bueno.
 
 ```{r}
 summary(mod4)
@@ -420,24 +595,29 @@ plot(model_parameters(mod4, exponentiate = T))
 
 Epidemiología. Diseño y análisis de estudios. Mauricio Hernández Ávila, 2007 - Editorial Médica Panamericana S.A.
 
-Andreu Nolasco. Estadística avanzada en ciencias de la salud - Universidad de Alicante - 2016
+Andreu Nolasco. Estadística avanzada en ciencias de la salud - Universidad de Alicante, 2016
+
+Pérez Hoyos S. Introducción a la regresión de Poisson. Quaderns de saut pública i administració de serveis de salut, 17. Valencia: Escola Valenciana d´Estudis per a la Salut, 2001.
+
+Salinas-Rodríguez Aarón, Manrique-Espinoza Betty, Sosa-Rubí Sandra G. Análisis estadístico para datos de conteo: aplicaciones para el uso de los servicios de salud. Salud pública Méx  [revista en la Internet,. 2009  Oct [citado  2021  Sep  12] ;  51( 5 ): 397-406. Disponible en: <http://www.scielo.org.mx/scielo.php?script=sci_arttext&pid=S0036-36342009000500007&lng=es>
+
 
 R Core Team. R: A language and environment for statistical
 computing. R Foundation for Statistical Computing, Vienna, Austria, 2021. URL
 <https://www.R-project.org/>.
 
-Wickham et al. Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, Año 2019 https://doi.org/10.21105/joss.01686
+Wickham et al. Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, 2019 <https://doi.org/10.21105/joss.01686>
 
 
-Lüdecke D, Ben-Shachar M, Patil I, Makowski D (2020). “Extracting, Computing and Exploring the Parameters of Statistical Models using R.”
+Lüdecke D, Ben-Shachar M, Patil I, Makowski D. “Extracting, Computing and Exploring the Parameters of Statistical Models using R.”, 2020
 _Journal of Open Source Software_, *5*(53), 2445. doi: 10.21105/joss.02445
-(URL: https://doi.org/10.21105/joss.02445).
+<https://doi.org/10.21105/joss.02445>.
 
 Lüdecke, Patil, Ben-Shachar, Wiernik, Waggoner & Makowski. Visualisation Toolbox for 'easystats' and Extra Geoms, Themes and Color Palettes for 'ggplot2', 2020. CRAN. Available from
-https://easystats.github.io/see/
+<https://easystats.github.io/see/>
 
-Virasakdi Chongsuvivatwong (2018). epiDisplay: Epidemiological Data Display Package. R
-package version 3.5.0.1. https://CRAN.R-project.org/package=epiDisplay
+Virasakdi Chongsuvivatwong. epiDisplay: Epidemiological Data Display Package. R
+package version 3.5.0.1., 2018 <https://CRAN.R-project.org/package=epiDisplay>
 
 
 
