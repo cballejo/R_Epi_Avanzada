@@ -69,8 +69,7 @@ preguntas como: ¿cuál es el riesgo de un paciente de fallecer después de una 
 Se simboliza como $h(t)$ o $\lambda(t)$ y la expresión es:
 
 $$h(t) = \lim_{n\rightarrow \infty}((t<T<t+\varepsilon)|T>t)/\varepsilon  $$
-que puede interpretarse, aproximadamente, como la probabilidad de morir (en el caso que el evento sea muerte) en el intervalo ($t$, $t + \Delta t$], dado que se está vivo al tiempo $t$. Podemos interpretarla como una medida de intensidad de muerte al tiempo $t$, o una medida de
-muerte potencial al tiempo $t$.
+que puede interpretarse, aproximadamente, como la probabilidad de morir (en el caso que el evento sea muerte) en el intervalo ($t$, $t + \Delta t$], dado que se está vivo al tiempo $t$, o bien de forma general como la probabilidad de presentar el evento en dicho intervalo. Podemos interpretarla como una medida de intensidad de muerte al tiempo $t$, o una medida de muerte potencial al tiempo $t$, o en forma general, como una medida de intensidad de eventos a dicho tiempo.
 
 La función de riesgo recibe otros nombres como: tasa de fallo, función o tasa de incidencia, fuerza de mortalidad condicional o simplemente fuerza de mortalidad. Es importante resaltar que a pesar de llevar el nombre de riesgo; $h(t)$ es una tasa y no una probabilidad, es por eso que a veces se prefiere usar el término *hazard*. Su unidad es $tiempo^{-1}$ y puede asumir cualquier valor real mayor que cero.
 
@@ -81,7 +80,6 @@ knitr::include_graphics("Riesgos.PNG")
 ```
 
 El gráfico **A** muestra una función de riesgo constante en el tiempo. Podemos imaginar situaciones de salud que tengan este comportamiento: por ejemplo riesgo de fracturas de escolares de 5to grado durante un año. El gráfico **B**, muestra una función de riesgo que decrece en el tiempo. Este patrón podría ejemplificar el riesgo post-quirúrgico, que es mayor en los primeros días post cirugía y luego cae con el tiempo. El gráfico **C** muestra una función de riesgo que se incrementa con el tiempo. Un ejemplo de esta situación podría encontrarse en un estudio sobre "tiempo hasta la solidificación de una fractura ósea". En un primer momento el "riesgo de solidificación" de la fractura es nulo, y a medida que transcurre el tiempo se incrementa. El resto de los gráficos presentan patrones más complejos de riesgo. Quizás puedan encontrar situaciones que sean representadas por esas curvas.
-Para cerrar diremos que la función de riesgo marca la dinámica del proceso estudiado, al dar sus valores una adecuada aproximación a la tasa de incidencia del evento de interés.
 
 Para cerrar diremos que la función de riesgo marca la dinámica del proceso estudiado, al dar sus valores una adecuada aproximación a la tasa de incidencia del evento de interés.
 
@@ -419,6 +417,212 @@ $$Tasa\;de\;supervivencia= \frac{nro.\;de\;individuos\;que\;sobreviven\;hasta\;u
 
 $$Tasa\;de\;incidencia=\frac{numero\; de\; eventos}{\sum tiempo-persona \; en\;seguimiento}  $$
 
+## Análisis de supervivencia en R con KM
+
+A continuación veremos un ejemplo aplicado a una cohorte para aprender a realizar un análisis de supervivencia en R. 
+
+Hasta hace pocos años, el trasplante de médula ósea (TMO) de donante compatible era el único tratamiento para la Leucemia Mieloide Crónica (LMC). Una de las causas de fracaso de este procedimiento es la enfermedad injerto contra huésped, que ocurre en 25-30 % de los pacientes sometidos a trasplante. Existen complicaciones derivadas de tratamientos quimioterapéuticos o radioterapéuticos. Además, el pronóstico de los pacientes se asocia a la fase de la enfermedad al momento del trasplante: los pacientes trasplantados en la primera fase crónica tienden a tener una mayor sobrevida.
+
+El Centro de Trasplante de Médula Ósea del Instituto Nacional del Cáncer  de Brasil, realizó entre 1986 y 1998, 96 trasplantes de médula ósea para tratamiento de LMC. El análisis de los datos de esa cohorte buscaba identificar factores susceptibles de intervenciones profilácticas o terapéuticas que pudiesen mejorar el pronóstico de pacientes con LMC candidatos a TMO o contraindicar la realización del procedimiento en subgrupos de mayor riesgo, evaluando la posibilidad de conductas terapéuticas alternativas.
+
+Los datos del archivo **tmo.xlsx**  provienen de esa cohorte de 96 pacientes sometidos a trasplante de médula ósea. Las covariables registradas para cada paciente se describen en la siguiente tabla:
+
+| __Variable__| __Descripción __                         | 
+|-------------|------------------------------------------|
+|  id         |identificador del paciente                |
+|  sexo       |M= masculino, F = femenino                |  
+|edad         |Edad al momento del trasplante (años)     |
+|status       |0 = censura, 1 = óbito                    |
+|os           |Fecha de óbito o censura                  |
+|deag         |Enfermedad injerto-huésped aguda:  no,si  |
+|decr         |Enfermedad injerto-huésped crónica: no,si |
+|fase         |Aguda, crónica, cb: crisis blástica       |
+
+
+Existen varios paquetes para supervivencia, nosotros aquí usaremos principalmente el paquete **survival**. Otros paquetes conocidos son: OIsurv, Survminer, etc. Por lo tanto,  antes de comenzar, deberán instalar el paquete "survival" como ya han aprendido.
+
+Comenzaremos leyendo el archivo (recordar activar los paquetes)
+```{r, message=F, warning=F}
+library(readxl)
+library(survival)
+```
+
+```{r,eval=F}
+tmo <- read_excel("tmo.xlsx")
+```
+
+```{r,echo=F}
+tmo <- read_excel("tmo.xlsx")
+```
+
+El evento a considerar es “muerte pos-trasplante”.
+
+Comenzamos aplicando  directamente la función `Surv()` y luego pasamos a la función `survfit()`. 
+
+La función `Surv()` tomará los parámetros de tiempo y estado y creará un objeto de supervivencia. 
+
+La función `survfit()` toma un objeto de supervivencia (el que produce `Surv()`) y crea las curvas de supervivencia.
+
+Nos centraremos en la construcción de objetos de supervivencia provenientes de datos con censura derecha, como es el caso del ejemplo, dado que son los más habituales.  Pero pueden construirse diferentes objetos. Quien desee explorar estas posibilidades, consulte la documentación propia del paquete survival.
+
+Para datos censurados a la derecha, solo se necesitan dos argumentos en la función `Surv()`: un vector que indica qué tiempos se observan y censuran mientras que el segundo argumento  indica si se observó el evento (1) o no (0).
+
+```{r}
+global <- Surv(tmo$os, tmo$status)
+
+global
+
+```
+Vemos que "global" es un objeto de supervivencia. El signo + identifica aquellas observaciones con censura a la derecha. 
+
+```{r}
+KM <- survfit(global ~ 1)
+KM
+```
+
+Si llamamos al objeto KM, nos devuelve la información que vemos: el número de observaciones, de eventos, la mediana del tiempo de supervivencia y su IC.
+
+La función `survfit()` crea curvas de supervivencia a partir de una fórmula (por ejemplo, Kaplan-Meier). Tiene varios argumentos opcionales.
+
+El nivel de confianza puede cambiarse usando el segundo argumento, _conf.int_ (por ejemplo, conf.int = 0.90 para límites de confianza del 90%).
+
+El argumento _conf.type_ describe el tipo de intervalo de confianza. Más específicamente, describe la transformación para construir el intervalo de confianza. El valor predeterminado es "log", que equivale a la función de transformación g (t) = log (t). La opción "log-log" usa g (t) = log (-log (t)). 
+
+Se crea un intervalo de confianza lineal utilizando el argumento _conf.type_ = "plain". 
+
+Al igual que muchas funciones en R, la función `survfit()` devuelve información oculta a la que se puede acceder con los comandos adecuados. A continuación consideramos varios elementos de esta información oculta, que se almacena en una lista, dado que como podrán verificar el objeto KM es una lista.
+
+```{r}
+summary(KM)$surv # devuelve las estimaciones de Kaplan-Meier a cada t_i
+
+summary(KM)$time # {t_i}
+
+summary(KM)$n.risk # {Y_i}
+
+summary(KM)$n.event # {d_i}
+
+summary(KM)$std.err #  error standard de las estimaciones de  K-M a {t_i}
+
+summary(KM)$lower # estimaciones puntuales inferiores (alternativamente, $upper)
+```
+
+O bien usar directamente
+
+```{r}
+summary(KM)
+```
+
+Podemos también graficar la función de supervivencia:
+```{r, fig.align= "center",out.width= "60%"}
+plot(KM, 
+     main="Estimación de Kaplan-Meier(IC 95%)",
+     xlab="tiempo", 
+     ylab=" función Supervivencia")
+```
+Como se esperaba, la gráfica nos muestra las probabilidades decrecientes de supervivencia a medida que pasa el tiempo. Las líneas discontinuas son los intervalos de confianza superior e inferior. 
+
+### Comparación de curvas de supervivencia
+
+Intentaremos ahora verificar los factores pronósticos para el tiempo de supervivencia post-trasplante. Recordemos que el evento a considerar es “muerte pos-trasplante”.
+
+Como herramienta exploratoria, utilizaremos las curvas de supervivencia estimadas por el método de  Kaplan Meier según las covariables: Sexo, Enfermedad injerto crónica (decr), Enfermedad injerto aguda (deag), Fase. Esta parte es equivalente al análisis bivariado que realizamos en regresión lineal y logística. Recordemos que la variable que representa los tiempos de supervivencia es “os” y la que representa el evento o la censura es “status”. 
+
+Comenzaremos evaluando las curvas de Kaplan Meier en forma visual, y las completaremos con la información del logrank test.
+
+```{r, fig.align= "center",out.width= "60%"}
+kmsex <- survfit(Surv(os, status) ~ factor(sexo), data = tmo)
+
+plot(kmsex,
+     lty=1:2, 
+     col=1:2, 
+     ylab="S(t)",
+     xlab="dias", 
+     conf.int=F)
+title("Sexo-TMO")
+legend(0,0.4, c("F","M"), lty=1:2, col=1:2)
+```
+
+Para comparar ambas funciones de supervivencia se debe ejecutar el comando survdiff():
+
+```{r}
+logrank <- survdiff(Surv(os, status) ~ sexo, data = tmo)
+logrank
+```
+
+```{r, fig.align= "center",out.width= "60%"}
+kmdeag <- survfit(Surv(os, status) ~ factor(deag), data = tmo)
+
+plot(kmdeag,
+     lty=1:2, 
+     col=1:2, 
+     ylab="S(t)",
+     xlab="dias", 
+     conf.int=F)
+title("deag-TMO")
+legend(0,0.4, c("no","si"), lty=1:2, col=1:2)
+```
+
+```{r}
+logrank <- survdiff(Surv(os, status) ~ deag, data = tmo)
+logrank
+```
+
+
+```{r, fig.align= "center",out.width= "60%"}
+kmdecr <- survfit(Surv(os, status) ~ factor(decr), data = tmo)
+
+plot(kmdecr,
+     lty=1:2, 
+     col=1:2, 
+     ylab="S(t)",
+     xlab="dias", 
+     conf.int=F)
+title("decr-TMO")
+legend(0,0.4, c("no","si"), lty=1:2, col=1:2)
+```
+
+```{r}
+logrank <- survdiff(Surv(os, status) ~ decr, data = tmo)
+logrank
+```
+
+```{r, fig.align= "center",out.width= "60%"}
+kmfase <- survfit(Surv(os, status) ~ factor(fase), data = tmo)
+
+plot(kmfase,
+     lty=1:2, 
+     col=1:3, 
+     ylab="S(t)",
+     xlab="dias", 
+     conf.int=F)
+title("fase-TMO")
+legend(0,0.4, c("aguda","cb", "crónica"), lty=1:2, col=1:3)
+```
+
+```{r}
+logrank <- survdiff(Surv(os, status) ~ fase, data = tmo)
+logrank
+```
+
+
+¿Qué podemos concluir a partir de las curvas de KM?
+Observando cada gráfico detenidamente, vemos que:
+
+-	Para la variable sexo, las curvas se superponen bastante. Es decir que parece razonable suponer que no existe diferencia en la supervivencia post-trasplante de hombres y mujeres. Dado la forma de las curvas, parecería más correcto emplear el test de Wilcoxon. De todas formas, el valor de ambos test indica lo que ya habíamos predicho observando el gráfico: que no hay diferencia en las curvas de supervivencia entre hombres y mujeres. 
+
+-	Se observa diferencia en las curvas de supervivencia de los pacientes según hayan padecido o no enfermedad injerto contra huésped aguda: menor supervivencia para quienes padecieron (deag=si)
+
+-	Se observa diferencia en las curvas de supervivencia de los pacientes según hayan padecido o no enfermedad injerto contra huésped crónica:menor supervivencia para quienes no padecieron (decr=no)
+
+-	Se observa diferencia en las curvas de supervivencia de los pacientes según la fase de la enfermedad en la que se encontraban al momento del trasplante. 
+
+Observen que la variable fase tiene 3 categorías. El valor del log Rank test nos indica que hay diferencia en la supervivencia de las categorías, pero no nos dice si las 3 son distintas o si sólo una difiere de las otras dos.De la observación del gráfico podemos concluir que los pacientes que sufren crisis blástica (cb) tienen una supervivencia menor, de hecho aproximadamente a los 200 días fallecen todos.
+
+Recordamos que KM estratifica por variables cualitativas, por lo tanto edad no puede ser evaluada de esta forma. Podría recodificarse si,  para el evento en cuestión, el marco teórico señalara alguna edad de corte. 
+
+Volveremos sobre este ejemplo cuando abordemos el modelo de Cox.
+
+
 
 ## Bibliografía
 
@@ -427,3 +631,9 @@ Hernández Ávila, M. Epidemiología. Diseño y análisis de estudios. Editorial
 Woodward. Texts in Statistical Science . Epidemiology  Study Design  and Data Analysis . Third Edition. CRC Press, 2014
 
 Escuela Nacional de Sanidad (ENS) Instituto de Salud Carlos III - Ministerio de Ciencia e Innovación. Miguel Ángel Royo Bordonada, Javier Damián Moreno, “Método epidemiológico”. Madrid: ENS - Instituto de Salud Carlos III, Octubre de 2009
+
+R Core Team. R: A language and environment for statistical computing. R Foundation
+for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/., 2021
+
+Therneau T. _A Package for Survival Analysis in R_. R package version 3.2-11, <URL:
+https://CRAN.R-project.org/package=survival>., 2021
