@@ -830,7 +830,7 @@ abline(h = m5$coef[4], lty = 3)</code></pre>
 <li><p>magnitud</p></li>
 <li><p>puntos influyentes</p></li>
 </ul>
-<p>¿Cuáles son las posibles soluciones?: estratificar por covariable dependiente del tiempo; dividir el eje del tiempo o utilizar otro tipo de modelo.Continuaremos analizando los residuos de este modelo, y retomaremos el tema cuando lleguemos a modelos estratificados.</p>
+<p>¿Cuáles son las posibles soluciones?: estratificar por covariable dependiente del tiempo; dividir el eje del tiempo o utilizar otro tipo de modelo.</p>
 </div>
 <div id="residuos-martingale" class="section level3">
 <h3>Residuos Martingale:</h3>
@@ -853,38 +853,7 @@ abline(h=0,lty=2)</code></pre>
 <h2>Modelo de Cox estratificado</h2>
 <p>En algunas situaciones no podemos asumir que el riesgo basal <span class="math inline">\(h_o(t)\)</span> sea el mismo para todos los individuos del estudio. Esto podría ser por la característica propia de la variable (como la edad) o porque el diseño sea estratificado a priori (por ej. estadíos de una enfermedad). En estos casos, los distintos <span class="math inline">\(h_o(t)\)</span> definen los distintos estratos.</p>
 <p>Los coeficientes <span class="math inline">\(\beta\)</span> también se estiman por el método de verosimilitud parcial, pero los individuos en riesgo que participan de la estimación son sólo los del estrato.</p>
-<p>El modelo de Cox estratificado constituye una de las maneras de corregir el modelo de Cox cuando no se cumple el supuesto de riesgos proporcionales para alguna de las covariables. En este caso suele correrse el modelo estratificando por la covariable que no cumple con el supuesto de riesgo proporcional. Este procedimiento permite corregir el sesgo en la estimación del parámetro, que puede presentarse cuando se viola el supuesto de riesgo proporcional. Sin embargo, presenta una desventaja y es que no existe ningún <span class="math inline">\(\beta\)</span> que permita estimar el efecto de la covariable de estratificación. Continuando con nuestro ejemplo, vimos que la variable decr violaba el supuesto de proporcionalidad. Deberíamos entonces usar un modelo de Cox estratificado, donde decr sea la variable de estratificación.</p>
-<pre class="r"><code>m5st &lt;- coxph(formula = Surv(os, status) ~ fase + deag + strata(decr), data = tmo)
-summary(m5st)</code></pre>
-<pre><code>Call:
-coxph(formula = Surv(os, status) ~ fase + deag + strata(decr), 
-    data = tmo)
-
-  n= 96, number of events= 49 
-
-                coef exp(coef) se(coef)      z Pr(&gt;|z|)    
-fasecb       0.09209   1.09647  0.54271  0.170 0.865250    
-fasecrónica -0.72569   0.48399  0.35111 -2.067 0.038747 *  
-deagsi       1.12109   3.06819  0.32007  3.503 0.000461 ***
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-
-            exp(coef) exp(-coef) lower .95 upper .95
-fasecb          1.096     0.9120    0.3785    3.1765
-fasecrónica     0.484     2.0662    0.2432    0.9632
-deagsi          3.068     0.3259    1.6385    5.7454
-
-Concordance= 0.646  (se = 0.041 )
-Likelihood ratio test= 17.02  on 3 df,   p=7e-04
-Wald test            = 17.36  on 3 df,   p=6e-04
-Score (logrank) test = 18.52  on 3 df,   p=3e-04</code></pre>
-<p>Podemos nuevamente chequear la proporcionalidad en este nuevo modelo:</p>
-<pre class="r"><code>cox.zph(m5st, transform=&quot;km&quot;, global=TRUE)</code></pre>
-<pre><code>        chisq df      p
-fase   10.848  2 0.0044
-deag    0.448  1 0.5031
-GLOBAL 11.084  3 0.0113</code></pre>
-<p>Y vemos que ahora sí se cumplen los presupuestos del modelo.</p>
+<p>El modelo de Cox estratificado constituye una de las maneras de corregir el modelo de Cox cuando no se cumple el supuesto de riesgos proporcionales para alguna de las covariables. En este caso suele correrse el modelo estratificando por la covariable que no cumple con el supuesto de riesgo proporcional. Este procedimiento permite corregir el sesgo en la estimación del parámetro, que puede presentarse cuando se viola el supuesto de riesgo proporcional. Sin embargo, presenta una desventaja y es que no existe ningún <span class="math inline">\(\beta\)</span> que permita estimar el efecto de la covariable de estratificación.</p>
 </div>
 <div id="modelo-de-cox-extendido" class="section level2">
 <h2>Modelo de Cox extendido</h2>

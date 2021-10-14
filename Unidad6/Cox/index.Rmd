@@ -459,7 +459,7 @@ Frente al problema de No proporcionalidad, se deberá evaluar:
 
 - puntos influyentes
 
-¿Cuáles son las posibles soluciones?: estratificar por covariable dependiente del tiempo; dividir el eje del tiempo o utilizar otro tipo de modelo.Continuaremos analizando los residuos de este modelo, y retomaremos el tema cuando lleguemos a modelos estratificados.
+¿Cuáles son las posibles soluciones?: estratificar por covariable dependiente del tiempo; dividir el eje del tiempo o utilizar otro tipo de modelo.
 
 ### Residuos Martingale: 
 
@@ -492,24 +492,11 @@ En algunas situaciones no podemos asumir que el riesgo basal $h_o(t)$ sea el mis
 Los coeficientes $\beta$ también se estiman por el método de verosimilitud parcial, pero los individuos en riesgo que participan de la estimación son sólo los del estrato.
 
 El modelo de Cox estratificado constituye una de las maneras de corregir el modelo de Cox cuando no se cumple el supuesto de riesgos proporcionales para alguna de las covariables. En este caso suele correrse el modelo estratificando por la covariable que no cumple con el supuesto de riesgo proporcional. Este procedimiento permite corregir el sesgo en la estimación del parámetro, que puede presentarse cuando se viola el supuesto de riesgo proporcional. Sin embargo, presenta una desventaja y es que no existe ningún $\beta$ que permita estimar el efecto de la covariable de estratificación.
-Continuando con nuestro ejemplo, vimos que la variable decr violaba el supuesto de proporcionalidad. Deberíamos entonces usar un modelo de Cox estratificado, donde decr sea la variable de estratificación.
 
-```{r}
-m5st <- coxph(formula = Surv(os, status) ~ fase + deag + strata(decr), data = tmo)
-summary(m5st)
-```
-
-Podemos nuevamente chequear la proporcionalidad en este nuevo modelo:
-
-```{r}
-cox.zph(m5st, transform="km", global=TRUE)
-```
-Y vemos que ahora sí se cumplen los presupuestos del modelo.
 
 ## Modelo de Cox extendido
 
-El modelo de Cox que vimos inicialmente asume que las covariables no varían en el transcurso del tiempo. Pero sabemos que esto no siempre es así. ¿Cómo analizar la supervivencia cuando las covariables cambian con el  tiempo? Como edad, tratamiento
-o hábitos alimentarios.
+El modelo de Cox que vimos inicialmente asume que las covariables no varían en el transcurso del tiempo. Pero sabemos que esto no siempre es así. ¿Cómo analizar la supervivencia cuando las covariables cambian con el  tiempo? Como edad, tratamiento o hábitos alimentarios.
 
 El modelo de Cox extendido aborda esta situación mediante un proceso de conteo. Tiene las mismas premisas del modelo de Cox
 
