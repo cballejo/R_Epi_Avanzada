@@ -1310,10 +1310,10 @@ almacene y lea sus archivos de datos. Este texto debe ir encerrado entre
 comillas de la siguiente forma:
 
 ```{r, eval=F}
-setwd("C:/CursoAvanzada2021")
+setwd("C:/CursoAvanzada2022")
 ```
 
-La línea anterior, a modo de ejemplo, define como activo al directorio **CursoAvanzada2021** ubicado en la raíz del disco C del equipo. Esta carpeta debe ser creada previamente, dado que la función `setwd()` solo apunta al directorio pero no lo crea.
+La línea anterior, a modo de ejemplo, define como activo al directorio **CursoAvanzada2022** ubicado en la raíz del disco C del equipo. Esta carpeta debe ser creada previamente, dado que la función `setwd()` solo apunta al directorio pero no lo crea.
 
 
 ## Consideraciones finales
