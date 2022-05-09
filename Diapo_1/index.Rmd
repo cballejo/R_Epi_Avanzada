@@ -1,7 +1,7 @@
 ---
 title: "Introducción al Lenguaje R"
 subtitle: "Epidemiología Nivel Avanzado"  
-date: "07/05/2021"
+date: "09/05/2022"
 output:
   xaringan::moon_reader:
     includes:
@@ -58,37 +58,11 @@ background-position: 50% 60%
 ## Encuesta inicial
 
 ---
-background-image: url(assets/Enc2.PNG)
-background-size: 800px
-background-position: 50% 60%
-
-
-## Encuesta inicial
-
----
 background-image: url(assets/Enc3.PNG)
 background-size: 800px
 background-position: 50% 60%
 
-
 ## Encuesta inicial
-
----
-background-image: url(assets/Enc4.PNG)
-background-size: 800px
-background-position: 50% 60%
-
-
-## Encuesta inicial
-
----
-background-image: url(assets/Enc5.PNG)
-background-size: 800px
-background-position: 50% 60%
-
-
-## Encuesta inicial
-
 ---
 ## Competencias a lograr
 
@@ -172,7 +146,7 @@ background-position: 50% 60%
 <br>  
   
 ```{r}
-c(2,43,67) # función concatenar c() - devuelve un vector
+c(2,43,67) # función concatenar c() - devuelve un vector de n elementos
 
 c # función sin paréntesis devuelve el código interno de la función
 ```
