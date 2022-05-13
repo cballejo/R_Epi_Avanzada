@@ -1,7 +1,7 @@
 ---
 title: "Unidad I: Encuentro 2"
 subtitle: "Epidemiología Nivel Avanzado"  
-date: "18/05/2021"
+date: "16/05/2022"
 output:
   xaringan::moon_reader:
     includes:
@@ -86,10 +86,7 @@ background-position: 90% 40%
 
 - Se busca comenzar a **_"decir cosas con datos"_** y luego profundizar en las estructuras del lenguaje.
 
-- Diferencias entre ser **_"usuario"_** y **_"programador"_** (algo así como un linguista de R)
-
-
-- Ver ponencia “How to do things with words: Learning to program with a ‘communicative approach’" de Riva Quiroga en [rstudio::global(2021)](https://rstudio.com/resources/rstudioglobal-2021/how-to-do-things-with-words-learning-to-program-in-r-with-a-communicative-approach/)
+- Diferencias entre ser **_"usuario"_** y **_"programador"_** 
 
 ]
 ---
@@ -192,7 +189,7 @@ SEXO <- c(rep(NA, 6),seq(1,4, length.out = 8))
 EDAD <- c(rep(NA, 3),seq(1,4, length.out = 11))
 EDUCACION <- c(rep(NA, 12),seq(1,4, length.out = 2))  
 datos <- data.frame(SEXO, EDAD, EDUCACION)
-plot_na_pareto(datos)
+plot_na_pareto(datos, typographic = F)
 ```
 
 ]
