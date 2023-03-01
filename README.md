@@ -1,4 +1,4 @@
-# Lenguaje R para Curso Epidemiología Avanzada
+# Materiales educativos del Curso Epidemiología Avanzada (INE)
 
 
 ....
