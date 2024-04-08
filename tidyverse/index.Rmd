@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <br> 
 
-<center>_Este material es parte de la_ **_Unidad 1 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS_**</center>
+<center>_Este material es parte de la_ **_Unidad 1 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS_ v2024**</center>
 
 <br> 
 
@@ -30,7 +30,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introducción
 
-Tidyverse es el nombre que se ha dado al conjunto de paquetes desarrollados o apoyados por [Hadley Wickham](https://en.wikipedia.org/wiki/Hadley_Wickham) (jefe científico de RStudio) y su equipo, para ciencia de datos con R. 
+Tidyverse es el nombre que se ha dado al conjunto de paquetes desarrollados o apoyados por [Hadley Wickham](https://en.wikipedia.org/wiki/Hadley_Wickham) (jefe científico de Posit/RStudio) y su equipo, para ciencia de datos con R. 
 
 Todos estos paquetes están diseñados para funcionar juntos y comparten una misma filosofía, que se puede consultar en [The tidy tools manifesto](https://cran.r-project.org/web/packages/tidyverse/vignettes/manifesto.html). 
 
@@ -57,7 +57,7 @@ Además de los paquetes principales que realizan estas funciones, al instalar el
 
 Una de las interesantes incorporaciones transversales en el ambiente tidyverse es el uso de tuberías (del inglés pipe).
 
-Una tubería conecta un trozo de código con otro mediante el conector `%>%` que surge del paquete __magrittr__ que permite transformar llamadas de funciones anidadas (con muchos paréntesis) en una simple serie de operaciones que son más fáciles de escribir y comprender.
+Una tubería conecta un trozo de código con otro mediante el conector `%>%` que surge del paquete __magrittr__ que permite transformar llamadas de funciones anidadas (con muchos paréntesis) en una simple serie de operaciones que son más fáciles de escribir y comprender. A partir de la versión 4.1.0 de R existe una tubería similar en su versión nativa (`|>`). El uso de cualquiera de ellas es similar.
 
 Responde al principio donde cada función es un paso y la forma de trabajar se puede ver en el siguiente esquema general:
 
@@ -68,23 +68,35 @@ knitr::include_graphics("pipe.png")
 Mostramos el funcionamiento básico comparativo en la siguiente porción de código:
 
 
-```{r, message=F, warning=F, echo=F}
-library(tibble)
-x <- tibble(numeros = 1:10)
-```
-
 
 ```{r, message=F, warning=F}
-library(magrittr)
 
-x # contiene números del 1 al 10
+# Utilizamos para la demostración el dataset mtcars incorporado en R (datos sobre autos)
 
-subset(x, subset = numeros > 7)  # seleccionamos los números mayores a 7
+head(sqrt(mtcars)) 
 
-x %>% subset(numeros > 7) # idem anterior pero con tubería
+# en la línea de código de arriba estamos pidiendo mostrar la cabecera (6 primeras observaciones de la tabla de datos) de la raíz cuadrada de los valores de la tabla mtcars, en formato del lenguaje clásico (anidado)
+
+# Ahora activamos maggritr (viene incorporado con tidyverse)
+
+library(magrittr) 
+
+# ejecutamos la línea anterior convertida al formato tubería
+
+mtcars %>% 
+  sqrt() %>% 
+  head()
+
+# lo mismo con la tubería nativa de R (no hay que activar ningún paquete)
+
+mtcars |> 
+  sqrt() |> 
+  head()
+
+# la tubería le da mucha mas claridad al código separandolo en partes, como 
+# si fuesen oraciones de un párrafo
 ```
 
-Este desarrollo es tan relevante que la próxima versión de R (4.1.0), con fecha de lanzamiento programada para el 18/05/2021, la trae incorporada dentro de la instalación base. 
 
 __Base gramatical__
 
@@ -95,7 +107,7 @@ Una prueba de ello, es que la mayoría de las funciones son verbos (en ingles) q
 
 ## Paquete **tidyverse**
 
-El paquete tidyverse base actual (versión 1.3.0) se puede descargar del repositorio oficial CRAN mediante menú **Packages** de **RStudio** o ejecutando:
+El paquete tidyverse base actual (versión 2.0.0) se puede descargar del repositorio oficial CRAN mediante menú **Packages** de **RStudio** o ejecutando:
 
 ```{r, eval=F}
 install.packages("tidyverse")
@@ -121,7 +133,7 @@ En este caso, cuando necesitemos asegurarnos que la función que deseamos ejecut
 
 **dplyr:filter()** para la función **filter()** del paquete **dplyr**
 
-Los paquetes incluidos que se instalan en esta versión son:
+Los paquetes incluidos que se **instalan** en esta versión son:
 
 ```{r}
 tidyverse_packages()
@@ -129,7 +141,7 @@ tidyverse_packages()
 
 Existen otros paquetes (la cantidad crece mes a mes) que son creados bajo la misma filosofía pero no están incluidos. En esos casos hay que instalarlos y activarlos individualmente.
 
-Para profundizar sobre **tidyverse** se puede visitar el sitio  https://www.tidyverse.org/ y el libro traducido al español [r4ds](https://es.r4ds.hadley.nz/index.html).
+Para profundizar sobre **tidyverse** se puede visitar el sitio  https://www.tidyverse.org/ y el libro traducido al español [r4ds](https://es.r4ds.hadley.nz/index.html) o la nueva versión [r4ds 2e](https://r4ds.hadley.nz/), por ahora solo en inglés.
 
 ## Lectura y escritura de datos
 
@@ -137,9 +149,9 @@ Para profundizar sobre **tidyverse** se puede visitar el sitio  https://www.tidy
 
 **readr** contiene funciones similares a las de la familia **read.table()** de **R base** pero desarrollados bajo el ecosistema **tidyverse**.
 
-Loa archivos de texto plano (**ASCII**) son universalmente utilizados por la mayoría de los gestores de bases de datos y/o planillas de cálculo. Generalmente encontrados con extensiones **.txt** o **.csv** (por comma-separated values) son el tipo de archivo de datos más habitual dentro del lenguaje R.
+Loa archivos de texto plano (**ASCII y otras codificaciones**) son universalmente utilizados por la mayoría de los gestores de bases de datos y/o planillas de cálculo. Generalmente encontrados con extensiones **.txt** o **.csv** (por comma-separated values) son el tipo de archivo de datos más habitual dentro del lenguaje R.
 
-Estos datos planos o ASCII tienen dos peculiaridades:
+Estos datos planos tienen dos peculiaridades:
 
 - La cabecera (en inglés **header**) 
 - El caracter o símbolo **separador** que indica la separación de columnas: pueden estar separadas por comas, puntos y comas, por tabulación, etc…
@@ -217,23 +229,18 @@ read_delim("ejemplo-datos-header-skip.txt",
            delim = "|")
 ```
 
-Otro argumento útil cuando no recordamos el nombre del archivo a leer es `file.choose()` que nos abre una ventana del *Explorador de Windows* para buscar y seleccionar el archivo con los datos.
 
-```{r, eval=FALSE}
-read_csv(file.choose())
-```
-
-Al ejecutarlo se despliega la ventana para que podamos seleccionar el archivo.
+> En estos ejemplos visualizamos el contenido de los archivos leídos en consola con el propósito de mostrar como trabajan las funciones, pero en la práctica cada vez que importemos datos de un archivo debemos **asignar** su salida a un nombre, que será el nombre del dataframe que reciba los datos dentro de nuestra sesión de trabajo. (`<-`)
 
 
 #### Funciones de escritura
 
 Dentro del paquete coexisten funciones espejo de escritura para las posibilidades de lectura más relevantes. Así encontramos estos tres:
 
-- write_csv(): escribe archivos separados por comas (csv) 
-- write_csv2(): escribe archivos separados por punto y comas (csv) 
-- write_tsv(): escribe archivos separados por tabulaciones 
-- write_delim(): escribe archivos separados con delimitadores definidos por el usuario
+- **write_csv()**: escribe archivos separados por comas (csv) 
+- **write_csv2()**: escribe archivos separados por punto y comas (csv) 
+- **write_tsv()**: escribe archivos separados por tabulaciones 
+- **write_delim()**: escribe archivos separados con delimitadores definidos por el usuario
 
 Los argumentos son generales y para el caso del último más extensos, dado que hay que definir cual es el separador que deseamos en el archivo.
 
@@ -268,7 +275,7 @@ La primera función interesante es `excel_sheets()`, útil para conocer y listar
 Por ejemplo, supongamos que tenemos un archivo denominado __datos.xlsx__ y queremos saber por cuantas hojas está compuesto y que nombre tienen.
 
 ```{r}
-library(readxl)
+library(readxl) # hay que activarlo independientemente de tidyverse
 
 excel_sheets("datos.xlsx")
 ```
@@ -305,9 +312,9 @@ diabetes <- read_excel(path = "datos.xlsx",
 head(diabetes) # mostramos las 6 primeras observaciones
 ```
 
-Observemos que en los argumentos escribimos el nombre del archivo (sin la ruta de directorios porque el archivo se encuentra en nuestro proyecto y por lo tanto en nuestro directorio activo), el nombre de la hoja y nos aseguramos que la primer fila representa a la cabecera de la tabla (sus nombres de variables).
+Observemos que en los argumentos escribimos el nombre del archivo que se encuentra en nuestro proyecto y por lo tanto en nuestra carpeta activa, el nombre de la hoja y nos aseguramos que la primer fila representa a la cabecera de la tabla (sus nombres de variables).
 
-Como el paquete `readxl` se inscribe dentro del universo tidyverse el formato de salida no es un dataframe, sino un tibble. En este caso de 23 observaciones por 8 variables.
+Como el paquete `readxl` se inscribe dentro del universo tidyverse el formato de salida es un dataframe/tibble. En este caso de 23 observaciones por 8 variables.
 
 Ahora leamos la segunda hoja de nombre *vigilancia*.
 
@@ -380,7 +387,7 @@ Todas las funciones, básicamente, tienen en común una serie de argumentos.
 
 __dplyr__ está incluído en el paquete __tidyverse__, por lo que se encuentra disponible si tenemos activado a este último.
 
-También se puede activar en forma independiente:
+También se puede activar en forma independiente, aunque no es necesario si ya activamos tidyverse:
 
 ```{r, message=F, warning=F}
 library(dplyr)
@@ -392,7 +399,7 @@ library(dplyr)
 Visualizar y entender el funcionamiento de estos "verbos" de manipulación es posible si ejemplificamos su aplicación. Por este motivo vamos a leer un conjunto de datos que servirá para ejercitar las funciones del paquete.
 
 ```{r}
-datos <- read_csv("noti-vih.csv")
+datos <- read_csv("noti-vih.csv") # asignamos la lectura a datos
 
 head(datos) # mostramos las 6 primeras observaciones
 ```
@@ -409,33 +416,38 @@ Veamos algunas variaciones de ayuda para hacer estas selecciones.
 Todas las variables menos *pob*
 
 ```{r}
-datos %>%  select(-pob)
+datos %>%  
+  select(-pob)
 ```
 
 Otra forma para el mismo resultado anterior (mediante el operador rango :)
 
 ```{r}
-datos %>%  select(jurisdiccion:casos)
+datos %>%  
+  select(jurisdiccion:casos)
 ```
 
 
 Las variables *jurisdiccion* y *casos*
 
 ```{r}
-datos %>%  select(jurisdiccion, casos)
+datos %>%  
+  select(jurisdiccion, casos)
 ```
 
 Otra forma para el mismo resultado anterior (mediante números de columna):
 
 ```{r}
-datos %>%  select(1,3)
+datos %>%  
+  select(1, 3)
 ```
 
 
 Todas las variables pasando *año* a la primera columna
 
 ```{r}
-datos %>%  select("año", everything())
+datos %>%  
+  select("año", everything())
 ```
 
 Otros posibles argumentos son:
@@ -446,11 +458,15 @@ Otros posibles argumentos son:
 
 - __contains()__: selecciona las columnas que posean el patrón indicado.
 
-- __matches()__: similar a contains, pero permite poner una expresión regular.
+- __matches()__: similar a `contains()`, pero permite poner una expresión regular.
 
-- __one_of()__: selecciona las variables pasadas en un vector.
+- __all_of()__: selecciona las variables pasadas en un vector (todos los nombres deben estar presentes o devuelve un error)
+
+- __any_of()__: idem anterior excepto que no se genera ningún error para los nombres que no existen.
 
 - __num_range()__: selecciona variables con nombre combinados con caracteres y números (ejemplo: num_range("x", 1:3) selecciona las variables x1, x2 y x3.
+
+- __where()__: aplica una función a todas las variables y selecciona aquellas para las cuales la función regresa TRUE (por ejemplo: `is.numeric()` para seleccionar todas las variables numéricas)
 
 
 ### Función **rename()**
@@ -460,22 +476,18 @@ Esta función es una extensión de `select()`, dado que esta última permite cam
 Por ejemplo, cambiamos el nombre de la variable *pob* por *población*.
 
 ```{r}
-datos %>% rename('población' = pob)
+datos %>% 
+  rename("población" = pob)
 ```
 
 ### Función **filter()**
 
 Así como la función `select()` es utilizada para seleccionar columnas, la función `filter()` hace lo propio con las filas del conjunto de datos, produciendo un subconjunto de observaciones. 
-
-Es similar a la función R base `subset()` y su estructura básica es:
-
-- El primer argumento es el nombre de la tabla. 
-- El segundo y siguientes argumentos son las condiciones que filtran ese conjunto de datos.
-
 Veamos un ejemplo sencillo sobre nuestros datos:
 
 ```{r}
-datos %>% filter(jurisdiccion == "Tucuman")
+datos %>% 
+  filter(jurisdiccion == "Tucuman")
 ```
 
 Utiliza los mismos operadores de comparación propios del lenguaje R
@@ -511,53 +523,61 @@ Filtramos a las observaciones que cumplan con la condición que casos sea mayor 
 
 
 ```{r}
-datos %>% filter(casos > 100, pob < 1000000)
+datos %>% 
+  filter(casos > 100, pob < 1000000)
 ```
 
-Para combinaciones dentro de una misma variable debemos utilizar el conector OR (|) o más útil el operador %in%.
+Para combinaciones dentro de una misma variable debemos utilizar el conector OR (`|`) o más útil el operador `%in%`.
 
 Filtramos a las jurisdicciones "Buenos Aires" y "La Pampa"
 
 ```{r}
-datos %>% filter(jurisdiccion == "Buenos Aires" | jurisdiccion == "La Pampa")
+datos %>% 
+  filter(jurisdiccion == "Buenos Aires" | jurisdiccion == "La Pampa")
 ```
 
 ```{r}
-datos %>% filter(jurisdiccion %in% c("Buenos Aires", "La Pampa"))
+datos %>% 
+  filter(jurisdiccion %in% c("Buenos Aires", "La Pampa"))
 ```
 
-Filtramos las observaciones de 2016 con casos mayores a 200 utilizando el conector AND (&). Es el mismo resultado que si utilizamos una coma. 
+Filtramos las observaciones de 2016 con casos mayores a 200 utilizando el conector AND (`&`). Es el mismo resultado que si utilizamos una coma. 
 
 ```{r}
-datos %>% filter(año == "2016" & casos > 200)
+datos %>% 
+  filter(año == "2016" & casos > 200)
 ```
 
 Filtramos las observaciones inversas a la anterior mediante xor(), que selecciona los valores de año y casos exclusivos (es decir que no se den ambos en TRUE).
 
 ```{r}
-datos %>% filter(xor(año == "2016", casos > 200))
+datos %>% 
+  filter(xor(año == "2016", casos > 200))
 ```
 
 ### Función **arrange()**
 
-La función `arrange()` se utiliza para ordenar las filas de un conjunto de datos de acuerdo a una o varias columnas/variables. Por defecto, el ordenamiento es ascendente.
+La función `arrange()` se utiliza para ordenar las filas de un conjunto de datos de acuerdo a una o varias columnas/variables. Por defecto, el ordenamiento es ascendente alfanumérico.
 
 Ordenamos la tabla __datos__ por la variable *pob* (forma ascendente predeterminada):
 
 ```{r}
-datos %>% arrange(pob)
+datos %>% 
+  arrange(pob)
 ```
 
 Para ordenar en forma descendente podemos utilizar `desc()` dentro de los argumentos de `arrange()`:
 
 ```{r}
-datos %>% arrange(desc(pob))
+datos %>% 
+  arrange(desc(pob))
 ```
 
 Podemos combinar ordenamientos. Por ejemplo, en forma alfabética ascendente para *jusrisdiccion* y luego numérica descendente para *casos*.
 
 ```{r}
-datos %>% arrange(jurisdiccion, desc(casos))
+datos %>% 
+  arrange(jurisdiccion, desc(casos))
 ```
 
 
@@ -568,7 +588,8 @@ Esta función nos proporciona computar tranformaciones de variables en un conjun
 Por ejemplo, nos puede interesar calcular tasas crudas para cada jurisdicción y año, en función de los casos y el total de población.
 
 ```{r}
-datos %>% mutate(tasa = casos/pob*100000)
+datos %>% 
+  mutate(tasa = casos/pob*100000)
 ```
 
 Observemos que la función realiza el cálculo (en este caso tasas crudas por 100000 habitantes) e incorpora una nueva variable por cada observación con el resultado.
@@ -576,8 +597,9 @@ Observemos que la función realiza el cálculo (en este caso tasas crudas por 10
 También se pueden construir múltiples variables en la misma expresión, solamente separadas por comas.
 
 ```{r}
-datos %>% mutate(tasaxcien_mil = casos/pob*100000, 
-                 tasaxdiez_mil = casos/pob*10000)
+datos %>% 
+  mutate(tasaxcien_mil = casos/pob*100000, 
+         tasaxdiez_mil = casos/pob*10000)
 ```
 
 Hay muchas funciones para crear nuevas variables que se pueden usar con `mutate()`. 
@@ -590,7 +612,7 @@ No hay forma de enumerar todas las funciones posibles que se podría usar, pero 
 
 - Aritmética modular: \%\/\% (división entera) y \%\% (resto), donde $x == y * (x \ \%/\% \ y) + (x\ \%\% \ y)$. La aritmética modular es una herramienta útil porque te permite dividir números enteros en porciones.
 
-- Logaritmos: `log()`, `log2()`, `log10()`. 
+- Funciones matemáticas: `log()`, `log2()`, `log10()`, `exp()`, `sqrt()`, `abs()`, etc   
 
 - Valores acumulados: R proporciona funciones para ejecutar sumas, productos, mínimos y máximos acumulados: `cumsum()`, `cumprod()`, `cummin()`, `cummax()`; y __dplyr__ proporciona `cummean()` para promedios acumulados.
 
@@ -603,16 +625,18 @@ No hay forma de enumerar todas las funciones posibles que se podría usar, pero 
 La función `summarise()` (se puede escribir también `summarize()`) resume variables de un conjunto de datos. 
 
 ```{r}
-datos %>% summarise(promedio_casos = mean(casos), 
-                    casos_totales = sum(casos))
+datos %>% 
+  summarise(promedio_casos = mean(casos), 
+            casos_totales = sum(casos))
 ```
 
-Su uso es muy interesante cuando la combinamos con `group_by()` (función que veremos luego). Esta situación permite estratificar los resultados por grupos específicos. 
+Su uso es muy interesante cuando la combinamos con `group_by()` (función que detallaremos luego). Esta situación permite estratificar los resultados por grupos específicos. 
 
 Por ejemplo, podemos agrupar el por año y simultáneamente aplicar el mismo `summarise()` anterior.
 
 ```{r}
-datos %>%  group_by(año) %>%  
+datos %>%  
+  group_by(año) %>%  
   summarise(promedio_casos = mean(casos), 
             casos_totales = sum(casos))
 ```
@@ -644,7 +668,8 @@ Decíamos recién que la función `group_by()` es útil cuando trabaja conjuntam
 Para ejemplificar su trabajo asociado obtendremos una nueva tabla con el cálculo de las tasas crudas para cada jurisdicción por año (similar al ejemplo de la aplicación de `mutate()`: 
 
 ```{r, message=F}
-datos %>% group_by(jurisdiccion, año) %>%  
+datos %>% 
+  group_by(jurisdiccion, año) %>%  
   summarise(tasa = casos/pob*100000)
 ```
 
@@ -652,21 +677,21 @@ En la mayoría de estos ejemplos la salida es directa, es decir no construimos n
 
 ### Combinaciones
 
-En los ejemplos anteriores vimos como se van integrando alguna de las funciones mediante el uso de la tubería **%>%**. La idea detrás de la búsqueda gramatical del paquete es poder enlazar las acciones para construir oraciones más complejas.
+En los ejemplos anteriores vimos como se van integrando alguna de las funciones mediante el uso de la tubería **%>%** o **|>**. La idea detrás de la búsqueda gramatical del paquete es poder enlazar las acciones para construir oraciones más complejas.
 
 Un ejemplo que podría integrar gran parte de los visto sería:
 
 Obtener una nueva tabla con las tasas crudas de casos notificados de VIH, por año y jurisdicción, mayores a 20 x 100000 habitantes ordenadas de mayor a menor.
 
 ```{r, message=F}
-datos %>% 
-  group_by(año, jurisdiccion) %>% 
-  summarise(tasa = casos/pob*100000) %>% 
-  filter(tasa > 20) %>% 
-  arrange(desc(tasa)) 
+datos %>%                                   # siempre partimos de los datos
+  group_by(año, jurisdiccion) %>%           # agrupamos
+  summarise(tasa = casos/pob*100000) %>%    # resumimos
+  filter(tasa > 20) %>%                     # filtramos
+  arrange(desc(tasa))                       # ordenamos   
 ```
 
-Observemos que una buena manera de construir el código es respetar un salto de línea para cada término de la oración.
+Observemos que una buena manera de construir el código es respetar un salto de línea para cada término de la oración para una lectura más clara.
 
 Demostramos así la potencialidad que tienen estas funciones combinadas donde en esta situación integramos las funciones `group_by()`, `summarise()` , `filter()` y `arrange()` en una misma operación. 
 
@@ -680,7 +705,8 @@ Produce fácilmente tablas de frecuencias absolutas que luego posibilitan constr
 La aplicamos sobre la variable **jurisdiccion** de *datos*
 
 ```{r}
-datos %>% count(jurisdiccion)
+datos %>% 
+  count(jurisdiccion)
 ```
 Tiene un par de argumentos opcionales:
 
@@ -727,9 +753,9 @@ Antes de comenzar a explicar cada componente vamos a leer un conjunto de datos q
 
 
 ```{r, message=FALSE, warning=FALSE}
-library(readr)
+library(tidyverse)
 
-facultad <- read_csv("facultad.csv")
+facultad <- read_csv("facultad.csv") # lectura
 
 head(facultad) # mostramos las 6 primeras observaciones
 ```
@@ -745,29 +771,31 @@ Es importante notar que `aes()` crea una nueva capa en relación a las variables
 Veamos como funciona y sus diferencias.
 
 ```{r,out.width="60%", fig.align="center", message=FALSE}
-library(ggplot2)  ## activamos el paquete 
-
-ggplot(facultad, aes(TALLA, PESO))  # solo la capa estética aes()
+facultad %>% 
+  ggplot(aes(TALLA, PESO))  # solo la capa estética aes()
 ```
 
 Este gráfico solo contiene los ejes que especificamos (PESO y TALLA) pero no contiene los datos. Si deseamos incorporarlos agregamos una capa de puntos con `geom_poin()` a través del símbolo **+**.
 
 ```{r,out.width="60%", fig.align="center"}
-ggplot(facultad, aes(TALLA, PESO)) + 
+facultad %>% 
+  ggplot(aes(TALLA, PESO))  + 
   geom_point()                    # agregamos la capa geométrica de puntos
 ```
 
 Podemos diferenciar los puntos según se traten de ingresantes mujeres y hombres, asociando el argumento __color__ dentro de `aes()` con la variable SEXO.
 
 ```{r,out.width="60%", fig.align="center"}
-ggplot(facultad, aes(TALLA, PESO, color = SEXO)) +
+facultad %>% 
+  ggplot(aes(TALLA, PESO, color = SEXO)) +
   geom_point()
 ```
 
 Estos gráficos también posibilitan el agregado de otra capa geométrica, por ejemplo rectas de regresión para cada grupo según sexo.
 
 ```{r,out.width="60%", fig.align="center"}
-ggplot(facultad, aes(TALLA, PESO, color = SEXO)) + 
+facultad %>% 
+  ggplot(aes(TALLA, PESO, color = SEXO)) + 
   geom_point() + 
   geom_smooth(method = "lm")            # agregamos una segunda capa geométrica 
 ```
@@ -781,7 +809,8 @@ Decíamos anteriormente que al incorporar `aes()` al llamado de `ggplot()` estam
 Entonces si quitamos `aes()` de allí y lo ubicamos en una capa única, esta configuración deja de afectar al conjunto del gráfico.
 
 ```{r, out.width="60%", fig.align="center"}
-ggplot(facultad, aes(TALLA, PESO)) + 
+facultad %>% 
+  ggplot(aes(TALLA, PESO)) + 
   geom_point(aes(color = SEXO)) + # color esta definido en el aes() de la capa geométrica
   geom_smooth(method = "lm")
 ```
@@ -810,17 +839,20 @@ Para ejemplificar, podemos gráficar dos variables como SEXO y TALLA generando u
 
 
 ```{r, out.width="60%", fig.align="center"}
-ggplot(facultad, aes(SEXO, TALLA, color = SEXO)) + 
+facultad %>% 
+  ggplot(aes(SEXO, TALLA, color = SEXO)) + 
   geom_point()                # capa geométrica de puntos
 ```
 
 ```{r, out.width="60%", fig.align="center"}
-ggplot(facultad, aes(SEXO, TALLA, color = SEXO)) + 
+facultad %>% 
+  ggplot(aes(SEXO, TALLA, color = SEXO)) + 
   geom_boxplot()            # capa geométrica de boxplot
 ```
 
 ```{r, out.width="60%", fig.align="center"}
-ggplot(facultad, aes(SEXO, TALLA, color = SEXO)) + 
+facultad %>% 
+  ggplot(aes(SEXO, TALLA, color = SEXO)) + 
   geom_jitter()                    # capa geométrica jitter (entramado de puntos)
 ```
 
@@ -840,7 +872,8 @@ El argumento para modificar valores de escala comienzan siempre con con `scale_`
 Sigamos trabajando con el conjunto de datos leído para mostrar ejemplos de gráficos donde agregamos capas de escala para color de relleno. ( `scale_fill_brewer()` )
 
 ```{r, out.width="60%", fig.align="center"}
-ggplot(facultad, aes(SEXO, TALLA, fill = SEXO)) + 
+facultad %>% 
+  ggplot(aes(SEXO, TALLA, fill = SEXO)) + 
   geom_boxplot() +
   scale_fill_brewer(palette = "Oranges")   # paleta de los naranjas
 ```
@@ -850,7 +883,8 @@ En este ejemplo aplicamos una capa `scale_fill_brewer()` con una paleta de color
 Lo mismo hacemos para una gama de grises mediante `scale_fill_grey()`
 
 ```{r, out.width="60%", fig.align="center"}
-ggplot(facultad, aes(SEXO, TALLA, fill = SEXO)) + 
+facultad %>% 
+  ggplot(aes(SEXO, TALLA, fill = SEXO)) + 
   geom_boxplot() +
   scale_fill_grey(start = 0.4, end = 0.8)   # paleta de los grises
 ```
@@ -858,7 +892,8 @@ ggplot(facultad, aes(SEXO, TALLA, fill = SEXO)) +
 Otro uso de escalas, esta vez aplicado a los ejes, es la inversión del eje x.
 
 ```{r,out.width="60%", fig.align="center"}
-ggplot(facultad, aes(TALLA, PESO, color = SEXO)) +
+facultad %>% 
+  ggplot(aes(TALLA, PESO, color = SEXO)) +
   geom_point() +
   scale_x_reverse()     # escala inversa de x
 ```
@@ -870,7 +905,8 @@ Por último, otro ejemplo interesante es aplicado a escalas de etiquetado de eje
 Con escalas continuas manuales de la forma `scale_*_continuos()` podemos personalizar el eje y.
 
 ```{r, out.width="60%", fig.align="center"}
-ggplot(facultad, aes(SEXO, TALLA, fill = SEXO)) + 
+facultad %>% 
+  ggplot(aes(SEXO, TALLA, fill = SEXO)) + 
   geom_boxplot() +
   scale_fill_grey(start = 0.4, end = 0.8)   +
   scale_y_continuous(breaks = seq(130,200,2))
@@ -886,7 +922,8 @@ Algunos gráficos no requieren de transformaciones estadísticas, en cambio, otr
 Estos valores se encuentra en forma de argumentos dentro de la función geométrica, por ejemplo para los histograma el argumento __bins__ define la cantidad de intervalos de clase.  
 
 ```{r,out.width="60%", fig.align="center"}
-ggplot(facultad, aes(EDAD)) +
+facultad %>% 
+  ggplot(aes(EDAD)) +
     geom_histogram(bins = nclass.Sturges(facultad$EDAD), fill = "Blue")
 ```
 
@@ -895,7 +932,8 @@ Vemos que el gráfico se construyó utilizando la *regla de Sturges* para determ
 Otras transformaciones estadísticas se incorporan como capas independientes, por ejemplo si queremos agregar los valores de media a los boxplot de talla según sexo construidos anteriormente.
 
 ```{r, out.width="60%", fig.align="center"}
-ggplot(facultad, aes(SEXO, TALLA, fill = SEXO)) + 
+facultad %>% 
+  ggplot(aes(SEXO, TALLA, fill = SEXO)) + 
   geom_boxplot() +
   scale_fill_brewer(palette = "Greens") +
   stat_summary(fun = mean, color = "darkred", geom = "point", 
@@ -919,7 +957,8 @@ ggplot ofrece dos posibilidades de hacer el facetado:
 Una aplicación de `facet_wrap()` podría ser que el primer gráfico que hicimos de dispersión de puntos con las variables TALLA y PESO se visualice en dos gráficos distintos según cada categoría de SEXO.
 
 ```{r, out.width="60%", fig.align="center"}
-ggplot(facultad, aes(TALLA, PESO, color = SEXO)) +
+facultad %>% 
+  ggplot(aes(TALLA, PESO, color = SEXO)) +
      geom_point() +
      facet_wrap(~SEXO)
 ```
@@ -927,7 +966,8 @@ ggplot(facultad, aes(TALLA, PESO, color = SEXO)) +
 Usamos `facet_grid()` para crear una matriz producto del cruce de las variables FUMA y SEXO.Dentro de la cuadrícula graficaremos histogramas de la variable PESO coloreados por SEXO.
 
 ```{r, out.width="60%", fig.align="center"}
-ggplot(facultad, aes(PESO, fill = SEXO)) +
+facultad %>% 
+  ggplot(aes(PESO, fill = SEXO)) +
      geom_histogram(bins = nclass.Sturges(facultad$PESO)) +
      scale_fill_brewer(palette = "Set1") +
      facet_grid(SEXO ~ FUMA)
@@ -945,7 +985,8 @@ En algunas ocasiones puede que necesitemos introducir modificaciones en el siste
 Sobre las coordenadas cartesianas iniciales se puede invertir la orientación para que, por ejemplo, las barras se dibujen horizontales.
 
 ```{r, out.width="60%", fig.align="center"}
-ggplot(facultad, aes(SEXO, fill = SEXO)) +
+facultad %>% 
+  ggplot(aes(SEXO, fill = SEXO)) +
      scale_fill_brewer(palette = "Set2") +
      geom_bar() +
      coord_flip()   # invierte disposición de ejes
@@ -959,7 +1000,8 @@ El paquete ofrece un conjunto reducido de temas gráficos. El tema por defecto o
 A modo de ejemplo repetimos el último gráfico con el tema blanco y negro ( `theme_bw()` ):
 
 ```{r, out.width="60%", fig.align="center"}
-ggplot(facultad, aes(SEXO, fill = SEXO)) +
+facultad %>% 
+  ggplot(aes(SEXO, fill = SEXO)) +
      scale_fill_brewer(palette = "Set2") +
      geom_bar() +
      coord_flip() +
@@ -969,7 +1011,8 @@ ggplot(facultad, aes(SEXO, fill = SEXO)) +
 Otro tema que podemos utilizar es `theme_dark()` que tiene un fondo gris oscuro.
 
 ```{r, out.width="60%", fig.align="center"}
-ggplot(facultad, aes(SEXO, fill = SEXO)) +
+facultad %>% 
+  ggplot(aes(SEXO, fill = SEXO)) +
      scale_fill_brewer(palette = "Set2") +
      geom_bar() +
      coord_flip() +
@@ -990,7 +1033,8 @@ La forma de la función con argumentos básicos es `labs( x = “Etiqueta X", y 
 Además se utiliza la función `theme()` para configurar el tipo de fuente y tamaño, entre otras opciones posibles.
 
 ```{r, out.width="60%", fig.align="center"}
-ggplot(facultad, aes(SEXO, fill = SEXO)) +
+facultad %>% 
+  ggplot(aes(SEXO, fill = SEXO)) +
      scale_fill_brewer(palette = "Set2") +
      geom_bar() +
      coord_flip() +
