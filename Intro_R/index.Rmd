@@ -21,7 +21,7 @@ knitr::opts_chunk$set(comment=NA, dpi = 300)
 
 <br> 
 
-<center>_Este material es parte de la_ **_Unidad 1 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS_**</center>
+<center>_Este material es parte de la_ **_Unidad 1 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS_ V2024**</center>
 
 <br> 
 
@@ -124,8 +124,6 @@ Todas las líneas de R en la consola comienzan con el prompt (\*) `>`
 el sistema está esperando información del usuario o que el sistema
 está listo para recibir instrucciones del usuario*.
 
-Para separar expresiones en la misma línea se puede utilizar el símbolo
-`;` (punto y coma), aunque se sugiere no hacerlo para evitar dificultades de lectura visual del código.
 
 **Documentación de los scripts de R:**
 
@@ -141,7 +139,7 @@ el interprete como un comentario y los caracteres que sigan a ese
 símbolo no sean tenidos en cuenta cuando se ejecute ese código.
 
 ```{r}
-# esto es una línea de comentario y no es tenida en cuenta por el intérprete
+# esto es una línea de comentario y el intérprete no la ejecuta
 ```
 
 Así que a la hora de documentar es preferible abusar de estos
@@ -149,27 +147,56 @@ comentarios que no utilizarlos.
 
 ## Funciones
 
-Los comandos u órdenes elementales de R son funciones construidas en
-lenguaje C, otras provienen del Fortran y también existen muchas
-escritas en el mismo lenguaje R.
+Los comandos u órdenes elementales de R se denominan **funciones**. A algunas se las llama “integradas” porque están incluidas en el núcleo (R base) y sus nombres están reservados.
 
-Algunas de estas funciones se las llama "integradas" porque están
-incluidas en el núcleo (core) del software R y sus nombres están
-reservados.
+También podemos utilizar otras pertenecientes a librerías (paquetes) que se pueden instalar y activar.
 
 La mayoría de las ofrecidas en los paquetes (librerías) están elaboradas
 con R, dado que todos los usuarios podemos crear nuevas funciones con el
 mismo lenguaje.
 
 Toda función tiene un nombre y normalmente recibe argumentos o
-parámetros que deben ser escritos **entre paréntesis y separados por comas**. Incluso algunas de ellas que no tienen asociado argumentos
-necesitan, en su sintaxis, a los paréntesis `()`.
+parámetros que deben ser escritos **entre paréntesis y separados por comas**. Incluso algunas de ellas que no tienen asociado argumentos necesitan, en su sintaxis, a los paréntesis `()`.
 
 Siempre una función devuelve un resultado, un valor o realiza una
 acción.
 
 ```{r,echo=F,  fig.align='center', out.width = "50%"}
 knitr::include_graphics("funciones.jpg")
+```
+
+Como el interprete de R no permite errores en la sintaxis de las expresiones, debemos atender a los siguientes puntos a la hora de escribirlas:
+
+-   La sintaxis habitual de una función y sus argumentos es la siguiente:
+
+```{r, eval=F}
+funcion(arg1, arg2, arg3,...)
+```
+
+-   Los títulos de los argumentos pueden escribirse y mediante un igual
+    agregar el valor correspondiente. También se puede omitir el título
+    del argumento y escribir directamente el valor, pero en este caso,
+    hay que respetar el orden definido por la función.
+
+```{r, eval=F}
+funcion(arg1=32, arg2=5, arg3=65,...)
+```
+
+es igual a hacer:
+
+```{r, eval=F}
+funcion(32, 5, 65,...)
+```
+
+siempre que se respete el mismo orden.
+
+-   Con los argumentos se deben cumplir las mismas reglas que en todo el
+    lenguaje. Los valores numéricos, lógicos, especiales y objetos van
+    escritos en forma directa y cuando escribimos caracteres (texto) van
+    necesariamente encerrados entre comillas.
+
+```{r, eval=F}
+funcion(arg1=3, arg2=NA, arg3=TRUE, arg4="less", arg5=x,...)
 ```
 
 
@@ -188,14 +215,13 @@ Se pueden activar y desactivar en cualquier momento del análisis.
 Algunos poseen dependencias de otros paquetes que serán necesarios para
 que funcione.
 
-Cualquier usuario puede crear paquetes de funciones y compartirlos,
-aunque requerirá para esto de un manejo avanzado del software.
 
 ## Errores y advertencias
 
-Cuando hacemos uso del lenguaje R es muy común encontrarse con errores y advertencias (warnings).
+El lenguaje es muy preciso en su sintaxis y equivocarse en la forma de escribir una función o cualquier otro objeto produce respuestas de error del interprete de R que es habitual cuando iniciamos el aprendizaje.
 
-El lenguaje es muy preciso en su sintaxis y equivocarse en la forma de escribir una función o cualquier otro objeto produce respuestas de error del interprete de R
+La exactitud en la escritura de comandos y funciones incluye la
+distinción entre mayúsculas y minúsculas. Es decir, que no es lo mismo una 'a' que una 'A'.
 
 Existen tres grupos de mensajes de error:
 
@@ -211,7 +237,7 @@ Por ejemplo la función `rep()` repite valores una cantidad de veces. Tiene dos 
 
 
 ```{r}
-rep(x = 3, times = 4) #repetimos 4 veces 3 con rep()
+rep(x = 3, times = 4) # repetimos 4 veces 3 con rep()
 ```
 
 Si nos olvidamos de cerrar el paréntesis...
@@ -258,12 +284,12 @@ Los errores de **objetos no encontrados** pueden tener una de varias causas:
 Volvamos al ejemplo anterior, ahora repitiendo un valor tipo character
 
 ```{r}
-rep(x = "A", times = 4) #repetimos 4 veces 3 con rep()
+rep(x = "A", times = 4) # repetimos 4 veces 3 con rep()
 ```
 Si olvidamos las comillas...
 
 ```{r, eval=FALSE}
-rep(x = A, times = 4) #repetimos 4 veces 3 con rep()
+rep(x = A, times = 4) # repetimos 4 veces 3 con rep()
 
 Error: objeto 'A' no encontrado
 ```
@@ -283,55 +309,31 @@ knitr::include_graphics("errores_advertencias.PNG")
 
 \newpage
 
-## Objetos
+## Creación de objetos 
 
-El que sea un lenguaje orientado a objetos nos lleva a entender la
-lógica de funcionamiento pensada dentro de ese modelo de abstracción.
+Todas las declaraciones donde se crean objetos, tienen este símbolo de asignación `<-`. 
 
-Podemos decir que todo con lo que trabaja R son objetos, y en esto
-incluimos a las variables, los datos, las funciones, los resultados,
-etc.
-
-No vamos a profundizar en el tema pero necesitamos incorporar la idea y
-el lenguaje cuando nos referimos a un objeto.
-
-**Asignación**
-
-Un grupos de objetos que veremos a continuación son las estructuras de
-datos. Vamos a pensar a estas estructuras como "recipientes" con
-determinada forma que van a contener valores (datos).
-
-La forma de asignar los valores a estas estructuras es mediante el
-símbolo `<-` (si la asignación va de derecha a izquierda), `->` (si la
-asignación va de izquierda a derecha) o bien con un `=` (aunque nosotros
-preferimos no utilizarlo para asignaciones).
+```{r, eval=F}
+nombre_objeto <- valor
+```
 
 Veámoslo en un ejemplo:
 
 ```{r}
 a <- 1
-
-2 -> b
-
-c = 3
 ```
 
-En este caso asignamos el valor 1 al objeto `a`, el valor 2 al objeto
-`b` y el valor 3 al objeto `c`
+En este caso asignamos el valor 1 al objeto `a`. El objeto `a` es un vector de una posición (un solo valor).
 
-Si llamasemos a cada objeto, el interprete nos devuelve el valor
-guardado por cada uno de ellos.
+Si llamasemos al objeto `a`, el interprete nos devuelve el valor
+asignado previamente.
 
 ```{r}
 a
-b
-c
 ```
 
-Observemos que además de devolvernos los valores para cada uno de los
-objetos aparece delante un 1 entre corchetes `[1]`.Este número es la
-ubicación o índice del comienzo del objeto, que para este caso tiene una
-sola posición. (veremos este tema más adelante en tema [indexación](https://cballejo.github.io/R_Epi_Avanzada/Intro_R/index.html#índices))
+Observemos que además de devolvernos el valor aparece delante un 1 entre corchetes `[1]`.Este número es la ubicación o índice del comienzo del objeto, que en este caso tiene una sola posición. 
+
 
 ## Estructuras de datos
 
@@ -353,6 +355,12 @@ knitr::include_graphics("tipo_datos.jpg")
 Sin embargo, cada una de estas clases de datos no se encuentran de
 manera aislada, sino encapsulados dentro de la clase de objeto
 operacional más básica del lenguaje a la que se denomina **vector**.
+
+Rstudio utiliza un sistema de colores para ayudar a diferenciar los
+tipos de valores, donde azul oscuro son números, celeste palabras
+reservadas como valores especiales y lógicos, verde para caracteres y
+negro para objetos (en el theme = Textmate que viene por defecto. En otros temas los colores cambian pero se diferencian entre sí).
+
 
 **Vector**
 
@@ -412,7 +420,7 @@ cada elemento es del mismo tipo (numeric).
 Para conocer el tipo de dato ejecutamos:
 
 ```{r}
-mode(vec2)
+class(vec2)
 ```
 
 Veamos un ejemplo de asignación de otro tipo de dato atómico, como es el
@@ -436,68 +444,14 @@ length(vec3)
 Respecto al tipo de dato si usamos la función `mode()` tendremos:
 
 ```{r}
-mode(vec3)
+class(vec3)
 ```
 
-**Matriz**
-
-Una matriz (matrix) se puede definir como una generalización
-bidimensional del vector.
-
-La podemos visualizar como una tabla conformada por columnas y filas
-ordenadas y donde todos los elementos serán del mismo tipo atómico.
-
-Para el lenguaje R, las matrices no son más que vectores con un atributo
-adicional que contiene el número de filas y columnas, por lo tanto se
-puede crear a partir de un vector solamente añadiendo información sobre
-el número de filas y columnas de la matriz.
-
-Podemos verlo mediante la función de creación `matrix()`:
-
-```{r}
-matriz1 <- matrix(data=c(1,2,3,4), nrow = 2, ncol = 2)
-matriz1
-```
-
-Los índices de las filas y columnas difieren en cuanto a la ubicación de
-la coma. El valor antes de la coma es el indice de las filas y el valor
-luego de la coma es el indice de las columnas. Así, [2,1] hablaría de la
-posición de la segunda fila y primer columna de la matriz.
-
-**Array**
-
-Un array, cuya traducción al español es arreglo, es una generalización
-multidimensional del vector, es decir son matrices multidimensionales.
-
-En tanto que en una matriz los elementos están organizados en dos
-dimensiones (filas y columnas), en un array los elementos pueden estar
-organizados en un número cualquiera de dimensiones.
-
-Para definir estos dos objetos de datos que están emparentados se
-utiliza muchas veces la siguiente forma:
-
-Un array es una tabla de $dimensión = k$, y una matriz es un caso
-particular de un array donde $k = 2$.
-
-En los dos casos siguen teniendo el mismo atributo de los vectores: solo
-pueden contener elementos del mismo tipo.
-
-```{r}
-array1 <- array(data=c(1,2,3,4,5,6,7,8), 
-                dim = c(2,2,2))
-array1
-```
-
-Observemos que al no poder mostrar elementos de más de dos dimensiones,
-la salida produce dos tablas o matrices de 2x2. También podemos ver que
-al comienzo de cada tabla aparece un índice de forma `, , x` , donde x
-es la tercera dimensión del array.
 
 **Factor**
 
 Un factor es un objeto especialmente diseñado para contener datos
-categóricos y se asocia particularmente con las *variables
-cualitativas*.
+categóricos y se asocia particularmente con las *variables cualitativas*.
 
 En su estructura interna está compuesto por dos vectores, en uno
 almacena índices enteros y el segundo es un vector de caracteres que
@@ -521,46 +475,15 @@ En el ejemplo, creamos el objeto factor1 con 6 elementos caracteres y
 tres niveles sin orden.
 
 Por ultimo diremos del factor, que además de su practicidad, en muchos
-casos las funciones de R exigen que determinado argumento se encuentre
+casos algunos argumentos de funciones de R exigen que las variables se encuentren
 en este formato.
 
-**Serie temporal**
-
-Una serie temporal (ts) es un objeto construido a partir de un vector o
-una matriz que contiene atributos adicionales tales como frecuencias y
-fechas.
-
-Si el objeto se construye a partir de un vector tendrá una serie de
-tiempo única y si es desde una matriz será una serie multivariada.
-
-No vamos a volver a hablar de este tipo de datos porque no lo
-necesitaremos para este curso.
-
-**Lista**
-
-Una lista es un objeto consistente en una colección ordenada de otros
-objetos, conocidos como componentes de la lista.
-
-Este contenedor de datos permite combinar diferentes componentes como
-vectores, matrices, etc, e inclusive otras listas dentro de un único
-objeto lista.
-
-A diferencia de los anteriores, que eran atómicos, se encuentra en el
-grupo de los objetos recursivos lo que le permite esta flexibilidad de
-poder contener tipos o clases diferentes aunque lo realiza sin
-estructura fija.
-
-Este formato es muy utilizado en las salidas resultado de funciones
-estadísticas que devuelven un conjunto de valores, como por ejemplo las
-regresiones o los contrastes de hipótesis. Luego es factible trabajar
-con parte de los componentes de la lista resultado mediante el sistema
-de índice.
 
 **Dataframe**
 
 Un dataframe es un objeto cuya finalidad es contener conjuntos de datos.
-Se asemeja a las matrices, dado que tienen filas y columnas (dos
-dimensiones), pero se diferencian en que cada columna puede almacenar
+Se asemeja a una tabla que tiene filas y columnas (dos
+dimensiones), donde cada columna puede almacenar
 elementos de diferentes tipos.
 
 Además las columnas suelen tener nombres únicos y podemos referenciarlas
@@ -568,8 +491,8 @@ por estos nombres, como si fueran variables del conjunto de datos.
 
 Es el tipo de objeto que utilizamos para almacenar información leída de
 tablas de datos provenientes de archivos externos (formato texto
-separado por comas, Excel, SPSS, etc) y con las cuales acostumbramos a
-trabajar en el análisis estadístico.
+separado por comas, Excel, etc) y con las cuales acostumbramos a
+trabajar en el análisis.
 
 Desde el punto de vista de su estructura, todo dataframe esta conformado
 por una serie de vectores de la misma longitud ubicados verticalmente
@@ -591,6 +514,9 @@ Creamos tres vectores con datos de supuestos individuos, su historia
 clinica, la edad y el sexo. Luego mediante la función `data.frame()`
 "unimos" esos vectores en forma vertical para formar un dataframe de 3
 variables y 4 observaciones.
+
+Existen otras estructuras de datos que aparecen en la siguiente figura. Las más habituales en nuestro trabajo son los vectores y los dataframes. Los factores serán necesarios cuando tengamos que especificar distintos órdenes de niveles.
+
 
 ```{r,echo=F,  fig.align='center', out.width = "50%"}
 knitr::include_graphics("objetos_R.png")
@@ -624,7 +550,7 @@ valores numéricos:
 ```{r}
 a <- 3
 b <- 6
-(a + b)*b
+(a + b) * b
 ```
 
 Y funciona con objetos con más de un elemento, aplicando artimética
@@ -649,13 +575,13 @@ knitr::include_graphics("op_relacionales.jpg")
 
 
 Habitualmente estos operadores se utilizan asiduamente en expresiones
-dentro de índices y funciones para indicar relaciones entre objetos o
-valores.
+para indicar relaciones entre valores.
 
 Podemos ver su funcionamiento en el ejemplo siguiente:
 
 ```{r}
 a <- c(3,8,2)
+
 a == c(3,4,5)
 ```
 
@@ -724,7 +650,7 @@ Otra manera es por medio de la función `seq()` que tiene como argumentos
 principales *from*, *to* y *by*
 
 ```{r}
-seq(from=1, to=20,by = 2)
+seq(from = 1, to = 20,by = 2)
 ```
 
 La ejecución de la línea anterior produce una secuencia de números
@@ -733,9 +659,9 @@ comenzando en el 1 y finalizando en el 20 de dos en dos.
 Algunos otros ejemplos de la misma función pueden ser:
 
 ```{r}
-seq(from=0.1, to=0.9,by = 0.1)
-seq(from=-5, to=5,by = 1)
-seq(from=300, to=0,by = -50)
+seq(from = 0.1, to = 0.9, by = 0.1)
+seq(from = -5, to = 5, by = 1)
+seq(from = 300, to = 0, by = -50)
 ```
 
 Finalmente la tercer posibilidad que vamos a mostrar es la función
@@ -745,9 +671,9 @@ que coloca un Nº de copias de x, una tras otras.
 Algunos ejemplos de la función:
 
 ```{r}
-rep(x=2, times=5)
+rep(x = 2, times = 5)
 rep(1:4, 5)  # combinada con el operador :
-rep(c(4.5,6.8,7.2), 2) # combinada con la función c()
+rep(c(4.5, 6.8, 7.2), 2) # combinada con la función c()
 ```
 
 
@@ -778,12 +704,15 @@ x[c(1,3)]	# llamamos a las posiciones 1 y 3 juntas mediante c()
 x[-c(1, 4)]	# llamamos a las posiciones menos la 1 y la 4
 
 y <- c(1, 2, 5) # creamos otro vector y con los valores 1,2 y 5
+
 x[y]		# utilizamos el vector y como índice y nos devuelve 	
 
 x[2] <- "h"	# asignamos el valor “h” a la posición 2 del vector x
+
 x
 
 z <- x[-5]  # creamos el vector z eliminando la posición 5 de x
+
 z
 ```
 
@@ -794,68 +723,8 @@ abren dentro de cada tipo de estructura de datos para trabajar con estos
 Cuando los aplicamos a estructuras de dos dimensiones como matrices
 (incluidas tablas) y dataframes el formato tiene un orden específico:
 
-> objeto[índice de fila , índice de columna]
+> nombre[índice de fila , índice de columna]
 
-Veamos en algunos ejemplos la forma de trabajo:
-
-```{r}
-matriz <- matrix(data=c(1:15), nrow = 5, ncol = 3) # creamos una matriz
-matriz   #  mostramos la matriz creada
-
-matriz[3,2]     # llamamos al valor contenido en la fila 3 columna 2
-
-matriz[2:4,3]   # llamamos a los valores contenidos entre la fila 2 y 4 de la columna 3
-
-matriz[5,c(1,3)] # llamamos a los valores contenidos en la fila 5 de la columna 1 y 3
-
-matriz[1,] <- matriz[4,]  # asignamos los valores de la fila 4 a la fila 1
-matriz       # mostramos la matriz con los cambios
-```
-
-Hasta ahora hemos visto como trabaja con los números de los índices en
-forma directa (vectores de índice numéricos) pero también se puede
-utilizar el formato de corchetes para aplicar vectores de índice
-lógicos.
-
-Los índices lógicos surgen de expresiones con operados relacionales y/o
-lógicos que vimos anteriormente. Estos devuelven resultados TRUE (T) y
-FALSE (F) de la comparación solicitada.
-
-Por ejemplo para un vector sencillo:
-
-```{r}
-vec1 <- c(1:8)
-vec1
-
-vec1[vec1>3 & vec1<7]
-```
-
-Esto es lo mismo que hacer:
-
-```{r}
-vec1[c(F,F,F,T,T,T,F,F)]
-```
-
-Porque el operador relacional provoca esa comparación en el vector
-devolviendo un "vector lógico":
-
-```{r}
-vec1>3 & vec1<7
-```
-
-Observemos un ejemplo aplicado en una matriz para que sea más clara su
-utilización. Supongamos que deseamos asignar un determinado valor a los
-elementos de la matriz que creamos hace instantes que sean menores a 5:
-
-```{r}
-matriz[matriz < 5] <- 100  # asignamos el valor 100 a todos los 
-# elementos de la matriz que sean menores a 5
-
-matriz  # mostramos la matriz modificada
-```
-
-Como vemos en las posiciones donde encontró valores menores a 5 almacenó
-el valor 100 que declaramos luego del operador de asignación.
 
 ## Gestión de factores
 
@@ -866,39 +735,40 @@ con caracteres.
 Para entenderlo partamos de un vector con datos categóricos:
 
 ```{r}
-sexo <- c("Masculino", "Femenino", "Femenino", "Masculino", "Masculino", "Masculino","Femenino")
+respuesta <- c("Si", "No", "No", "Si", "Si", "Si", "No")
 ```
 
-Creamos un vector llamado sexo con 7 elementos del tipo caracter donde
-se repiten las categorías Femenino y Masculino
+Creamos un vector llamado **respuesta** con 7 elementos del tipo caracter donde
+se repiten las categorías No y Si.
 
 Podemos confirmar que estamos frente a un vector y que el contenido es
 character:
 
 ```{r}
-is.vector(sexo) # preguntamos si sexo es un vector
-mode(sexo)  # visualizamos el tipo de dato de sexo
+is.vector(respuesta) # preguntamos si sexo es un vector
+
+class(respuesta)  # visualizamos el tipo de dato de sexo
 ```
 
 Para crear un factor a partir de este vector debemos utilizar la función
 `factor()`:
 
 ```{r}
-sexo <- factor(sexo)
-sexo
+respuesta <- factor(respuesta)
+respuesta
 
 ```
 
 En la salida observamos que además de los siete elementos aparecen los
 niveles asumidos auomáticamente bajo el título *Levels*.
 
-Si queremos comprobar el tipo de objeto en que se convirtió `sexo`,
+Si queremos comprobar el tipo de objeto en que se convirtió `respuesta``,
 encontraremos:
 
 ```{r}
-is.vector(sexo) # preguntamos si sexo es un vector
-is.factor(sexo) # preguntamos si sexo es un factor
-mode(sexo)  # visualizamos el tipo de dato de sexo
+is.vector(respuesta) # preguntamos si sexo es un vector
+is.factor(respuesta) # preguntamos si sexo es un factor
+class(respuesta)  # visualizamos el tipo de dato de sexo
 ```
 
 Pertenece a la clase factor, pero aunque nosotros observamos que su
@@ -906,13 +776,13 @@ contenido son palabras, su tipo nos dice que es numérico. A que se debe
 esto? Veamos:
 
 ```{r}
-str(sexo)
+str(respuesta)
 ```
 
 Ejecutando la function `str()`, que nos devuelve la estructura de los
-objetos, podemos ver que sexo tiene dos niveles y los valores internos
-de los elementos son todos números 1 y 2, donde 1 corresponde a Femenino
-y 2 a Masculino.
+objetos, podemos ver que respuesta tiene dos niveles y los valores internos
+de los elementos son todos números 1 y 2, donde 1 corresponde a No
+y 2 a Si.
 
 Esto significa que la estructura de los factores está compuesta por dos
 vectores, uno numérico que funciona como índice de enteros, que
@@ -923,19 +793,15 @@ hace referencia el primer vector.
 Para ver solo los niveles o categorías del factor podemos usar:
 
 ```{r}
-levels(sexo)
+levels(respuesta)
 ```
 
-Hasta ahora hemos visto factores nominales donde no importa el orden,
-aunque la función `factor()` implementa el orden alfabético para
-determinar a qué índice numérico pertenece cada categoría. Es claro en
-el ejemplo que a *Femenino* le asigna el 1 y a *Masculino* el 2.
+En estos factores nominales donde no importa el orden, la función `factor()` implementa el orden alfabético para determinar a qué índice numérico pertenece cada categoría. Es claro en
+el ejemplo que a *No* le asigna el 1 y a *Si* el 2.
 
 Pero si nos encontramos frente a una variable cualitativa ordinal vamos
 a necesitar indicarle a la función cual es el orden de las categorías.
 
-Aprovechemos también para mostrar una forma más completa de la función
-`factor()`.\
 Vamos al siguiente ejemplo:
 
 ```{r}
@@ -988,105 +854,24 @@ Al sumar `ordered=T` le estamos diciendo que los niveles tienen orden y
 estos se pueden ver en los **Levels** donde Mala es \< a Regular y este es
 \< a Buena y así, hasta el nivel Muy buena.
 
-## Gestión de matrices
-
-Definimos a una matriz como una generalización bidimensional de un
-vector. De hecho podemos construir matrices a partir de "unir" vectores
-en forma horizontal o vertical.
-
-Las funciones para realizar estas tareas son `rbind()` y `cbind`.
-
-Por ejemplo, tenemos dos vectores:
-
-```{r}
-vec1 <- 1:6
-vec1
-vec2 <- 11:16
-vec2
-```
-
-Crearemos la matriz m1 colocando los vectores vec1 y vec2 en forma
-horizontal uno debajo del otro.
-
-```{r}
-m1 <- rbind(vec1,vec2)
-m1
-class(m1)
-```
-
-Igualmente podemos generar la matriz m2 con los vectores verticalmente
-uno al lado del otro.
-
-```{r}
-m2 <- cbind(vec1,vec2)
-m2
-class(m2)
-```
-
-Para no confundirse podemos recordar que las letras iniciales de las
-funciones estan relacionadas con las filas y columnas en idioma inglés.
-Así `rbind()` es por row (filas) y `cbind()` por column (columnas).
-
-También las podemos utilizar para unir matrices en otras matrices de
-mayor dimensión.
-
-```{r}
-cbind(m2,m2)
-```
-
-En este caso no lo asignamos a ningun objeto nuevo pero podemos
-visualizar el resultado de una matriz que repite a `m2` para tener 4
-columnas y 6 filas.
-
-Algunos otras funciones útiles en la gestión de matrices son:
-
-`ncol()`: devuelve el número de columnas de la matriz
-
-```{r}
-ncol(m1)
-```
-
-La matriz `m1` tiene 6 columnas
-
-`nrow()`: devuelve el número de filas de la matriz
-
-```{r}
-nrow(m2)
-```
-
-La matriz `m2` tiene 6 filas
-
-`dim()`: devuelve las dimensiones de la matriz (con formato índice)
-
-```{r}
-dim(m1)
-```
-
-La matriz `m1` tiene 2 filas y 6 columnas. Siempre el formato devuelve
-las dimensiones con el orden de los índices, primero las filas y luego
-las columnas.
 
 ## Gestión de dataframes
 
 La estructura de datos, usada dentro del lenguaje, para almacenar datos
 leídos de fuentes externas (archivos separados por comas, planillas de
-calculo, etc) es el dataframe. Su formato es similar a la matriz con el
-agregado que permite distintos tipos de datos por cada columna.
+calculo, etc) es el dataframe. 
 
-Muchas de las funciones vistas para matrices son las mismas que
-utilizamos para dataframes.
-
-Veamos un ejemplo. Vamos a crear un dataframe llamado `datos` con 4
+Vamos a crear un dataframe llamado `datos` con 4
 variables de 5 registros, la primera será un identificador ID numérico
 entero correlativo, la segunda variable EDAD, la tercera SEXO codificada
-como M para masculino y F para femenino y la tercera TRABAJA de formato
+como V para varón y M para mujer y la tercera TRABAJA de formato
 lógica donde T (TRUE) corresponde a "Si trabaja" y F (FALSE) a "No
 trabaja":
 
 ```{r}
 id <- 1:5     # construimos el vector id
 edad <- c(23,43,12,65,37)     # construimos el vector edad
-sexo <- c("M","F","F","M","F")   # construimos el vector sexo
+sexo <- c("V","M","M","V","M")   # construimos el vector sexo
 trabaja <- c(T,T,F,F,T)    # construimos el vector trabaja
 datos <- data.frame(id,edad,sexo,trabaja)   # construimos el dataframe datos
 ```
@@ -1115,7 +900,7 @@ Nos informa que:
 -   el objeto `datos` es un dataframe con 5 observaciones y 4 variables
 -   la variable **id** es entero (int)
 -   la variable **edad** numérica (num)
--   la variable **sexo** de tipo factor (Factor)
+-   la variable **sexo** de tipo caracter (chr)
 -   la variable **trabaja** de tipo lógica (logi).
 -   además nos muestra los primeros valores de cada variable, que aquí
     casualmente coinciden con todos los registros que hay dentro del
@@ -1133,11 +918,9 @@ objeto datos hacemos:
 datos$sexo
 ```
 
-Nos muestra los 5 valores que tiene cargado y como se trata de un
-factor, debajo aparecen los niveles definidos.
+Nos muestra los 5 valores que tiene cargado.
 
-En cuanto al sistema de indexación se comporta de manera similar a las
-matrices. Podemos acceder a elementos internos del dataframe de las
+En cuanto al sistema de indexación podemos acceder a elementos internos del dataframe de las
 siguientes formas:
 
 ```{r}
@@ -1164,252 +947,11 @@ variables con la función `names()`
 names(datos)
 ```
 
-
-## Selecciones
-
-Integrando el sistema de índice con los operadores relacionales y
-lógicos podemos llevar a cabo selecciones o filtros de datos muy útiles.
-
-Supongamos que necesitamos extaer a las observaciones que tengan
-almacenado en la variable sexo una F (mujeres). Usando el índice
-podríamos hacer:
-
-```{r}
-mujeres <- datos[datos$sexo=="F",]
-mujeres
-```
-
-Analicemos la línea ejecutada: Primero creamos un nuevo contenedor para
-almacenar la selección (mujeres). Luego asignamos el dataframe datos con
-un índice donde usamos el operador relacional == en el espacio de las
-observaciones. Luego es necesario colocar la coma en el índice dentro de
-los corchetes para indicar que la selección es de todas las variables.
-
-Estos índices pueden ser más complejos si es necesario conectando varios
-terminos relacionales con operadores lógicos, por ejemplo:
-
-```{r}
-mujeres_mayores_20 <- datos[datos$sexo=="F" & datos$edad>20,]
-mujeres_mayores_20
-```
-
-En este último caso incorporamos una selección de las mujeres mayores a
-20 años mediante el operador **&** (AND).
-
-Una función básica de R más cómoda para trabajar con selecciones es
-`subset()`
-
-Los resultados de subset() son iguales al de las selecciones con índices
-pero la escritura del código es más entendible.
-
-> subset(x, subset, select)
-
-donde:
-
-**x** es el objeto (dataframe) original
-
-**subset** es la expresión lógica de selección
-
-**select** son las variables que va a contener la salida (opcional)
-
-Para hacer las mismas selecciones que hicimos anteriormente, ejecutamos:
-
-```{r}
-subset(datos, sexo=="F")
-subset(datos, sexo=="F" & datos$edad>20)
-```
-
-Observemos que sólo estamos mostrando la selección, dado que el código
-no está asignado a ningún objeto. Además obviamos colocar el argumento
-*select* porque de esta manera se incluyen todas las variables.
-
-Si necesitasemos además filtrar las variables podemos incorporar algunos
-formatos comunes dentro de *select*:
-
-```{r}
-subset(datos, sexo=="F", select = trabaja) # solo una variable
-subset(datos, sexo=="F", select = c(id,sexo)) # más de una variable específica
-subset(datos, sexo=="F", select = -trabaja) # todas menos una variable
-subset(datos, sexo=="F", select = edad:trabaja) # un rango de variables
-```
-
-## Lectura de archivos
-
-Habitualmente los datos que se quieren analizar se leen desde archivos
-externos con un formato determinado.
-
-R reconoce, para su lectura nativa, archivos con texto plano delimitados
-por algún separador, generalmente coma o punto y coma.
-
-También puede leer archivos en otros formatos (Excel, SPSS, etc.) y
-acceder a bases de datos tipo SQL, pero las funciones necesarias no
-están incluidas en el paquete base (se necesitan otros paquetes
-específicos para importar los datos).
-
-En este capítulo solo nos ocuparemos de explicar la forma de lectura de
-archivos con formato texto ASCII (acrónimo inglés de *American Standard
-Code for Information Interchange* - *Código Estándar Estadounidense para el Intercambio de Información*).
-
-Encontrarán en el material [Primeros pasos y misceláneas](https://cballejo.github.io/R_Epi_Avanzada/Miscelaneas/index.html) formas de lectura de archivos de datos por menú.
-
-Dentro del lenguaje, la familia de funciones básicas para realizar la lectura de
-estos archivos de texto ASCII o "planos" se denomina `read.table()`
-
-Al leer el archivo, que tiene que tener una organización interna
-tabular, `read.table()` genera un dataframe con el nombre que nosotros
-definamos.
-
-Cuando necesitamos leer algún archivo de texto separado por *comas* con
-extensión **csv** se puede usar la función `read.csv`. Si en cambio el
-separador del archivo **csv** es el *punto y coma* (utilizado en
-configuraciones regionales latinas) conviene usar `read.csv2`.
-
-Por ejemplo, si nuestro archivo se denomina `datos.csv` y sabemos que el
-separador es el punto y coma, podemos hacer:
-
-```{r}
-datos <- read.csv2("datos.csv")
-```
-
-Observemos que la expresión de la función `read.csv2` se encuentra
-asignada a un objeto de nombre **datos**. Este objeto será el contenedor de
-la información del archivo **_datos.csv_** y por lo tanto será de tipo
-dataframe.
-
-Algunas consideraciones a tener en cuenta sobre el archivo de datos
-leído para que esta operación tenga éxito:
-
-- debe ser formato texto plano (ASCII) y la tabla de datos tener como
-separador punto y coma (;)
-
-- se debe llamar datos.csv y encontrarse en el directorio de trabajo
-activo o dentro del proyecto (si tenemos uno creado)
-
-- la primera línea debe contener los nombres de las variables.
-
-Esto es porque la función `read.csv2` asume que el archivo es de texto
-plano, tiene punto y comas como separador de columnas y la primer línea
-es la cabecera del archivo (donde se definen los nombres de las
-variables).
-
-Una cuestión importante mencionada anteriormente es el directorio de
-trabajo.
-
-Antes de hacer una lectura de datos resulta necesario indicar al
-programa el directorio (carpeta) en que pretendemos trabajar, siempre y cuando no tengamos creado un proyecto de RStudio.
-
-Este directorio será el lugar donde R irá a buscar los archivos que
-vayamos a importar y donde dejará nuestras exportaciones.
-
-Definimos el directorio de trabajo de dos maneras, por medio del menú de
-RStudio (ver en **Primeros pasos y misceláneas**) o mediante código.
-
-La función de R que define el directorio de trabajo es `setwd()` y entre
-los paréntesis se escribe la ruta de la carpeta donde queramos que R
-almacene y lea sus archivos de datos. Este texto debe ir encerrado entre
-comillas de la siguiente forma:
-
-```{r, eval=F}
-setwd("C:/CursoAvanzada2022")
-```
-
-La línea anterior, a modo de ejemplo, define como activo al directorio **CursoAvanzada2022** ubicado en la raíz del disco C del equipo. Esta carpeta debe ser creada previamente, dado que la función `setwd()` solo apunta al directorio pero no lo crea.
-
-
-## Consideraciones finales
-
-Estos materiales, que forman parte del modulo 1 del **Curso de
-Epidemiología Avanzada**, no pretenden abarcar todos los temas relevantes
-que encontraríamos en un curso de lenguaje R, sino que persigue el fin
-de mostrar algunos elementos necesarios del lenguaje para su aplicación
-en los módulos siguientes.
-
-A continuación  mencionaremos algunas consideraciones generales
-relacionadas con el uso del lenguaje en las funciones base y de paquetes
-adicionales construidas para llevar adelante contrastes de hipótesis y
-regresiones.
-
-Como decíamos al comienzo del módulo, todas las funciones con las que
-trabajemos tienen argumentos y el interprete de R no permite errores en
-la sintaxis de las expresiones, por lo que debemos atender a los siguientes puntos a la hora de escribirlas:
-
--   Los argumentos o parámetros de una función siempre van entre
-    paréntesis y separados unos de otros por comas.
-
-```{r, eval=F}
-funcion(arg1, arg2, arg3,...)
-```
-
--   Los títulos de los argumentos pueden escribirse y mediante un igual
-    agregar el valor correspondiente. También se puede omitir el título
-    del argumento y escribir directamente el valor, pero en este caso,
-    hay que respetar el orden definido por la función.
-
-```{r, eval=F}
-funcion(arg1=32, arg2=5, arg3=65,...)
-```
-
-es igual a hacer:
-
-```{r, eval=F}
-funcion(32, 5, 65,...)
-```
-
-siempre que se respete el mismo orden.
-
--   Con los argumentos se deben cumplir las mismas reglas que en todo el
-    lenguaje. Los valores numéricos, lógicos, especiales y objetos van
-    escritos en forma directa y cuando escribimos caracteres (texto) van
-    necesariamente encerrados entre comillas.
-
-```{r, eval=F}
-funcion(arg1=3, arg2=NA, arg3=TRUE, arg4="less", arg5=x,...)
-```
-
-Rstudio utiliza un sistema de colores para ayudar a diferenciar los
-tipos de valores, donde azul oscuro son números, celeste palabras
-reservadas como valores especiales y lógicos, verde para caracteres y
-negro para objetos (en el theme = Textmate que viene por defecto).
-
-Los valores lógicos TRUE y FALSE se pueden escribir en forma reducida
-como T y F.
-
--   Muchas funciones tienen valores predefinidos en alguno de sus
-    argumentos. Por ejemplo, el argumento `conf.level` que define el
-    nivel de confianza para los intervalos se encuentra en muchas
-    funciones y en todos los casos funciona igual. El valor
-    predeterminado es 0.95, es decir el 95% de confianza. Si se omite el
-    argumento se aplica ese valor por defecto, de lo contrario es válido
-    el valor que se haya definido expresamente dentro de la función.
-
--   El lenguaje nos ofrece un sistema de ayuda permanente. Ésta presenta        siempre la sintaxis en el subtitulo **Usage** y los argumentos en 
-    **Arguments**
-
--   La ayuda también nos posibilita conocer cual es el formato requerido
-    para los valores o elementos de entrada de una función. Cuando a los
-    argumentos se le asignan objetos que contienen datos, normalmente
-    variables de un dataframe, columnas de matrices, matrices o tablas
-    enteras o vectores, éstos requieren tener un formato específico.
-    Generalmente el tipo de dato que trae inconvenientes es el de
-    caracter para variables categóricas, dado que la mayoría de las
-    funciones exigen que se presente como `factor`. Esto significa que
-    habrá que convertir la variable indicada a formato factor previo a
-    su uso dentro de la función.
-
--   Las funciones que ejecutan análisis complejos como las regresiones
-    por ejemplo, generan salidas en forma de lista. Conviene siempre
-    asignar esta salida a un objeto porque luego se pueden reutilizar en
-    otras funciones como por ejemplo en análisis de residuos.
-
--   Finalmente, en el siguiente capítulo describimos a las fórmulas como
-    forma de trabajar con los datos en la construcción de modelos.
-
 ## Fórmulas
 
-En R las formulas son utilizadas generalmente para describir modelos.
-Estas formulas se escriben con operadores como **\~** , **+** , **\***,
-etc. y se emplean dentro de funciones específicas como regresiones,
-anovas y contrastes de hipótesis, además de algunos gráficos.
+En R las fórmulas son utilizadas generalmente para describir modelos, formato que  vamos a utilizar durante toda la cursada.
+
+Estas formulas se escriben con operadores como **\~** , **+** , **\***, etc. y se emplean para especificar regresiones, anovas y contrastes de hipótesis, además de algunos gráficos.
 
 **Formula genérica:**
 
@@ -1423,11 +965,11 @@ explicativas o independientes. El esquema general es el siguiente:
 El símbolo "`~`" (virgulilla) debería leerse como *"es modelado por"* o
 *"es modelado como una función de"*.
 
-Por ejemplo en una gresión simple se utiliza la función base `lm()` y el
+Por ejemplo, en una regresión lineal se utiliza la función base `lm()` y el
 argumento principal de esta función es una formula:
 
-> regresion_simple \<- lm(variable.de.respuesta \~
-> variables.explicativas, data=DataFrame)
+> regresion_lineal \<- lm(variable.de.respuesta \~
+> variables.explicativas, data = DataFrame)
 
 además de la formula hay un argumento llamado `data` que es
 imprescindible para indicarle a R de donde debe sacar los datos para
@@ -1442,8 +984,11 @@ dentro de una formula:
 |     -    |   - x   | Excluye la variable x                                |
 | :        | x : z   | Incluye la interacción de la variable x con z        |
 |     *    |  x * z  | Incluye ambas variables y la interacción entre ellas |
-|     /    |  x / z  | Anidamiento: incluye a z anidado en x                |
-|    \|    |  x \| z | Condicional: incluye a x dado z                      |
+
+## Nota final
+
+Estos materiales, que forman parte del modulo 1 del **Curso de Epidemiología Avanzada**, no pretenden abarcar todos los temas relevantes que encontraríamos en un curso de lenguaje R, sino que persigue el fin de mostrar solo los más relevantes y necesarios del lenguaje para su aplicación en los módulos siguientes.
+
 
 <br>
 <br>
