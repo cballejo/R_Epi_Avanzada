@@ -1,5 +1,5 @@
 ---
-title: "**Primeros pasos y misceláneas**"
+title: "**Primeros pasos y generalidades**"
 author: ""
 output:
   html_document:
@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE, dpi = 300)
 
 <br> 
 
-<center>_Este material es parte de la_ **_Unidad 1 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS_**</center>
+<center>_Este material es parte de la_ **_Unidad 1 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS_ v2024**</center>
 
 <br> 
 
@@ -34,61 +34,15 @@ En este documento vamos a explicar algunos procedimientos que vamos a llevar a c
 
 En principio, aunque instalamos tres programas, el único que debemos ejecutar para ponernos a trabajar es **RStudio**. Éste se encarga de utilizar a **R** como *motor/interprete* y a *Rtools* si llegamos a necesitar instalar algún paquete desarrollado en C, C++ o Fortran.
 
-
-
-
-## Scripts
-
-
-Un script es un archivo de código que contiene un listado secuencial de funciones para ser ejecutadas en R. Estos archivos permiten guardar el código que vamos  creando y volver a utilizarlo tantas veces como se quiera, además de poder compartirlo con otras personas.
-
-La propuesta para utilizar estos scripts como recurso educativo tiene la siguiente secuencia:
-
-1.	Descargamos el script del aula virtual
-2.	Abrimos el script en RStudio
-3.	Ejecutamos el script línea a línea leyendo la documentación y salida en cada caso
-
-### Cómo abrimos el script en RStudio?
-
-Los scripts que descarguemos desde el aula virtual tendrán extensión .R y podemos guardarlos en la carpeta que definamos dentro de nuestra computadora.
-
-Es conveniente ser ordenados y crear alguna carpeta específica para el curso y no tener todos los archivos sueltos en carpetas generales como Mis Documentos o Escritorio.
-
-Luego para abrir el archivo script .R podemos hacer doble click sobre el propio archivo (cuando se instala RStudio se asocian automáticamente estas extensiones con el programa) o bien desde dentro de RStudio pulsamos *File > Open file...* (también se puede utilizar el atajo de teclado Ctrl+O)
-
-Visualizaremos el script en el editor de código listo para leerlo y ejecutarlo.
-
-### Cómo ejecutamos un script en RStudio?
-
-La forma de ejecutar habitualmente estos script, es línea por línea mediante el uso de la combinación de teclas **_Ctrl+Enter_** o el **botón Run** del editor de código de RStudio. Para esto tenemos que tener el cursor activo en la línea que queremos correr (puede ser en cualquier parte de la línea) y luego de ser ejecutada el cursor saltará automáticamente a la siguiente línea que tenga código.
-
-Mientras ejecutamos cada línea debemos ir observando la salida en la consola y también los cambios que se dan en el bloque Environment (Entorno) donde aparecerán los objetos que vayamos creando y manipulando.
-
-### Cómo editamos un script en RStudio?
-
-Si queremos modificar o incorporar alguna línea al script que estamos ejecutando podemos hacerlo de forma directa en el editor de código.
-
-Cada vez que hacemos un cambio debemos volver a ejecutar esa o esas líneas para que se realice la modificación.
-
-Podemos probar y volver a modificar tantas veces queramos pero debemos tener presente que cada manipulación en los objetos se mantiene hasta que se vuelvan a cambiar y a veces, cuando los objetos están vinculados con otras líneas de código posteriores tenemos que tener cuidado que se mantenga la coherencia.
-
-Por ejemplo, si tenemos un objeto vector con contenido numérico para posteriormente realizar cálculos matemáticos y nosotros cambiamos el contenido del vector por un valor caracter, ya no vamos a poder hacer los cálculos posteriores y RStudio nos informará el error en consola.
-
-Allí es importante tener presente el bloque Environment que nos va a mostrar siempre el contenido de cada objeto definido en memoria, para evitar operaciones incoherentes y errores.
-
-### Cómo guardamos un script en RStudio?
-
-Cualquier agregado o modificación que hayamos realizado al script que nos interese mantener nos obligará a guardar el archivo de código editado.
-
-Basta con pulsar sobre el ícono del diskette celeste del editor de código para guardar el script, o bien hacerlo desde el menú principal *File > Save* o presionando **Ctrl+S**.
-
-Si en cambio quisiera guardarlo como otro archivo para mantener el script original, podemos guardarlo con diferente nombre o en otra ubicación mediante *File > Save As...*
-
 ## Proyectos de RStudio
 
 Los proyectos de RStudio se utilizan para organizar todo el código, los informes, las fuentes de datos y cualquier otro archivo utilizado en un análisis. 
 
-La organización del trabajo en proyectos es muy útil para asegurarnos que cada vez que necesitemos importar datos, RStudio los buscará dentro de la carpeta asociada al proyecto.
+La organización del trabajo en proyectos es muy útil para asegurarnos que cada vez que necesitemos importar datos, RStudio los busque dentro de la carpeta asociada al proyecto.
+
+Cada proyecto de RStudio se vincula con una carpeta. Esa carpeta puede estar ubicada en cualquier parte del sistema de almacenamiento que deseemos (disco rígido, pendrive, disco externo, etc). 
+
+Podemos abrir proyectos ya creados, cerrarlos y crear proyectos nuevos.
 
 ### Crear un nuevo proyecto de RStudio
 
@@ -99,7 +53,7 @@ knitr::include_graphics("Proy1.PNG")
 ```
 
 
-También accedemos a generar un proyecto nuevo a partir de pulsar sobre **New Project...** del menú desplegado en el extremo derecho superior de la interface de RStudio.
+También accedemos a generar un proyecto nuevo a partir de pulsar sobre **New Project...** del menú desplegado en el extremo derecho superior de la interfaz de RStudio.
 
 ```{r,echo=F,  fig.align='center', out.width = "40%", dpi=300}
 knitr::include_graphics("Proy2.PNG")
@@ -113,9 +67,9 @@ knitr::include_graphics("Proy3.PNG")
 
 Por lo general, seleccionaremos la primera opción, **New Directory**, que crea una nueva carpeta a la que deberemos colocarle un nombre. Todos los archivos de configuración aparecerán asociados a esta nueva carpeta.
 
-Sin embargo, si ya tenemos algunos archivos de código o archivos de datos con los que deseamos trabajar, podemos elegir la segunda opción, **Existing Directory**. El proyecto tomará el nombre de la carpeta que seleccionemos en forma predeterminada.
+Sin embargo, si ya tenemos algunos archivos de código o archivos de datos con los que deseamos trabajar, podemos elegir la segunda opción, **Existing Directory**. El proyecto tomará el nombre de la *carpeta ya existente* que seleccionemos en forma predeterminada.
 
-Finalmente, si ya tenemos un sistema de control de versiones como *git* configurado para un proyecto que ya existe, podemos elegir la tercera opción, **Version Control**.
+En este curso no utilizaremos la tercera opción **Version Control**.
 
 
 ### Tipos de proyectos
@@ -128,13 +82,9 @@ La pantalla que aparece nos mostrará una lista de tipos de proyectos de RStudio
 knitr::include_graphics("Proy4.PNG")
 ```
 
-El primero es el que usaremos con mayor frecuencia dado que los siguientes incluyen código específico utilizado para casos de uso especial. 
+El primero **New Proyect** es el que usaremos siempre en este curso.
 
-Como ejemplo mencionamos dos de ellos:
-
-Los proyectos usando **Rcpp** se utilizan para integrarse con las bibliotecas de códigos de lenguaje C++. 
-
-Los proyectos **R package** se configuran para crear un conjunto de objetos R reutilizables. Esto es un poco más avanzado que lo aprenderemos en este curso. Solo tenga en cuenta que puede crear paquetes de proyectos de RStudio cuando tenga un código que pueda aplicarse en todos sus proyectos. 
+Las otras opciones incluyen código específico utilizado para casos de uso especial. 
 
 Para continuar con este ejemplo, pulsamos sobre **New Project** accediendo a la ventana emergente.
 
@@ -169,40 +119,78 @@ knitr::include_graphics("Proy7.PNG")
 
 En la figura anterior podemos ver dos cambios en la pantalla de inicio.  
 
-En primer lugar el panel Files (pantalla inferior derecha) apunta a la nueva carpeta Practica R y dentro de ella vemos un nuevo archivo el nombre del proyecto y la extensión **Rproj**. Este archivo contiene todas las configuraciones para su proyecto. 
+En primer lugar el panel Files (pantalla inferior derecha) apunta a la nueva carpeta **Practica R** y dentro de ella vemos un nuevo archivo el nombre del proyecto y la extensión **Rproj**. Este archivo contiene todas las configuraciones para su proyecto. 
 
-El otro cambio se observa en la parte superior derecha, que muestra el nombre del proyecto. Si hacemos click en él, se desplegará una lista de atajos útiles.
+El otro cambio se observa en la parte superior derecha, que muestra el nombre del proyecto. Si hacemos click en él, se desplegará el menú de proyectos.
 
 ```{r,echo=F,  fig.align='center', out.width = "40%", dpi=300}
 knitr::include_graphics("Proy8.PNG")
 ```
 
-Desde aquí se puede abrir y cerrar proyectos, navegar rápidamente a proyectos que se han abierto recientemente y configurar las opciones de RStudio específicamente para este proyecto. 
+Desde aquí se puede abrir y cerrar proyectos, navegar rápidamente a proyectos que se han abierto recientemente y configurar las opciones de RStudio para cada uno de ellos. 
 
+### Abrir un proyecto existente
 
-### Directorio de trabajo
+Cuando el proyecto ya existe, sea porque lo creamos nosotros o porque alguien nos pasó una carpeta con un proyecto de RStudio creado vamos a visualizar dentro de esa carpeta un archivo con extensión **.Rproj** 
 
-La recomendación por experiencia de trabajo es que se utilicen los proyectos por sobre el uso de directorios de trabajo.
+La forma más veloz para abrir el proyecto es ejecutar este archivo (debería abrir una sesión de RStudio con el proyecto activo). La otra forma es desde el menú superior derecho de RStudio en la opción **Open proyect...** y luego buscando en nuestro directorio el mismo archivo **.Rproj**.
 
-De todas formas, si se desea gestionar los directorios en los que tenemos nuestros archivos de datos y/o los propios de R (**.R**, **.RData** y **.Rhistory**) podemos hacerlo desde el menú de RStudio.
+**Nota:** El menú de proyectos del área superior derecha va guardando como elementos recientes los proyectos que se van abriendo y también es una forma rápida de acceder a ellos pulsando sobre estos atajos.
 
-El directorio de trabajo predeterminado mientras no tengamos un proyecto activo es la carpeta **Mis Documentos** de *Windows* (generalmente referenciado en R con el símbolo **~**).
+## Scripts
 
-#### Cambiar el directorio de trabajo
+Un script es un archivo de código que contiene un listado secuencial de funciones para ser ejecutadas en R. Estos archivos permiten guardar el código que vamos creando y volver a utilizarlo tantas veces como se quiera, además de poder compartirlo con otras personas.
 
-El directorio de trabajo actual se muestra en RStudio dentro de la barra de título del bloque Consola. (por defecto **~/** que apunta a *Mis Documentos*) 
+### Cómo creamos un script nuevo en RStudio?
 
-Hay varias formas de cambiar el directorio de trabajo actual, aunque para simplificar mostraremos el camino por medio del menú principal.
+Tenemos dos formas de crear un script nuevo. Desde el  menú superior pulsando **File > New File > R Script** (atajo Ctrl+Shift+N) o con el ícono del documento con un símbolo +, como se muestra debajo.   
 
->Importante: Tengamos en cuenta que si estamos dentro de un proyecto de RStudio no debemos utilizar el cambio de directorio de trabajo, es decir los modos son excluyentes: o utilizamos Proyectos o gestionamos directorios de trabajo.
-
-Desde el menú y con el mouse podemos realizar el cambio de directorio de trabajo a través de **Session > Set Working Directory > Choose Directory...** o bien mediante el atajo de teclado **Ctrl+Shift+H**.
-
-```{r,echo=F,  fig.align='center', out.width = "40%", dpi=300}
-knitr::include_graphics("DT1.PNG")
+```{r,echo=F,  fig.align='center', out.width = "30%", dpi=300}
+knitr::include_graphics("Script_nuevo.PNG")
 ```
 
-Luego de abrirse la ventana con todas las carpetas de nuestro equipo de trabajo sólo debemos seleccionar cual será nuestro directorio de trabajo y pulsar el botón **Open**.
+### Cómo ejecutamos un script en RStudio?
+
+La forma de ejecutar habitualmente estos script, es línea por línea mediante el uso de la combinación de teclas **_Ctrl+Enter_** o el **botón Run** del editor de código de RStudio. Para esto tenemos que tener el cursor activo en la línea que queremos correr (puede ser en cualquier parte de la línea) y luego de ser ejecutada el cursor saltará automáticamente a la siguiente línea que tenga código.
+
+Mientras ejecutamos cada línea debemos ir observando la salida en la consola y también los cambios que se dan en el bloque Environment (Entorno) donde aparecerán los objetos que vayamos creando y manipulando.
+
+### Cómo editamos un script en RStudio?
+
+Si queremos modificar o incorporar alguna línea al script que ya se encuentra escrita podemos hacerlo de forma directa en el editor de código.
+
+Cada vez que hacemos un cambio debemos volver a ejecutar esa o esas líneas para que se realice la modificación.
+
+Podemos probar y volver a modificar tantas veces queramos pero debemos tener presente que cada manipulación en los objetos se mantiene hasta que se vuelvan a cambiar y a veces, cuando los objetos están vinculados con otras líneas de código posteriores tenemos que tener cuidado que se mantenga la coherencia.
+
+Por ejemplo, si tenemos un objeto vector con contenido numérico para posteriormente realizar cálculos matemáticos y nosotros cambiamos el contenido del vector por un valor caracter, ya no vamos a poder hacer los cálculos posteriores y RStudio nos informará el error en consola.
+
+Allí es importante tener presente el bloque Environment que nos va a mostrar siempre el contenido de cada objeto definido en memoria, para evitar operaciones incoherentes y errores.
+
+### Cómo guardamos un script en RStudio?
+
+Cualquier agregado o modificación que hayamos realizado al script que nos interese mantener nos obligará a guardar el archivo de código editado.
+
+Basta con pulsar sobre el ícono del diskette celeste del editor de código para guardar el script, o bien hacerlo desde el menú principal *File > Save* o presionando **Ctrl+S**.
+
+Si en cambio quisiera guardarlo como otro archivo para mantener el script original, podemos guardarlo con diferente nombre o en otra ubicación mediante *File > Save As...*
+
+### Cómo abrimos un script en RStudio?
+
+Los scripts que construyamos o bien que nos compartan siempre tendrán extensión **.R** y generalmente, se encontrarán dentro de algún proyecto.
+
+Para abrir estos archivos .R podemos pulsar sobre ellos dentro del panel Files (abajo a la derecha) o bien desde el menú con **File > Open file…** (atajo de teclado Ctrl+O)
+
+Visualizaremos el script en una nueva pestaña en el editor de código.
+
+
+En el curso vamos a incluir a nuestros scripts dentro de algún proyecto para facilitar el trabajo, por lo que en general seguiremos la siguiente secuencia:
+
+1.	Descargamos desde el aula virtual un archivo comprimido conteniendo la carpeta, el proyecto, el/los script/s y el/los archivos de datos.
+2.  Descomprimimos el archivo descargado en la ubicación que deseamos (se recomienda organizar alguna carpeta destinada al curso)
+3.	Abrimos la carpeta descomprimida y ejecutamos el archivo de proyecto **.Rproj**
+4.	Al abrirse RStudio con el proyecto activo veremos en el panel **Files** el contenido de la carpeta. Buscamos el o los scripts (archivos con extensión .R)
+5.  Ejecutamos cada línea del script leyendo la documentación y su salida en cada caso.
 
 
 ## Herramientas de RStudio
@@ -233,7 +221,7 @@ knitr::include_graphics("RS2.PNG")
 
 ### Historial de funciones
 
-Otra característica de utilidad dentro de la **Consola** de RStudio es que si nos  situamos en el prompt activo, y pulsamos las teclas flecha hacia arriba o abajo, veremos pasar la lista completa de código ejecutado en la sesion de trabajo.
+Otra característica de utilidad dentro de la **Consola** de RStudio es que si nos situamos en el prompt activo, y pulsamos las teclas flecha hacia arriba o abajo, veremos pasar la lista completa de código ejecutado en la sesión de trabajo.
 
 Esto nos ayuda a la hora de volver a ejecutar una función o bien cuando debemos hacer alguna corrección de la o las líneas anteriores, puesto que nos ahorra tiempo y trabajo evitando volver a tener que tipear lo que ya escribimos.
 
@@ -319,62 +307,24 @@ Esta relación de funciones que llaman a otras funciones se denomina **_dependen
 
 Hay una forma de asegurarnos cuando instalamos un paquete que a su vez se instalen los paquetes del cual depende y es marcando la opción **Install dependencies**  en la ventana anterior (**Install Packages**).
 
-
-
 ## Lectura de archivos de datos
 
-Las versiones actualizadas de RStudio van incorporando nuevas funcionalidades que facilitan y aceleran el trabajo en R.
+El lenguaje nos permite importar variados formatos de tablas de datos utilizando funciones propias de R base como de paquetes que se dedican a esta tarea.
 
-Entre ellas hay una que nos brinda la posibilidad de hacer lectura de archivos de datos externos a través de menú.
+El formato nativo de tablas de datos de R es el texto plano (ASCII - Codigo Estadounidense Estandar para el Intercambio de Informacion) con sus columnas separadas por algún caracter. Estos pueden ser caracteres habituales como la coma (,) o el punto y coma (;) que da lugar a la extensión *.csv, o algunos especiales como la barra vertical (|) que suele utilizar el INDEC para sus productos o bien cualquier otro, como espacios o la tabulación.
 
-El botón que debemos pulsar para iniciar este proceso se encuentra en el panel de entorno (**Environment**) y tiene la leyenda **Import Dataset**  
+Otra característica que tienen estos archivos es que generalmente poseen una cabecera donde se ubican los nombres de cada columna/variable y por supuesto que cada una de ellas debe respetar un mismo tipo de dato para cumplir con la condición que la hace una tabla/base de datos.
 
-Al pulsarlo nos despliega un listado de formatos de importación:
-
-```{r,echo=F,  fig.align='center', out.width = "20%", dpi=300}
-knitr::include_graphics("RS6.PNG")
-```
-
-Las dos primeras opciones (**From Text**) se relacionan con el formato de datos  nativo (texto plano delimitado), usualmente archivos de extensión **csv**. La primera de ellas **Text (base)** no hace uso de ningún paquete especial, mientras que la segunda **Text (readr)** necesita del paquete **readr**.
-
-Si hacemos click con el mouse en **Text (base)** nos abrirá una ventana de Windows para buscar archivos de datos tipo texto para importar.
-
-La carpeta por defecto será la del proyecto de RStudio (si es que tenemos un proyecto activo) o el directorio de trabajo activo seleccionado (Mis Documentos de forma predeterminada)
-
-Una vez que seleccionamos el archivo de datos requerido, pulsamos en el botón **Open**. Eso nos lleva a la siguiente ventana (**Import Dataset**)
-
-```{r,echo=F,  fig.align='center', out.width = "60%", dpi=300}
-knitr::include_graphics("RS7.PNG")
-```
-
-Aquí tenemos varias opciones para configurar, aunque el software hace una primera aproximación mostrando una configuración adaptada al formato del archivo.
-
-Algunas de las opciones más útiles de configuración son: 
-
-**Name**: escribimos el nombre del **_dataframe_** que recibe los datos (por defecto es el propio nombre del archivo que estamos leyendo)
-
-**Heading**: define si la primera línea del archivo (cabecera) contiene los nombres de las variables.
-
-**Separator**: sirve para seleccionar cual es el caracter separador del archivo. Entre ellos se encuentra coma (Comma), punto y coma (Semicolon), tabulación (Tab) y espacio en blanco (Whitespace).
+Lo más importante para hacer una buena lectura de la tabla de datos con la que deseamos trabajar es conocer previamente el formato que tiene, si tiene cabecera, que caracter usa como separador de columnas, etc. Al ser un texto plano se puede abrir desde un simple **Block de Notas** de Windows o desde el mismo **RStudio** para conocer sus particularidades.
 
 
-Finalmente, en la ventana titulada **Data Frame** nos previsualiza el resultado de la importación según vayamos configurando las opciones.
+## Buenas prácticas 
 
-Cuando vemos que el dataframe tiene la forma correcta presionamos en el botón **Import** y la lectura del archivo se ejecuta.
-
-Encontraremos los datos dentro del dataframe con nombre elegido en **Environment**.
- 
-Otros formato de archivos factibles de ser leídos por este método son: **Excel**, **SPSS**, **SAS** y **Stata**. (aunque se necesitan paquetes específicos instalados)
-
-
-
-## Consejo de buenas prácticas de trabajo
-
-- Utilizar preferentemente proyectos de RStudio (Rproj)
-- Se sugiere no guardar los archivos **.RData** cuando trabajamos en proyectos de RStudio.
+- Utilizar siempre proyectos de RStudio (Rproj)
 - Iniciar los scripts con las líneas de activación de paquetes necesarios para ejecutar las funciones incluídas en el código. ( función **library()** )
 - Documentar el código por medio de comentarios (iniciados con **#**) 
-- Utilizar espacios e identación adecuada para que el código sea de fácil lectura.
+- Utilizar espacios e identación adecuada para que el código sea de fácil lectura. Para ayudar a mejorar la legibilidad y facilitar el compartir código con otros, existe una guía de estilo no oficial para escribir código R. Es bastante breve y tiene muchos ejemplos de buenas y malas formas de escribir código (nombrar variables, manejar líneas largas, usar niveles de sangría adecuados, etc.). La pueden encontrar en [https://style.tidyverse.org/](https://style.tidyverse.org/)
+
 
 <br>
 <br>
