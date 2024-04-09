@@ -1,7 +1,7 @@
 ---
 title: "Unidad I: Encuentro 2"
 subtitle: "Epidemiología Nivel Avanzado"  
-date: "18/05/2021"
+date: "14/05/2024"
 output:
   xaringan::moon_reader:
     includes:
@@ -207,7 +207,7 @@ plot_na_pareto(datos)
   
   - Funciones diseñadas para resumir conjuntos de variables de tablas de datos:
   
-    - `skim()` de **_skimr_**, `describe()` de **_dlookr_**,  entre otras.
+    - `skim()` de **_skimr_**, `describe()` de **_dlookr_**, `tabyl()` de **_janitor_** entre otras.
 
 - **Gráficos**: funciones del paquete **_ggplot2_** (basado en gramática de gráficos)
 ]
@@ -230,35 +230,12 @@ datos1 %>%
   geom_boxplot(fill = "darkorchid3", outlier.color = "red") 
 ```
 ---
-## Qué vamos a necesitar para el resto del curso?
-
-.font130[
-- **No vamos a tener que hacer...**
-
-  - demasiado trabajo en limpiar y organizar tablas de datos.
-  
-  - exploraciones descriptivas exhaustivas. 
-
-- **Habitualmente vamos a...**
-
-  - leer archivos de datos (csv y Excel)
-
-  - recategorizar variables, convertirlas a factor y configurar niveles.
-
-  - aplicar funciones básicas de tidyverse 
-  
-  - aplicar funciones estadísticas específicas 
-
-  - utilizar sintaxis fórmula en los modelos de regresión
-  
-]
----
 ## Temario del encuentro de hoy
 
 .font150[
-- Gestión de datos con tidyverse
+- Gestión básica de datos con tidyverse
 
-- Lectura de datos
+- Lectura de datos (texto plano y Excel)
 
 - EDA mínimo
 

@@ -3,7 +3,7 @@
   <head>
     <title>Introducción al Lenguaje R</title>
     <meta charset="utf-8" />
-    <meta name="date" content="2021-07-05" />
+    <meta name="date" content="2024-07-05" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link rel="stylesheet" href="xaringan-themer2.css" type="text/css" />
     <link rel="stylesheet" href="animate.min.css" type="text/css" />
@@ -20,7 +20,7 @@ class: center, middle, inverse, title-slide
 ## Epidemiología Nivel Avanzado
 ]
 .date[
-### 07/05/2021
+### 07/05/2024
 ]
 
 ---
@@ -43,13 +43,13 @@ class: top
 
 &lt;br&gt;
 
-.font150[Introducir y nivelar al grupo de estudiantes del curso de .bold[Epidemiología Nivel Avanzado] en el lenguaje ![](assets/logoR.PNG), con el fin de aplicarlo en el proceso de análisis de la siguientes unidades.]
+.font160[Introducir y nivelar al grupo de estudiantes del curso de .bold[Epidemiología Nivel Avanzado] en el lenguaje ![](assets/logoR.PNG), con el fin de aplicarlo en el proceso de análisis de la siguientes unidades.]
 
 &lt;br&gt;
 &lt;br&gt;
 
 .center[.font180[.bold[Aclaración]]] 
-.center[.font180[Este no es un curso de R]]
+.center[.font180[Este NO es un curso de R, solo lo usaremos como un medio para la cursada.]]
 
 ---
 background-image: url(assets/Enc1.PNG)
@@ -96,31 +96,31 @@ background-position: 50% 60%
 
 --
 
-.font150[
+.font160[
 - Realizar análisis de datos uni, bi y multivariados con R]
 &lt;br&gt;
 --
 
-.font150[
+.font160[
   - Entender los elementos básicos del lenguaje]
 
 --
-.font150[
+.font160[
   - Utilizar herramientas de RStudio]
   
 --
 
-.font150[
+.font160[
   - Leer archivos de datos]
   
 --
 
-.font150[
+.font160[
   - Instalar y activar librerías]
   
 --
 
-.font150[
+.font160[
   - Comprender la ayuda de las funciones]
   
 ---
@@ -128,40 +128,40 @@ background-position: 50% 60%
 
 --
 
-.font150[
-- Lenguaje de línea de comandos = Curva de aprendizaje lenta]
+.font160[
+- Lenguaje de línea de comandos = curva de aprendizaje lenta]
 
 --
 
-.font150[
+.font160[
 - Muchas veces la Ayuda no es clara]
   
 --
 
-.font150[
+.font160[
 - Aprender a lidiar con los errores]
   
 --
 
-.font150[
+.font160[
 - Muchas veces los errores tampoco son claros]
   
 --
 
-.font150[
-- Hay muchas funciones y muchos paquetes. Es fácil confundirse]  
+.font160[
+- Hay muchas funciones y muchos paquetes. Es fácil confundirse y no recordar.]  
   
 --
 
-.font150[
-- Casi todo se resuelve con muchas horas de uso y pidiendo AYUDA!]
+.font160[
+- Casi todo se resuelve con muchas horas de uso y pidiendo AYUDA!!!]
   
 
 ---
 
-## Sintaxis
+## Características de la sintaxis
 
-.font150[
+.font160[
 - Cuidado con las mayúsculas y minúsculas (Case sensitive).
 
 &lt;br&gt; 
@@ -176,8 +176,9 @@ background-position: 50% 60%
 ```
 ]
 ---
+## Características de la sintaxis
 
-.font150[
+.font160[
 - Las funciones siempre se acompañan de paréntesis al final. 
   
 &lt;br&gt;  
@@ -200,7 +201,9 @@ c # función sin paréntesis devuelve el código interno de la función
 ```
 ]  
 ---
-.font150[
+## Características de la sintaxis
+
+.font160[
 - Los argumentos siempre se separan con comas.
 
 &lt;br&gt;  
@@ -218,11 +221,11 @@ args(sample) # argumentos de la función sample()
   
   
 ---
+## Características de la sintaxis
 
-.font150[
+.font160[
 - Las cadenas de caracteres (texto) siempre van entre comillas.
 
-&lt;br&gt;  
 &lt;br&gt;  
 
 
@@ -244,44 +247,70 @@ class(123)  # números en formato numérico
 ]
   
 ---
-
-.font150[
-- Los índices de las estructuras de datos se indican dentro de corchetes.
-
-&lt;br&gt;  
-
-
-```r
-x &lt;- c(2,43,67) # x es un vector de 3 elementos
-
-x[3] # valor en la posición 3 del vector
-```
-
-```
-## [1] 67
-```
-]  
-  
----
 background-image: url(assets/Tab.PNG)
 background-size: 800px
 background-position: 50% 60%
 
-.font150[
+## Características de la sintaxis
+
+.font160[
 - Son MUY UTILES las herramientas de RStudio para evitar problemas de sintaxis.]
 
 ---
+## Qué vamos a necesitar del R para el resto del curso?
 
-## Temario del encuentro de hoy
+.font140[
+- **No vamos a tener que hacer...**
+
+  - demasiado trabajo en limpiar y organizar tablas de datos.
+  
+  - manipulación de datos y exploraciones descriptivas exhaustivas. 
+
+- **Habitualmente vamos a...**
+
+  - leer archivos de datos (texto plano y Excel)
+
+  - recategorizar variables, convertirlas a factor y configurar niveles.
+
+  - aplicar funciones básicas de tidyverse 
+  
+  - aplicar funciones estadísticas específicas 
+
+  - utilizar sintaxis fórmula en los modelos de regresión
+  
+]
+
+---
+## Cómo vamos a trabajar en la práctica?
 
 .font150[
+
+- En cada unidad vamos a tener actividades prácticas. 
+
+- En cada una de ellas el esquema de trabajo será similar:
+
+&lt;br&gt;
+
+1. Descarga de una carpeta comprimida (archivo **zip**)
+
+2. Descompresión del archivo (en sus computadoras)
+
+3. Abrir proyecto de R incluído en la carpeta
+
+4. Abrir y ejecutar el script de R guiado o crear script (si la consigna lo pide)
+
+]
+---
+## Temario del encuentro de hoy
+
+.font160[
 - Problemas de descarga e instalación
 
-- Crear  proyectos de RStudio
+- Crear, abrir y cerrar proyectos de RStudio
 
 - Crear, abrir y guardar scripts
 
-- Leer datos (archivos csv)
+- Leer datos (archivos texto plano)
 
 - Usar autocompletado de RStudio y ayuda
 
