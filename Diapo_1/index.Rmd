@@ -1,7 +1,7 @@
 ---
 title: "Introducción al Lenguaje R"
 subtitle: "Epidemiología Nivel Avanzado"  
-date: "09/05/2022"
+date: "07/05/2021"
 output:
   xaringan::moon_reader:
     includes:
@@ -49,8 +49,22 @@ class: top
 
 .font150[Introducir y nivelar al grupo de estudiantes del curso de .bold[Epidemiología Nivel Avanzado] en el lenguaje ![](assets/logoR.PNG), con el fin de aplicarlo en el proceso de análisis de la siguientes unidades.]
 
+<br>
+<br>
+
+.center[.font180[.bold[Aclaración]]] 
+.center[.font180[Este no es un curso de R]]
+
 ---
 background-image: url(assets/Enc1.PNG)
+background-size: 800px
+background-position: 50% 60%
+
+
+## Encuesta inicial
+
+---
+background-image: url(assets/Enc2.PNG)
 background-size: 800px
 background-position: 50% 60%
 
@@ -62,17 +76,39 @@ background-image: url(assets/Enc3.PNG)
 background-size: 800px
 background-position: 50% 60%
 
+
 ## Encuesta inicial
+
+---
+background-image: url(assets/Enc4.PNG)
+background-size: 800px
+background-position: 50% 60%
+
+
+## Encuesta inicial
+
+---
+background-image: url(assets/Enc5.PNG)
+background-size: 800px
+background-position: 50% 60%
+
+
+## Encuesta inicial
+
 ---
 ## Competencias a lograr
 
 --
 
 .font150[
-- Realizar análisis de datos con R]
+- Realizar análisis de datos uni, bi y multivariados con R]
 <br>
 --
 
+.font150[
+  - Entender los elementos básicos del lenguaje]
+
+--
 .font150[
   - Utilizar herramientas de RStudio]
   
@@ -146,7 +182,7 @@ background-position: 50% 60%
 <br>  
   
 ```{r}
-c(2,43,67) # función concatenar c() - devuelve un vector de n elementos
+c(2,43,67) # función concatenar c() - devuelve un vector
 
 c # función sin paréntesis devuelve el código interno de la función
 ```
@@ -169,13 +205,12 @@ args(sample) # argumentos de la función sample()
 - Las cadenas de caracteres (texto) siempre van entre comillas.
 
 <br>  
+<br>  
 
 ```{r}
 class("123")  # números como cadena de caracteres (texto)
 
 class(123)  # números en formato numérico
-
-args(read.csv) # comillas en argumentos tipo texto
 ```
 ]
   

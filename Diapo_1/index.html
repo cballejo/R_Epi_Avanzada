@@ -3,7 +3,7 @@
   <head>
     <title>Introducción al Lenguaje R</title>
     <meta charset="utf-8" />
-    <meta name="date" content="2022-09-05" />
+    <meta name="date" content="2021-07-05" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link rel="stylesheet" href="xaringan-themer2.css" type="text/css" />
     <link rel="stylesheet" href="animate.min.css" type="text/css" />
@@ -20,7 +20,7 @@ class: center, middle, inverse, title-slide
 ## Epidemiología Nivel Avanzado
 ]
 .date[
-### 09/05/2022
+### 07/05/2021
 ]
 
 ---
@@ -45,8 +45,22 @@ class: top
 
 .font150[Introducir y nivelar al grupo de estudiantes del curso de .bold[Epidemiología Nivel Avanzado] en el lenguaje ![](assets/logoR.PNG), con el fin de aplicarlo en el proceso de análisis de la siguientes unidades.]
 
+&lt;br&gt;
+&lt;br&gt;
+
+.center[.font180[.bold[Aclaración]]] 
+.center[.font180[Este no es un curso de R]]
+
 ---
 background-image: url(assets/Enc1.PNG)
+background-size: 800px
+background-position: 50% 60%
+
+
+## Encuesta inicial
+
+---
+background-image: url(assets/Enc2.PNG)
 background-size: 800px
 background-position: 50% 60%
 
@@ -58,17 +72,39 @@ background-image: url(assets/Enc3.PNG)
 background-size: 800px
 background-position: 50% 60%
 
+
 ## Encuesta inicial
+
+---
+background-image: url(assets/Enc4.PNG)
+background-size: 800px
+background-position: 50% 60%
+
+
+## Encuesta inicial
+
+---
+background-image: url(assets/Enc5.PNG)
+background-size: 800px
+background-position: 50% 60%
+
+
+## Encuesta inicial
+
 ---
 ## Competencias a lograr
 
 --
 
 .font150[
-- Realizar análisis de datos con R]
+- Realizar análisis de datos uni, bi y multivariados con R]
 &lt;br&gt;
 --
 
+.font150[
+  - Entender los elementos básicos del lenguaje]
+
+--
 .font150[
   - Utilizar herramientas de RStudio]
   
@@ -148,7 +184,7 @@ background-position: 50% 60%
   
 
 ```r
-c(2,43,67) # función concatenar c() - devuelve un vector de n elementos
+c(2,43,67) # función concatenar c() - devuelve un vector
 ```
 
 ```
@@ -187,6 +223,7 @@ args(sample) # argumentos de la función sample()
 - Las cadenas de caracteres (texto) siempre van entre comillas.
 
 &lt;br&gt;  
+&lt;br&gt;  
 
 
 ```r
@@ -203,16 +240,6 @@ class(123)  # números en formato numérico
 
 ```
 ## [1] "numeric"
-```
-
-```r
-args(read.csv) # comillas en argumentos tipo texto
-```
-
-```
-## function (file, header = TRUE, sep = ",", quote = "\"", dec = ".", 
-##     fill = TRUE, comment.char = "", ...) 
-## NULL
 ```
 ]
   
