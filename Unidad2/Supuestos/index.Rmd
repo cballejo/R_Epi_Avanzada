@@ -37,7 +37,7 @@ knitr::opts_chunk$set(comment=NA, dpi = 300)
 Este material es una continuación del documento [Análisis exploratorio de datos](https://cballejo.github.io/R_Epi_Avanzada/EDA/). 
 
 
-Uno de los objetivos del análisis exploratorio de datos es conocer cómo se distribuyen los valores de las variables de interés. Entre las características más relevantes, a la hora de la inferencia, es saber si dicha distribución se ajusta a la "normal" y si su dispersión es homogénea.
+Uno de los objetivos del análisis exploratorio de datos es conocer cómo se distribuyen los valores de las variables de interés. Entre las características más relevantes, a la hora de utilizar métodos paramétricos o no paramétricos para la inferencia, es saber si dicha distribución se ajusta a la "*normal*" y como es su dispersión (homogénea o heterogénea)
 
 Ahora que vimos cómo funcionan los andamiajes de los test de hipótesis podemos avanzar en el uso de ciertas **pruebas de bondad de ajuste** necesarias para evaluar estos supuestos de normalidad y homocedasticidad.
 
@@ -57,35 +57,38 @@ El gráfico por excelencia para evaluar normalidad es el Cuantil-Cuantil (Q-Q Pl
 
 Cuanto más se aproximen los datos a una normal, más alineados están los puntos entorno a la recta.
 
-En el lenguaje R hay varias formas de hacerlos pero aquí vamos a mostrar una bien simple con el paquete **DataExplorer**.
-
-La función se llama `plot_qq()` y lleva como argumento obligatorio la variable cuantitativa que vamos a graficar.
+En el lenguaje R hay varios paquetes que tienen funciones para construirlos. Uno de los vistos previamente fue `` de **dlookr**. 
 
 ```{r, echo= F, message=F, warning=F}
 datos <- read.csv2("datos_normalidad.csv")
 ```
 
-```{r, out.width="50%", fig.align="center",message=F, warning=F}
-library(DataExplorer)
+```{r, fig.asp = 0.7, fig.width = 400/72, fig.height = 400/72, fig.align="center",message=F, warning=F}
+library(tidyverse)
+library(dlookr)
 
-plot_qq(datos$edad, title = "edad") # title es opcional
-
-plot_qq(datos$peso, title = "peso") # title es opcional
+datos %>%
+  plot_normality(peso) +
+  theme(plot.title = element_text(size = 2))
 ```
 
-A simple vista observamos que los puntos de la variable **peso** *se ajustan a la recta* de mejor forma que la distribución de la variable **edad** (*notoriamente curvada*).
+A simple vista observamos que los puntos de la variable **peso** *se ajustan bastante bien a la recta*. 
 
-Otro paquete interesante para observar "normalidad" mediante gráficos es **ggpubr**.
+Otro paquete interesante para observar "normalidad" mediante gráficos es **ggpubr**. Para probar este y los siguientes paquete nuevos, deberá instalarlos previamente en sus R+RStudio.
 
 ```{r, out.width="50%", fig.align="center", message=F, warning=F}
 library(ggpubr)
-
-ggqqplot(datos$edad) 
 
 ggqqplot(datos$peso) 
 ```
 
 La función `ggqqplot()` agrega además un intervalo de confianza (zona gris alrededor de la recta) que nos orienta mejor sobre "donde caen" los puntos de la variable analizada.
+
+Un ejemplo donde la variable parece no cumplir con el suspuesto de normalidad en estos datos de prueba es edad:
+
+```{r, out.width="50%", fig.align="center", message=F, warning=F}
+ggqqplot(datos$edad) 
+```
 
 ### Métodos analíticos
 
@@ -102,34 +105,36 @@ La curtosis mide el grado de agudeza o achatamiento de una distribución con rel
 - \> 0 Distribución leptocúrtica (apuntamiento positivo): gran concentración de valores
 - \= 0 Distribución mesocúrtica (apuntamiento normal): concentración como en la distribución normal.
 
-El paquete **moments** posee algunas funciones interesantes para analizar medidas de forma.
+El paquete **moments** posee algunas funciones interesantes para analizar medidas de forma, como el estimador de Pearson para curtosis.
 
 ```{r, message=F, warning=F}
 library(moments)
 
-kurtosis(datos$edad, na.rm = T)
-
-kurtosis(datos$peso, na.rm = T)
+datos %>% 
+  summarise(kurtosis_edad = kurtosis(edad, na.rm = T),
+            kurtosis_peso = kurtosis(peso, na.rm = T))
 ```
 En los dos casos estamos frente a una *distribución leptocúrtica* pero de magnitudes bien diferentes. Muy alta en el caso de la variable **edad** (8,0) y mucho menor para la variable **peso** (2,7).
 
 El índice de asimetría es un indicador que permite establecer el *grado de asimetría* que presenta una distribución. Los valores menores que 0 indican distribución asimétrica negativa; los mayores a 0: distribución asimetrica positiva y cuando sea 0, o muy próximo a 0, distribución simétrica.
 
 ```{r}
-skewness(datos$edad, na.rm = T)
-
-skewness(datos$peso, na.rm = T)
+datos %>% 
+  summarise(asimetria_edad = skewness(edad, na.rm = T),
+            asimetria_peso = skewness(peso, na.rm = T))
 ```
 Los valores obtenidos con la función `skewness` del paquete **moments** nos informan que la distribución de la edad tienen una asimetría positiva (2,2) y que los valores de peso se distribuyen bastante simétricos (0,1).
 
-Estas características de las distribuciones también se pueden ver mediante gráficos de densidad.
+Estas características de las distribuciones también se pueden ver mediante histogramas o gráficos de densidad.
 
 ```{r, out.width="50%", fig.align="center", message=F, warning=F}
-plot_density(datos$edad) # plot_density() pertenece a DataExplorer
+datos %>% 
+  plot_normality(edad) 
 
-plot_density(datos$peso) # plot_density() pertenece a DataExplorer
+datos %>% 
+  plot_normality(peso) 
 ```
-
+Los histogramas que se acerquen a la clásica "campana de gauss" tendrán curtosis y asimetrías alrededor del valor cero.
 
 ### Pruebas de bondad de ajuste
 
@@ -150,9 +155,9 @@ shapiro.test(datos$edad)
 
 shapiro.test(datos$peso)
 ```
-**Interpretación**: Siendo la hipótesis nula que la población está distribuida normalmente, si el p-valor es menor a $\alpha$ (nivel de significancia, convencionalmente un 0,05) entonces la hipótesis nula es rechazada (se concluye que los datos no vienen de una distribución normal). Si el p-valor es mayor a $\alpha$, se concluye que no se puede rechazar dicha hipótesis.
+**Interpretación**: Siendo la hipótesis nula que la población está distribuida normalmente, si el p-valor es menor a $\alpha$ (nivel de significancia, convencionalmente un 0,05) entonces la hipótesis nula es rechazada (se concluye que los datos no provienen de una distribución normal). Si el p-valor es mayor a $\alpha$, se concluye que no se puede rechazar dicha hipótesis.
 
-En función de la interpretación (que es común a todos los test de hipótesis de normalidad) podemos decir que la variable **edad** *no se ajusta a la normal* y que no podemos rechazar el ajuste de la variable **peso**.
+En función de esta interpretación (que es común a todos los test de hipótesis de normalidad), podemos decir que la distribución de la variable **edad** *no se ajusta a la normal* y no podemos rechazar que la distribución de la variable **peso** se ajuste.
 
 - Test de Kolmogorov-Smirnov
 
@@ -214,10 +219,12 @@ La diferencia entre ellos es el estadístico de centralidad que utilizan:
 
 Este test es un contraste de la razón de varianzas, mediante el estadístico F que sigue una distribución F-Snedecor.
 
-Se utiliza cuando las distribuciones se aproximan a la "normal" y en R base se la encuentra en la función `var.test()` 
+Se utiliza cuando las distribuciones se aproximan a la "normal" y en R base se la encuentra en la función `var.test()` que permite utilizar la sintaxis de fórmula:
+
+variable cuantitativa ~ variable categórica (grupos)
 
 ```{r}
-var.test(datos$peso[datos$sexo == "Mujer"], datos$peso[datos$sexo == "Varon"])
+var.test(formula = peso ~ sexo, data = datos)
 ```
 Comparamos las varianzas de la variable peso entre el grupo de mujeres y hombres. El valor $p$ del test indica que no podemos descartar la igualdad de varianzas entre los grupos ($H_0$) o lo que es lo mismo el test no encuentra diferencias significativas entre las varianzas de los dos grupos.
 
@@ -225,14 +232,13 @@ Comparamos las varianzas de la variable peso entre el grupo de mujeres y hombres
 
 Este test se puede utilizar como alternativa al F-test, sobre todo porque nos permite aplicarlo cuando tenemos más de 2 grupos de comparación. Al igual que el anterior es sensible a las desviaciones de la normalidad.
 
-La función en R base es `bartlett.test()` y se pueden usar argumentos tipo fórmula:
+La función en R base es `bartlett.test()` y también se pueden usar argumentos tipo fórmula:
 
-variables cuantitativa ~ variable categórica (grupos)
 
 ```{r}
-bartlett.test(datos$peso ~ datos$sexo)
+bartlett.test(formula = peso ~ sexo, data = datos)
 ```
-El resultado es coincidente con el mostrado por var.test(). No se encuentran diferencias significativas entres las varianzas de los pesos en los dos grupos (Mujer - Varon)
+El resultado es coincidente con el mostrado por `var.test()`. No se encuentran diferencias significativas entres las varianzas de los pesos en los dos grupos (Mujer - Varon)
 
 
 ### Test de Levene
@@ -244,7 +250,7 @@ La función `leveneTest()` se encuentra disponible en el paquete **car**. La vem
 ```{r, message=F, warning=FALSE}
 library(car)
 
-leveneTest(y = datos$peso, group = datos$sexo, center = "mean")
+leveneTest(y = peso ~ sexo, data = datos, center = "mean")
 ```
 
 La conclusión es la misma que la encontrada anteriormente.
@@ -252,9 +258,10 @@ La conclusión es la misma que la encontrada anteriormente.
 Ahora vamos aplicarla sobre la variable edad, de la que habíamos descartado "normalidad". Lo hacemos usando el argumento center con "mean" (media) y con "median" (mediana).
 
 ```{r, message=F, warning=FALSE}
-leveneTest(y = datos$edad, group = datos$sexo, center = "mean")
 
-leveneTest(y = datos$edad, group = datos$sexo, center = "median")
+leveneTest(y = edad ~ sexo, data = datos, center = "mean")
+
+leveneTest(y = edad ~ sexo, data = datos, center = "median")
 ```
 
 Los resultados son diferentes. Mientras con el centrado en la media nos da un $p$ valor significativo menor a 0,05 con el centrado en la mediana no nos permite descartar homocedasticidad.
@@ -267,8 +274,7 @@ El código correcto para este caso (variable edad) es usar el centrado en la med
 
 ## Bibliografía 
 
-Boxuan Cui (2020). DataExplorer: Automate Data Exploration and Treatment. R
-package version 0.8.2. https://CRAN.R-project.org/package=DataExplorer
+Ryu C (2023). dlookr: Tools for Data Diagnosis, Exploration, Transformation_. R package version 0.6.2, https://CRAN.R-project.org/package=dlookr
 
 Alboukadel Kassambara (2020). ggpubr: 'ggplot2' Based Publication Ready
 Plots. R package version 0.4.0. https://CRAN.R-project.org/package=ggpubr
