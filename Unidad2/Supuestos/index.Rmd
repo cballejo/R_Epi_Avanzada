@@ -16,6 +16,7 @@ theme: lumen
 
 ```{r, message=FALSE, echo=F}
 knitr::opts_chunk$set(comment=NA, dpi = 300)
+showtext::showtext_opts (dpi = 300)
 ```
 
 <br>
@@ -63,20 +64,19 @@ En el lenguaje R hay varios paquetes que tienen funciones para construirlos. Uno
 datos <- read.csv2("datos_normalidad.csv")
 ```
 
-```{r, fig.asp = 0.7, fig.width = 400/72, fig.height = 400/72, fig.align="center",message=F, warning=F}
+```{r, fig.asp = 0.7, fig.width = 5, fig.align="center",message=F, warning=F}
 library(tidyverse)
 library(dlookr)
 
 datos %>%
-  plot_normality(peso) +
-  theme(plot.title = element_text(size = 2))
+  plot_normality(peso) 
 ```
 
 A simple vista observamos que los puntos de la variable **peso** *se ajustan bastante bien a la recta*. 
 
 Otro paquete interesante para observar "normalidad" mediante gráficos es **ggpubr**. Para probar este y los siguientes paquete nuevos, deberá instalarlos previamente en sus R+RStudio.
 
-```{r, out.width="50%", fig.align="center", message=F, warning=F}
+```{r, out.width="80%", fig.asp = 0.7, fig.width = 4, fig.align="center", message=F, warning=F}
 library(ggpubr)
 
 ggqqplot(datos$peso) 
@@ -86,7 +86,7 @@ La función `ggqqplot()` agrega además un intervalo de confianza (zona gris alr
 
 Un ejemplo donde la variable parece no cumplir con el suspuesto de normalidad en estos datos de prueba es edad:
 
-```{r, out.width="50%", fig.align="center", message=F, warning=F}
+```{r, out.width="80%", fig.asp = 0.7, fig.width = 4, fig.align="center", message=F, warning=F}
 ggqqplot(datos$edad) 
 ```
 
@@ -127,7 +127,7 @@ Los valores obtenidos con la función `skewness` del paquete **moments** nos inf
 
 Estas características de las distribuciones también se pueden ver mediante histogramas o gráficos de densidad.
 
-```{r, out.width="50%", fig.align="center", message=F, warning=F}
+```{r, fig.asp = 0.7, fig.width = 5, fig.align="center",message=F, warning=F}
 datos %>% 
   plot_normality(edad) 
 
