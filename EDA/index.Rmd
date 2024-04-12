@@ -401,44 +401,76 @@ Ahora sólo ejecutaremos los distintos elementos geométricos para representar l
 
 **Barras en univariado**
 
-```{r, out.width="50%", fig.align="center"}
+```{r,  eval=FALSE}
 datos %>% drop_na(sexo) %>% # omitimos los NA de sexo
   ggplot(aes(x = sexo, fill = sexo)) + 
   geom_bar() + 
-  scale_fill_manual(values = c("palevioletred4", "orange"))
+  scale_fill_manual(values = c("palevioletred4", "orange")) 
+```
+
+```{r, echo=FALSE,out.width="65%", fig.align="center"}
+datos %>% drop_na(sexo) %>% # omitimos los NA de sexo
+  ggplot(aes(x = sexo, fill = sexo)) + 
+  geom_bar() + 
+  scale_fill_manual(values = c("palevioletred4", "orange")) +
+  theme(text = element_text(size = 100))
 ```
 
 **Barras en bivariado - posición stack**
 
-```{r, out.width="50%", fig.align="center"}
+```{r, eval=FALSE}
 datos %>% drop_na(sexo, trabaja) %>% # omitimos los NA de sexo y trabaja
   ggplot(aes(x = sexo, fill = trabaja)) + 
   geom_bar(position = "stack") + 
   scale_fill_brewer(palette = "Set1")
 ```
+
+```{r, echo=FALSE, out.width="65%", fig.align="center"}
+datos %>% drop_na(sexo, trabaja) %>% # omitimos los NA de sexo y trabaja
+  ggplot(aes(x = sexo, fill = trabaja)) + 
+  geom_bar(position = "stack") + 
+  scale_fill_brewer(palette = "Set1") +
+  theme(text = element_text(size = 100))  
+```
 **Barras en bivariado - posición dodge**
 
-```{r, out.width="50%", fig.align="center"}
+```{r, eval=FALSE}
 datos %>% drop_na(sexo, trabaja) %>% # omitimos los NA de sexo y trabaja
   ggplot(aes(x = sexo, fill = trabaja)) + 
   geom_bar(position = "dodge")  + 
   scale_fill_brewer(palette = "Set3")
 ```
 
+```{r, echo=FALSE, out.width="65%", fig.align="center"}
+datos %>% drop_na(sexo, trabaja) %>% # omitimos los NA de sexo y trabaja
+  ggplot(aes(x = sexo, fill = trabaja)) + 
+  geom_bar(position = "dodge")  + 
+  scale_fill_brewer(palette = "Set3")  +
+  theme(text = element_text(size = 100))
+```
+
 **Barras en bivariado - posición fill**
 
-```{r, out.width="50%", fig.align="center"}
+```{r, eval=FALSE}
 datos %>% drop_na(sexo, trabaja) %>% # omitimos los NA de sexo y trabaja
   ggplot(aes(x = sexo, fill = trabaja)) + 
   geom_bar(position = "fill")  + 
-  scale_fill_brewer(palette = "Accent")
+  scale_fill_brewer(palette = "Accent") 
+```
+
+```{r, echo=FALSE, out.width="65%", fig.align="center"}
+datos %>% drop_na(sexo, trabaja) %>% # omitimos los NA de sexo y trabaja
+  ggplot(aes(x = sexo, fill = trabaja)) + 
+  geom_bar(position = "fill")  + 
+  scale_fill_brewer(palette = "Accent")  +
+  theme(text = element_text(size = 100))
 ```
 
 
 
 **Histograma**
 
-```{r, out.width="50%", fig.align="center"}
+```{r, eval=FALSE}
 datos %>% 
   ggplot(aes(x = edad)) + 
   geom_histogram(binwidth = 10, # intervalos de 10 años
@@ -446,29 +478,61 @@ datos %>%
                  color = "white")  
 ```
 
+```{r, echo=FALSE, out.width="65%", fig.align="center"}
+datos %>% 
+  ggplot(aes(x = edad)) + 
+  geom_histogram(binwidth = 10, # intervalos de 10 años
+                 fill = "royalblue1", 
+                 color = "white")   +
+  theme(text = element_text(size = 100))
+```
+
 **Densidad**
 
-```{r, out.width="50%", fig.align="center"}
+```{r, eval=FALSE}
 datos %>% 
   ggplot(aes(x = edad)) + 
   geom_density(fill = "thistle1")  
 ```
 
+```{r, echo=FALSE, out.width="65%", fig.align="center"}
+datos %>% 
+  ggplot(aes(x = edad)) + 
+  geom_density(fill = "thistle1")  +
+  theme(text = element_text(size = 100))
+```
+
 
 **Boxplot**
 
-```{r, out.width="50%", fig.align="center"}
+```{r, eval=FALSE}
 datos %>% 
   ggplot(aes(x = edad)) + 
   geom_boxplot(fill = "seagreen4")  
 ```
+
+```{r, echo=FALSE, out.width="65%", fig.align="center"}
+datos %>% 
+  ggplot(aes(x = edad)) + 
+  geom_boxplot(fill = "seagreen4")  +
+  theme(text = element_text(size = 100))
+```
 **Violinplot**
 
-```{r, out.width="50%", fig.align="center"}
+
+```{r, eval=FALSE}
 datos %>% drop_na(sexo) %>% # omitimos los NA de sexo
   ggplot(aes(x = edad, y = sexo, fill = sexo)) + 
   geom_violin() +
   scale_fill_brewer(palette = "Set2")
+```
+
+```{r, echo=FALSE, out.width="65%", fig.align="center"}
+datos %>% drop_na(sexo) %>% # omitimos los NA de sexo
+  ggplot(aes(x = edad, y = sexo, fill = sexo)) + 
+  geom_violin() +
+  scale_fill_brewer(palette = "Set2")  +
+  theme(text = element_text(size = 100))
 ```
 
 
@@ -483,16 +547,23 @@ La función `plot_normality()` de dlookr muestra un diagnóstico gráfico de nor
 
 Sobre la variable **edad**:
 
-```{r, out.width="50%", fig.align="center"}
+```{r, eval=FALSE}
 datos %>% 
   plot_normality(edad)
 ```
 
+```{r,echo=F,  fig.align='center', out.width = "75%"}
+knitr::include_graphics("Normalidad_edad.PNG")
+```
+
 Sobre la variable **peso**:
 
-```{r, out.width="50%", fig.align="center"}
+```{r, eval=FALSE}
 datos %>% 
   plot_normality(peso)
+```
+```{r,echo=F,  fig.align='center', out.width = "75%"}
+knitr::include_graphics("Normalidad_peso.PNG")
 ```
 
 En la comparación podemos decir que los puntos se desarrollan mas cercanos a la línea teórica normal para la variable peso que para la variable edad.
@@ -515,11 +586,19 @@ Una forma habitual de detección es mediante los gráficos boxplot.
 
 Veamos el ejemplo con la variable peso donde existe un valor considerado atípico en el extremo superior de la distribución (punto rojo):
 
-```{r, out.width="50%", fig.align="center"}
+```{r, eval=FALSE}
 datos %>% 
   ggplot(aes(x = peso)) + 
   geom_boxplot(fill = "darkkhaki", outlier.color = "red")  
 ```
+
+```{r, echo=FALSE, out.width="65%", fig.align="center"}
+datos %>% 
+  ggplot(aes(x = peso)) + 
+  geom_boxplot(fill = "darkkhaki", outlier.color = "red")   +
+  theme(text = element_text(size = 100))
+```
+
 Coincide con el valor máximo de `r max(datos$peso)` kgrs.
 
 Dentro de los paquetes incluidos en este documento la función `diagnose_outlier()` de **dlookr** esta pensada para la detección de datos atípicos.
