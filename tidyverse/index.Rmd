@@ -13,7 +13,7 @@ theme: lumen
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, dpi = 300)
 ```
 
 <br> 
@@ -26,6 +26,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <br> 
 <br> 
+
+```{r, echo=F, message=F, warning=F}
+library(dlookr)
+```
 
 
 ## Introducción
@@ -318,7 +322,7 @@ Como el paquete `readxl` se inscribe dentro del universo tidyverse el formato de
 
 Ahora leamos la segunda hoja de nombre *vigilancia*.
 
-```{r}
+```{r, message=F}
 vigilancia <- read_excel(path = "datos.xlsx", 
                          sheet = 2, 
                          col_names = F)
@@ -770,34 +774,62 @@ Es importante notar que `aes()` crea una nueva capa en relación a las variables
 
 Veamos como funciona y sus diferencias.
 
-```{r,out.width="60%", fig.align="center", message=FALSE}
+```{r,eval=FALSE}
 facultad %>% 
-  ggplot(aes(TALLA, PESO))  # solo la capa estética aes()
+  ggplot(aes(TALLA, PESO)) # solo la capa estética aes()
+```
+
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(TALLA, PESO))  +
+  theme(text = element_text(size = 100))
 ```
 
 Este gráfico solo contiene los ejes que especificamos (PESO y TALLA) pero no contiene los datos. Si deseamos incorporarlos agregamos una capa de puntos con `geom_poin()` a través del símbolo **+**.
 
-```{r,out.width="60%", fig.align="center"}
+```{r,eval=FALSE}
 facultad %>% 
   ggplot(aes(TALLA, PESO))  + 
   geom_point()                    # agregamos la capa geométrica de puntos
 ```
 
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(TALLA, PESO))   + 
+  geom_point() +                   # agregamos la capa geométrica de puntos
+  theme(text = element_text(size = 100))
+```
+
 Podemos diferenciar los puntos según se traten de ingresantes mujeres y hombres, asociando el argumento __color__ dentro de `aes()` con la variable SEXO.
 
-```{r,out.width="60%", fig.align="center"}
+```{r,eval=FALSE}
 facultad %>% 
   ggplot(aes(TALLA, PESO, color = SEXO)) +
   geom_point()
 ```
 
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(TALLA, PESO, color = SEXO)) +
+  geom_point()         +     
+  theme(text = element_text(size = 100))
+```
+
 Estos gráficos también posibilitan el agregado de otra capa geométrica, por ejemplo rectas de regresión para cada grupo según sexo.
 
-```{r,out.width="60%", fig.align="center"}
+```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(TALLA, PESO, color = SEXO)) + 
   geom_point() + 
   geom_smooth(method = "lm")            # agregamos una segunda capa geométrica 
+```
+
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(TALLA, PESO, color = SEXO)) +
+  geom_point()  + 
+  geom_smooth(method = "lm") +            
+  theme(text = element_text(size = 100))
 ```
 
 Esta función `geom_smooth()` posee distintos métodos y en este ejemplo utilizamos el de regresión lineal entre talla y peso junto a sus intervalos de confianza.
@@ -808,11 +840,19 @@ Decíamos anteriormente que al incorporar `aes()` al llamado de `ggplot()` estam
 
 Entonces si quitamos `aes()` de allí y lo ubicamos en una capa única, esta configuración deja de afectar al conjunto del gráfico.
 
-```{r, out.width="60%", fig.align="center"}
+```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(TALLA, PESO)) + 
   geom_point(aes(color = SEXO)) + # color esta definido en el aes() de la capa geométrica
   geom_smooth(method = "lm")
+```
+
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(TALLA, PESO)) +
+  geom_point(aes(color = SEXO))  + 
+  geom_smooth(method = "lm") +            
+  theme(text = element_text(size = 100))
 ```
 
 En este ejemplo, `aes()` para el color solo se ubica dentro de `geom_point()` y por lo tanto dibuja los puntos con sus respectivos colores, pero no afecta a la capa de `geom_smooth()` produciendo solo una línea de regresión para el conjunto de puntos. 
@@ -838,27 +878,56 @@ Estas funciones geométricas aplicadas sobre los mismos datos definen el tipo de
 Para ejemplificar, podemos gráficar dos variables como SEXO y TALLA generando una base a la que sumaremos capas diferentes de `geom()`:
 
 
-```{r, out.width="60%", fig.align="center"}
+```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(SEXO, TALLA, color = SEXO)) + 
   geom_point()                # capa geométrica de puntos
 ```
 
-```{r, out.width="60%", fig.align="center"}
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(SEXO, TALLA, color = SEXO)) + 
+  geom_point() +            
+  theme(text = element_text(size = 100))
+```
+
+```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(SEXO, TALLA, color = SEXO)) + 
   geom_boxplot()            # capa geométrica de boxplot
 ```
 
-```{r, out.width="60%", fig.align="center"}
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(SEXO, TALLA, color = SEXO)) + 
+  geom_boxplot() +            
+  theme(text = element_text(size = 100))
+```
+
+```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(SEXO, TALLA, color = SEXO)) + 
   geom_jitter()                    # capa geométrica jitter (entramado de puntos)
 ```
 
-```{r, out.width="60%", fig.align="center"}
-ggplot(facultad, aes(SEXO, TALLA, fill = SEXO)) + 
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(SEXO, TALLA, color = SEXO)) + 
+  geom_jitter()  +            
+  theme(text = element_text(size = 100))
+```
+
+```{r, eval=FALSE}
+facultad %>% 
+  ggplot(aes(SEXO, TALLA, fill = SEXO)) + 
   geom_violin()            # capa geométrica de violin
+```
+
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(SEXO, TALLA, fill = SEXO)) + 
+  geom_violin() +            
+  theme(text = element_text(size = 100))
 ```
 
 Observemos que en este último gráfico cambiamos, dentro de `aes()`, color por fill. Mientras que __color__ define el color del contorno del polígono, la línea de una recta o curva y los puntos, __fill__ define el relleno de los objetos como es el caso de los violines construidos o cualquier elemento geométrico de polígono.
@@ -871,31 +940,55 @@ El argumento para modificar valores de escala comienzan siempre con con `scale_`
 
 Sigamos trabajando con el conjunto de datos leído para mostrar ejemplos de gráficos donde agregamos capas de escala para color de relleno. ( `scale_fill_brewer()` )
 
-```{r, out.width="60%", fig.align="center"}
+```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(SEXO, TALLA, fill = SEXO)) + 
   geom_boxplot() +
   scale_fill_brewer(palette = "Oranges")   # paleta de los naranjas
 ```
 
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(SEXO, TALLA, fill = SEXO)) + 
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Oranges") +           
+  theme(text = element_text(size = 100))
+```
+
 En este ejemplo aplicamos una capa `scale_fill_brewer()` con una paleta de colores (Oranges) que se vincula con el argumento fill de `aes()` y definen los colores del boxplot.
 
 Lo mismo hacemos para una gama de grises mediante `scale_fill_grey()`
 
-```{r, out.width="60%", fig.align="center"}
+```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(SEXO, TALLA, fill = SEXO)) + 
   geom_boxplot() +
   scale_fill_grey(start = 0.4, end = 0.8)   # paleta de los grises
 ```
 
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(SEXO, TALLA, fill = SEXO)) + 
+  geom_boxplot() +
+  scale_fill_grey(start = 0.4, end = 0.8)  +           
+  theme(text = element_text(size = 100))
+```
+
 Otro uso de escalas, esta vez aplicado a los ejes, es la inversión del eje x.
 
-```{r,out.width="60%", fig.align="center"}
+```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(TALLA, PESO, color = SEXO)) +
   geom_point() +
   scale_x_reverse()     # escala inversa de x
+```
+
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(TALLA, PESO, color = SEXO)) +
+  geom_point() +
+  scale_x_reverse() +           
+  theme(text = element_text(size = 100))
 ```
 
 Como se observa en el gráfico la inclusión de `scale_x_reverse()` provoca que la escala x se invierta, quedando la TALLA ordenada de mayor a menor.
@@ -904,12 +997,21 @@ Por último, otro ejemplo interesante es aplicado a escalas de etiquetado de eje
 
 Con escalas continuas manuales de la forma `scale_*_continuos()` podemos personalizar el eje y.
 
-```{r, out.width="60%", fig.align="center"}
+```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(SEXO, TALLA, fill = SEXO)) + 
   geom_boxplot() +
   scale_fill_grey(start = 0.4, end = 0.8)   +
   scale_y_continuous(breaks = seq(130,200,2))
+```
+
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(SEXO, TALLA, fill = SEXO)) + 
+  geom_boxplot() +
+  scale_fill_grey(start = 0.4, end = 0.8)   +
+  scale_y_continuous(breaks = seq(130,200,2)) +           
+  theme(text = element_text(size = 100))
 ```
 
 En este caso particular definimos un eje y con etiquetas de 2 en 2, mediante la línea ` scale_y_continuous(breaks = seq(130,200,2))`
@@ -921,23 +1023,40 @@ Algunos gráficos no requieren de transformaciones estadísticas, en cambio, otr
 
 Estos valores se encuentra en forma de argumentos dentro de la función geométrica, por ejemplo para los histograma el argumento __bins__ define la cantidad de intervalos de clase.  
 
-```{r,out.width="60%", fig.align="center"}
+```{r,eval=FALSE}
 facultad %>% 
   ggplot(aes(EDAD)) +
     geom_histogram(bins = nclass.Sturges(facultad$EDAD), fill = "Blue")
+```
+
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(EDAD)) +
+    geom_histogram(bins = nclass.Sturges(facultad$EDAD), fill = "Blue") +           
+  theme(text = element_text(size = 100))
 ```
 
 Vemos que el gráfico se construyó utilizando la *regla de Sturges* para determinar la cantidad de intervalos de clase para la variable EDAD. (función `nclass.Sturges()`)
 
 Otras transformaciones estadísticas se incorporan como capas independientes, por ejemplo si queremos agregar los valores de media a los boxplot de talla según sexo construidos anteriormente.
 
-```{r, out.width="60%", fig.align="center"}
+```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(SEXO, TALLA, fill = SEXO)) + 
   geom_boxplot() +
   scale_fill_brewer(palette = "Greens") +
   stat_summary(fun = mean, color = "darkred", geom = "point", 
                shape = 18, size = 3)
+```
+
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(SEXO, TALLA, fill = SEXO)) + 
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Greens") +
+  stat_summary(fun = mean, color = "darkred", geom = "point", 
+               shape = 18, size = 3) +           
+  theme(text = element_text(size = 100))
 ```
 
 Aquí la capa completa surge a partir de la función `stat_summary()`, con argumentos que indican que se aplique la función `mean`. Incluye también la definición del objeto geométrico (point) que representa el valor de media (color, forma y tamaño)
@@ -956,21 +1075,38 @@ ggplot ofrece dos posibilidades de hacer el facetado:
 
 Una aplicación de `facet_wrap()` podría ser que el primer gráfico que hicimos de dispersión de puntos con las variables TALLA y PESO se visualice en dos gráficos distintos según cada categoría de SEXO.
 
-```{r, out.width="60%", fig.align="center"}
+```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(TALLA, PESO, color = SEXO)) +
      geom_point() +
      facet_wrap(~SEXO)
 ```
 
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(TALLA, PESO, color = SEXO)) +
+     geom_point() +
+     facet_wrap(~SEXO) +           
+  theme(text = element_text(size = 80))
+```
+
 Usamos `facet_grid()` para crear una matriz producto del cruce de las variables FUMA y SEXO.Dentro de la cuadrícula graficaremos histogramas de la variable PESO coloreados por SEXO.
 
-```{r, out.width="60%", fig.align="center"}
+```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(PESO, fill = SEXO)) +
      geom_histogram(bins = nclass.Sturges(facultad$PESO)) +
      scale_fill_brewer(palette = "Set1") +
      facet_grid(SEXO ~ FUMA)
+```
+
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(PESO, fill = SEXO)) +
+     geom_histogram(bins = nclass.Sturges(facultad$PESO)) +
+     scale_fill_brewer(palette = "Set1") +
+     facet_grid(SEXO ~ FUMA) +           
+  theme(text = element_text(size = 80))
 ```
 
 Si observamos las 4 líneas que integran todas las capas del código de ggplot notaremos que estamos integrando varias de las funciones que fuimos mostrando. 
@@ -984,7 +1120,7 @@ En algunas ocasiones puede que necesitemos introducir modificaciones en el siste
 
 Sobre las coordenadas cartesianas iniciales se puede invertir la orientación para que, por ejemplo, las barras se dibujen horizontales.
 
-```{r, out.width="60%", fig.align="center"}
+```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(SEXO, fill = SEXO)) +
      scale_fill_brewer(palette = "Set2") +
@@ -992,6 +1128,14 @@ facultad %>%
      coord_flip()   # invierte disposición de ejes
 ```
 
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(SEXO, fill = SEXO)) +
+     scale_fill_brewer(palette = "Set2") +
+     geom_bar() +
+     coord_flip()  +           
+  theme(text = element_text(size = 100))
+```
 
 ### Temas (**themes**)
 
@@ -999,7 +1143,7 @@ El paquete ofrece un conjunto reducido de temas gráficos. El tema por defecto o
 
 A modo de ejemplo repetimos el último gráfico con el tema blanco y negro ( `theme_bw()` ):
 
-```{r, out.width="60%", fig.align="center"}
+```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(SEXO, fill = SEXO)) +
      scale_fill_brewer(palette = "Set2") +
@@ -1008,15 +1152,35 @@ facultad %>%
      theme_bw()  # tema blanco y negro
 ```
 
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(SEXO, fill = SEXO)) +
+     scale_fill_brewer(palette = "Set2") +
+     geom_bar() +
+     coord_flip() +
+     theme_bw()  +           
+  theme(text = element_text(size = 100))
+```
+
 Otro tema que podemos utilizar es `theme_dark()` que tiene un fondo gris oscuro.
 
-```{r, out.width="60%", fig.align="center"}
+```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(SEXO, fill = SEXO)) +
      scale_fill_brewer(palette = "Set2") +
      geom_bar() +
      coord_flip() +
      theme_dark()
+```
+
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(SEXO, fill = SEXO)) +
+     scale_fill_brewer(palette = "Set2") +
+     geom_bar() +
+     coord_flip() +
+     theme_dark() +           
+  theme(text = element_text(size = 100))
 ```
 
 El siguiente cuadro muestra el nombre y presentación de los temas que contiene el paquete.
@@ -1032,7 +1196,7 @@ La forma de la función con argumentos básicos es `labs( x = “Etiqueta X", y 
 
 Además se utiliza la función `theme()` para configurar el tipo de fuente y tamaño, entre otras opciones posibles.
 
-```{r, out.width="60%", fig.align="center"}
+```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(SEXO, fill = SEXO)) +
      scale_fill_brewer(palette = "Set2") +
@@ -1040,6 +1204,17 @@ facultad %>%
      coord_flip() +
      labs(y = "Cantidad", title = "Distribución de Sexo") +
      theme(plot.title=element_text(face="italic", size=16)) 
+```
+
+```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
+facultad %>% 
+  ggplot(aes(SEXO, fill = SEXO)) +
+     scale_fill_brewer(palette = "Set2") +
+     geom_bar() +
+     coord_flip() +
+     labs(y = "Cantidad", title = "Distribución de Sexo") +           
+  theme(text = element_text(size = 100),
+        plot.title=element_text(face="italic", size=16))
 ```
 
 ### Paquete **esquisse**
