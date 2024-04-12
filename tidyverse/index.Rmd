@@ -1214,7 +1214,7 @@ facultad %>%
      coord_flip() +
      labs(y = "Cantidad", title = "Distribución de Sexo") +           
   theme(text = element_text(size = 100),
-        plot.title=element_text(face="italic", size=16))
+        plot.title=element_text(face="italic", size=160))
 ```
 
 ### Paquete **esquisse**
