@@ -207,7 +207,7 @@ Esta herramienta de autocompletado se ejecuta pulsando la **tecla de tabulación
 knitr::include_graphics("RS1.PNG")
 ```
 
-Al sistematizar la escritura de código apoyandonos en el uso del autocompletado vamos a reducir la tasa de error de sintaxis, dado que las funciones, los argumentos y los nombres de las tablas y variables de nuestros datos van a estar correctamente escritos.
+Al sistematizar la escritura de código apoyándonos en el uso del autocompletado vamos a reducir la tasa de error de sintaxis, dado que las funciones, los argumentos y los nombres de las tablas y variables de nuestros datos van a estar correctamente escritos.
 
 ### Ayuda en línea
 
@@ -217,7 +217,6 @@ Si necesitamos acceder a una ayuda adicional en línea bastará que presionemos 
 knitr::include_graphics("RS2.PNG")
 ```
 
-> Lea el material Uso de la Ayuda que puede descargar dentro del aula virtual del curso para profundizar sobre métodos de ayuda en R.
 
 ### Historial de funciones
 
