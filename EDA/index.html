@@ -1832,7 +1832,7 @@ clasificación de la variable (por ejemplo, que sea numérica -dbl- para
 variables cuantitativas continuas) pero en otros casos podemos tener
 variables codificadas donde el dato es numérico pero representa una
 categoría de una variable cualitativa (por ejemplo, si a una variable de
-respuesta Si - No, la codificacmos como 1 y 0).</p>
+respuesta Si - No, la codificamos como 1 y 0).</p>
 </div>
 <div id="detectar-observaciones-incompletas-valores-missing" class="section level3">
 <h3>Detectar observaciones incompletas (valores missing)</h3>
@@ -2408,6 +2408,9 @@ las filas y a <em>trabaja</em> en las columnas.</p>
 <pre><code>##  sexo  FALSE   TRUE   Total
 ##     F 34.78% 65.22% 100.00%
 ##     M 43.59% 56.41% 100.00%</code></pre>
+<p>Cambiando el argumento <strong>denominator</strong> de
+<code>adorn_percentages()</code> a <em>“all”</em> se calculan relativas
+al total.</p>
 <pre class="r"><code>datos %&gt;%  
   tabyl(sexo, trabaja, show_na = F) %&gt;% 
   adorn_totals(where = &quot;col&quot;) %&gt;% 

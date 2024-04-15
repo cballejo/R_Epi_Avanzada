@@ -118,7 +118,7 @@ Los tipos de datos que nos podemos encontrar son:
 
 Esta exploración inicial de la estructura generalmente viene acompañada por el "diccionario de datos" asociado a la tabla de datos, ya sea que esta tabla provenga de un proyecto de investigación propio (fuente primaria) o producto de una fuente secundaria. 
 
-En algunas situaciones el tipo de dato del dato coincidirá con la clasificación de la variable (por ejemplo, que sea numérica -dbl- para variables cuantitativas continuas) pero en otros casos podemos tener variables codificadas donde el dato es numérico pero representa una categoría de una variable cualitativa (por ejemplo, si a una variable de respuesta Si - No, la codificacmos como 1 y 0). 
+En algunas situaciones el tipo de dato del dato coincidirá con la clasificación de la variable (por ejemplo, que sea numérica -dbl- para variables cuantitativas continuas) pero en otros casos podemos tener variables codificadas donde el dato es numérico pero representa una categoría de una variable cualitativa (por ejemplo, si a una variable de respuesta Si - No, la codificamos como 1 y 0). 
 
 
 ### Detectar observaciones incompletas (valores missing)
@@ -372,7 +372,7 @@ datos %>%
   adorn_percentages(denominator = "row") %>% #  % por fila
   adorn_pct_formatting(digits = 2) # redondea con 2 decimales
 ```
-
+Cambiando el argumento **denominator** de `adorn_percentages()` a *"all"* se calculan relativas al total.
 
 ```{r}
 datos %>%  
