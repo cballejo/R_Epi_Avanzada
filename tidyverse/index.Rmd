@@ -14,6 +14,7 @@ theme: lumen
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, dpi = 300)
+# showtext::showtext_opts (dpi = 150)
 ```
 
 <br> 
@@ -153,7 +154,7 @@ Para profundizar sobre **tidyverse** se puede visitar el sitio  https://www.tidy
 
 **readr** contiene funciones similares a las de la familia **read.table()** de **R base** pero desarrollados bajo el ecosistema **tidyverse**.
 
-Loa archivos de texto plano (**ASCII y otras codificaciones**) son universalmente utilizados por la mayoría de los gestores de bases de datos y/o planillas de cálculo. Generalmente encontrados con extensiones **.txt** o **.csv** (por comma-separated values) son el tipo de archivo de datos más habitual dentro del lenguaje R.
+Los archivos de texto plano (**ASCII y otras codificaciones**) son universalmente utilizados por la mayoría de los gestores de bases de datos y/o planillas de cálculo. Generalmente encontrados con extensiones **.txt** o **.csv** (por comma-separated values) son el tipo de archivo de datos más habitual dentro del lenguaje R.
 
 Estos datos planos tienen dos peculiaridades:
 
@@ -239,7 +240,7 @@ read_delim("ejemplo-datos-header-skip.txt",
 
 #### Funciones de escritura
 
-Dentro del paquete coexisten funciones espejo de escritura para las posibilidades de lectura más relevantes. Así encontramos estos tres:
+Dentro del paquete coexisten funciones espejo de escritura para las posibilidades de lectura más relevantes. Así encontramos estos cuatro:
 
 - **write_csv()**: escribe archivos separados por comas (csv) 
 - **write_csv2()**: escribe archivos separados por punto y comas (csv) 
@@ -487,6 +488,7 @@ datos %>%
 ### Función **filter()**
 
 Así como la función `select()` es utilizada para seleccionar columnas, la función `filter()` hace lo propio con las filas del conjunto de datos, produciendo un subconjunto de observaciones. 
+
 Veamos un ejemplo sencillo sobre nuestros datos:
 
 ```{r}
@@ -785,7 +787,7 @@ facultad %>%
   theme(text = element_text(size = 100))
 ```
 
-Este gráfico solo contiene los ejes que especificamos (PESO y TALLA) pero no contiene los datos. Si deseamos incorporarlos agregamos una capa de puntos con `geom_poin()` a través del símbolo **+**.
+Este gráfico solo contiene los ejes que especificamos (PESO y TALLA) pero no contiene los datos. Si deseamos incorporarlos agregamos una capa de puntos con `geom_point()` a través del símbolo **+**.
 
 ```{r,eval=FALSE}
 facultad %>% 
@@ -843,7 +845,8 @@ Entonces si quitamos `aes()` de allí y lo ubicamos en una capa única, esta con
 ```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(TALLA, PESO)) + 
-  geom_point(aes(color = SEXO)) + # color esta definido en el aes() de la capa geométrica
+  geom_point(aes(color = SEXO)) + # color esta definido en el aes() 
+                                  # de la capa geométrica
   geom_smooth(method = "lm")
 ```
 
@@ -907,7 +910,7 @@ facultad %>%
 ```{r, eval=FALSE}
 facultad %>% 
   ggplot(aes(SEXO, TALLA, color = SEXO)) + 
-  geom_jitter()                    # capa geométrica jitter (entramado de puntos)
+  geom_jitter()               # capa geométrica jitter (entramado de puntos)
 ```
 
 ```{r, echo=FALSE, out.width="65%", fig.align="center", message=FALSE}
