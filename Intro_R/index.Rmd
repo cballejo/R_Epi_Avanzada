@@ -284,12 +284,12 @@ Los errores de **objetos no encontrados** pueden tener una de varias causas:
 Volvamos al ejemplo anterior, ahora repitiendo un valor tipo character
 
 ```{r}
-rep(x = "A", times = 4) # repetimos 4 veces 3 con rep()
+rep(x = "A", times = 4) # repetimos 4 veces "A" con rep()
 ```
 Si olvidamos las comillas...
 
 ```{r, eval=FALSE}
-rep(x = A, times = 4) # repetimos 4 veces 3 con rep()
+rep(x = A, times = 4) # repetimos 4 veces A con rep()
 
 Error: objeto 'A' no encontrado
 ```
@@ -441,7 +441,7 @@ posición.
 length(vec3)
 ```
 
-Respecto al tipo de dato si usamos la función `mode()` tendremos:
+Respecto al tipo de dato si usamos la función `class()` tendremos:
 
 ```{r}
 class(vec3)
@@ -502,8 +502,8 @@ Podemos verlo en la siguiente porción de código:
 
 ```{r}
 HC <- c("F324", "G21", "G34", "F231")
-edad <- c(34,32,34,54)
-sexo <- c("M", "H", "H", "M")
+edad <- c(34, 32, 34, 54)
+sexo <- c("M", "V", "V", "M")
 
 df1 <- data.frame(HC, edad, sexo)
 
@@ -760,15 +760,15 @@ respuesta
 ```
 
 En la salida observamos que además de los siete elementos aparecen los
-niveles asumidos auomáticamente bajo el título *Levels*.
+niveles asumidos automáticamente bajo el título *Levels*.
 
 Si queremos comprobar el tipo de objeto en que se convirtió `respuesta``,
 encontraremos:
 
 ```{r}
-is.vector(respuesta) # preguntamos si sexo es un vector
-is.factor(respuesta) # preguntamos si sexo es un factor
-class(respuesta)  # visualizamos el tipo de dato de sexo
+is.vector(respuesta) # preguntamos si respuesta es un vector
+is.factor(respuesta) # preguntamos si respuesta es un factor
+class(respuesta)  # visualizamos el tipo de dato de respuesta
 ```
 
 Pertenece a la clase factor, pero aunque nosotros observamos que su
@@ -861,10 +861,7 @@ La estructura de datos, usada dentro del lenguaje, para almacenar datos
 leídos de fuentes externas (archivos separados por comas, planillas de
 calculo, etc) es el dataframe. 
 
-Vamos a crear un dataframe llamado `datos` con 4
-variables de 5 registros, la primera será un identificador ID numérico
-entero correlativo, la segunda variable EDAD, la tercera SEXO codificada
-como V para varón y M para mujer y la tercera TRABAJA de formato
+Vamos a crear un dataframe llamado `datos` con 4 variables de 5 registros, la primera será un identificador ID numérico entero correlativo, la segunda variable EDAD, la tercera SEXO codificada como V para varón y M para mujer y la tercera TRABAJA de formato
 lógica donde T (TRUE) corresponde a "Si trabaja" y F (FALSE) a "No
 trabaja":
 
@@ -937,7 +934,7 @@ Algunos otros casos de uso de indice:
 datos[1,2]  # observación 1 variable 2
 datos[4,]  # observación 4 todas las variables
 datos[1:3,3] # observación 1,2 y 3 variable 3
-datos[5,c(1,4)] # observación 5 variables 1 y 4
+datos[5, c(1,4)] # observación 5 variables 1 y 4
 ```
 
 Por último, vamos podemos mostrar y gestionar los nombres de las

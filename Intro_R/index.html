@@ -1719,10 +1719,10 @@ una de varias causas:</p>
 </ul>
 <p>Volvamos al ejemplo anterior, ahora repitiendo un valor tipo
 character</p>
-<pre class="r"><code>rep(x = &quot;A&quot;, times = 4) # repetimos 4 veces 3 con rep()</code></pre>
+<pre class="r"><code>rep(x = &quot;A&quot;, times = 4) # repetimos 4 veces &quot;A&quot; con rep()</code></pre>
 <pre><code>[1] &quot;A&quot; &quot;A&quot; &quot;A&quot; &quot;A&quot;</code></pre>
 <p>Si olvidamos las comillas…</p>
-<pre class="r"><code>rep(x = A, times = 4) # repetimos 4 veces 3 con rep()
+<pre class="r"><code>rep(x = A, times = 4) # repetimos 4 veces A con rep()
 
 Error: objeto &#39;A&#39; no encontrado</code></pre>
 <p><strong>Advertencias</strong></p>
@@ -1833,7 +1833,7 @@ compuesta de varios caracteres, dentro del vector <code>vec3</code> esta
 ocupa una sola posición.</p>
 <pre class="r"><code>length(vec3)</code></pre>
 <pre><code>[1] 1</code></pre>
-<p>Respecto al tipo de dato si usamos la función <code>mode()</code>
+<p>Respecto al tipo de dato si usamos la función <code>class()</code>
 tendremos:</p>
 <pre class="r"><code>class(vec3)</code></pre>
 <pre><code>[1] &quot;character&quot;</code></pre>
@@ -1877,16 +1877,16 @@ conformado por una serie de vectores de la misma longitud ubicados
 verticalmente uno al lado de otro.</p>
 <p>Podemos verlo en la siguiente porción de código:</p>
 <pre class="r"><code>HC &lt;- c(&quot;F324&quot;, &quot;G21&quot;, &quot;G34&quot;, &quot;F231&quot;)
-edad &lt;- c(34,32,34,54)
-sexo &lt;- c(&quot;M&quot;, &quot;H&quot;, &quot;H&quot;, &quot;M&quot;)
+edad &lt;- c(34, 32, 34, 54)
+sexo &lt;- c(&quot;M&quot;, &quot;V&quot;, &quot;V&quot;, &quot;M&quot;)
 
 df1 &lt;- data.frame(HC, edad, sexo)
 
 df1</code></pre>
 <pre><code>    HC edad sexo
 1 F324   34    M
-2  G21   32    H
-3  G34   34    H
+2  G21   32    V
+3  G34   34    V
 4 F231   54    M</code></pre>
 <p>Creamos tres vectores con datos de supuestos individuos, su historia
 clinica, la edad y el sexo. Luego mediante la función
@@ -2075,14 +2075,14 @@ respuesta</code></pre>
 <pre><code>[1] Si No No Si Si Si No
 Levels: No Si</code></pre>
 <p>En la salida observamos que además de los siete elementos aparecen
-los niveles asumidos auomáticamente bajo el título <em>Levels</em>.</p>
+los niveles asumidos automáticamente bajo el título <em>Levels</em>.</p>
 <p>Si queremos comprobar el tipo de objeto en que se convirtió
 `respuesta``, encontraremos:</p>
-<pre class="r"><code>is.vector(respuesta) # preguntamos si sexo es un vector</code></pre>
+<pre class="r"><code>is.vector(respuesta) # preguntamos si respuesta es un vector</code></pre>
 <pre><code>[1] FALSE</code></pre>
-<pre class="r"><code>is.factor(respuesta) # preguntamos si sexo es un factor</code></pre>
+<pre class="r"><code>is.factor(respuesta) # preguntamos si respuesta es un factor</code></pre>
 <pre><code>[1] TRUE</code></pre>
-<pre class="r"><code>class(respuesta)  # visualizamos el tipo de dato de sexo</code></pre>
+<pre class="r"><code>class(respuesta)  # visualizamos el tipo de dato de respuesta</code></pre>
 <pre><code>[1] &quot;factor&quot;</code></pre>
 <p>Pertenece a la clase factor, pero aunque nosotros observamos que su
 contenido son palabras, su tipo nos dice que es numérico. A que se debe
@@ -2223,7 +2223,7 @@ aunque la solicitud sea de manera diferente.</p>
 4  4   65    V   FALSE</code></pre>
 <pre class="r"><code>datos[1:3,3] # observación 1,2 y 3 variable 3</code></pre>
 <pre><code>[1] &quot;V&quot; &quot;M&quot; &quot;M&quot;</code></pre>
-<pre class="r"><code>datos[5,c(1,4)] # observación 5 variables 1 y 4</code></pre>
+<pre class="r"><code>datos[5, c(1,4)] # observación 5 variables 1 y 4</code></pre>
 <pre><code>  id trabaja
 5  5    TRUE</code></pre>
 <p>Por último, vamos podemos mostrar y gestionar los nombres de las
