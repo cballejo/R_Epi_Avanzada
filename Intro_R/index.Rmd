@@ -11,31 +11,54 @@ output:
 number_sections: true
 anchor_sections: true
 theme: lumen
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r, message=FALSE, echo=F}
 knitr::opts_chunk$set(comment=NA, dpi = 300)
 ```
 
+<br>
 
+<center>*Este material es parte de la* ***Unidad 1 del Curso de
+Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología
+"Dr. Juan H. Jara" - ANLIS*** **V2024**</center>
 
-<br> 
+<br>
 
-<center>_Este material es parte de la_ **_Unidad 1 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS_ V2024**</center>
+<center>
 
-<br> 
+<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/">
 
-<center><p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Intro_R/index.html">Introducción al lenguaje R</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://www.ine.gov.ar">Christian Ballejo - Instituto Nacional de Epidemiología</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"></a></p></center>
+<a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Intro_R/index.html">Introducción
+al lenguaje R</a> by
+<a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://www.ine.gov.ar">Christian
+Ballejo - Instituto Nacional de Epidemiología</a> is licensed under
+<a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC
+BY-NC
+4.0<img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/></a>
 
-<br> 
-<br> 
+</p>
 
+<br> <br>
+
+![[Artwork por \@allison_horst](https://allisonhorst.com/)](dibujo.png)
+
+</center>
 
 ## Qué es R?
 
-El sitio oficial [r-project.org](https://www.r-project.org/) dice que *"R es un entorno de software libre para gráficos y computación estadística. Se compila y se ejecuta en una amplia variedad de plataformas UNIX, Windows y MacOS.”.* 
+El sitio oficial [r-project.org](https://www.r-project.org/) dice que
+*"R es un entorno de software libre para gráficos y computación
+estadística. Se compila y se ejecuta en una amplia variedad de
+plataformas UNIX, Windows y MacOS.".*
 
-Profundizando en su descripción podemos decir, más técnicamente, que es un __*lenguaje de programación interpretado, orientado a objetos, multiplataforma y open source aplicado al manejo de datos estadísticos.*__
+Profundizando en su descripción podemos decir, más técnicamente, que es
+un ***lenguaje de programación interpretado, orientado a objetos,
+multiplataforma y open source aplicado al manejo de datos
+estadísticos.***
 
 A continuación detallamos cada parte de la definición:
 
@@ -80,8 +103,13 @@ vendido y dio origen a una versión propietaria denominada S-Plus que es
 comercializada por Insighful Corporation.
 
 En 1995 dos profesores de estadística de la Universidad de Auckland, en
-Nueva Zelanda [Ross Ihaka](https://en.wikipedia.org/wiki/Ross_Ihaka) y [Robert Gentleman](https://en.wikipedia.org/wiki/Robert_Gentleman_(statistician)), iniciaron el ["Proyecto
-R"](https://en.wikipedia.org/wiki/R_(programming_language)), con la intención de desarrollar un programa estadístico inspirado en el lenguaje S pero de dominio público.
+Nueva Zelanda [Ross Ihaka](https://en.wikipedia.org/wiki/Ross_Ihaka) y
+[Robert
+Gentleman](https://en.wikipedia.org/wiki/Robert_Gentleman_(statistician)),
+iniciaron el ["Proyecto
+R"](https://en.wikipedia.org/wiki/R_(programming_language)), con la
+intención de desarrollar un programa estadístico inspirado en el
+lenguaje S pero de dominio público.
 
 Aunque se dice que R es un dialecto de S existen diferencias importantes
 en el diseño de ambos lenguajes.
@@ -91,7 +119,8 @@ agregadas en Fortran) y su nombre se debe a la letra con la que inician
 los nombres de pila de sus autores (Ross y Robert).
 
 Actualmente R es mantenido por un grupo internacional de desarrolladores
-voluntarios denominado [Core Development Team](https://www.r-project.org/contributors.html).
+voluntarios denominado [Core Development
+Team](https://www.r-project.org/contributors.html).
 
 ## Scripts
 
@@ -121,9 +150,8 @@ sensitive")
 Todas las líneas de R en la consola comienzan con el prompt (\*) `>`
 
 \* *Símbolo que aparece en la pantalla de la computadora indicando que
-el sistema está esperando información del usuario o que el sistema
-está listo para recibir instrucciones del usuario*.
-
+el sistema está esperando información del usuario o que el sistema está
+listo para recibir instrucciones del usuario*.
 
 **Documentación de los scripts de R:**
 
@@ -147,16 +175,21 @@ comentarios que no utilizarlos.
 
 ## Funciones
 
-Los comandos u órdenes elementales de R se denominan **funciones**. A algunas se las llama “integradas” porque están incluidas en el núcleo (R base) y sus nombres están reservados.
+Los comandos u órdenes elementales de R se denominan **funciones**. A
+algunas se las llama "integradas" porque están incluidas en el núcleo (R
+base) y sus nombres están reservados.
 
-También podemos utilizar otras pertenecientes a librerías (paquetes) que se pueden instalar y activar.
+También podemos utilizar otras pertenecientes a librerías (paquetes) que
+se pueden instalar y activar.
 
 La mayoría de las ofrecidas en los paquetes (librerías) están elaboradas
 con R, dado que todos los usuarios podemos crear nuevas funciones con el
 mismo lenguaje.
 
 Toda función tiene un nombre y normalmente recibe argumentos o
-parámetros que deben ser escritos **entre paréntesis y separados por comas**. Incluso algunas de ellas que no tienen asociado argumentos necesitan, en su sintaxis, a los paréntesis `()`.
+parámetros que deben ser escritos **entre paréntesis y separados por
+comas**. Incluso algunas de ellas que no tienen asociado argumentos
+necesitan, en su sintaxis, a los paréntesis `()`.
 
 Siempre una función devuelve un resultado, un valor o realiza una
 acción.
@@ -165,9 +198,12 @@ acción.
 knitr::include_graphics("funciones.jpg")
 ```
 
-Como el interprete de R no permite errores en la sintaxis de las expresiones, debemos atender a los siguientes puntos a la hora de escribirlas:
+Como el interprete de R no permite errores en la sintaxis de las
+expresiones, debemos atender a los siguientes puntos a la hora de
+escribirlas:
 
--   La sintaxis habitual de una función y sus argumentos es la siguiente:
+-   La sintaxis habitual de una función y sus argumentos es la
+    siguiente:
 
 ```{r, eval=F}
 funcion(arg1, arg2, arg3,...)
@@ -199,7 +235,6 @@ siempre que se respete el mismo orden.
 funcion(arg1=3, arg2=NA, arg3=TRUE, arg4="less", arg5=x,...)
 ```
 
-
 ## Librerías (paquetes)
 
 Las librerías son grupos de funciones empaquetados que se pueden
@@ -215,26 +250,33 @@ Se pueden activar y desactivar en cualquier momento del análisis.
 Algunos poseen dependencias de otros paquetes que serán necesarios para
 que funcione.
 
-
 ## Errores y advertencias
 
-El lenguaje es muy preciso en su sintaxis y equivocarse en la forma de escribir una función o cualquier otro objeto produce respuestas de error del interprete de R que es habitual cuando iniciamos el aprendizaje.
+El lenguaje es muy preciso en su sintaxis y equivocarse en la forma de
+escribir una función o cualquier otro objeto produce respuestas de error
+del interprete de R que es habitual cuando iniciamos el aprendizaje.
 
 La exactitud en la escritura de comandos y funciones incluye la
-distinción entre mayúsculas y minúsculas. Es decir, que no es lo mismo una 'a' que una 'A'.
+distinción entre mayúsculas y minúsculas. Es decir, que no es lo mismo
+una 'a' que una 'A'.
 
 Existen tres grupos de mensajes de error:
 
-- error de sintaxis
-- error de objeto no encontrado
-- otros errores
+-   error de sintaxis
+-   error de objeto no encontrado
+-   otros errores
 
-Se dice que hay un error de sintaxis, cuando ejecutamos una línea de código que el motor de R no puede interpretar debido a que algo está mal escrito.
+Se dice que hay un error de sintaxis, cuando ejecutamos una línea de
+código que el motor de R no puede interpretar debido a que algo está mal
+escrito.
 
-Habitualmente los errores de sintaxis se deben a que falta o sobra algún elemento necesario en la estructura de una función (comas, parentesis, llaves, corchetes, comillas, etc.)
+Habitualmente los errores de sintaxis se deben a que falta o sobra algún
+elemento necesario en la estructura de una función (comas, parentesis,
+llaves, corchetes, comillas, etc.)
 
-Por ejemplo la función `rep()` repite valores una cantidad de veces. Tiene dos argumentos, `x` donde se coloca el valor a repetir y `times` donde se define la cantidad de veces.
-
+Por ejemplo la función `rep()` repite valores una cantidad de veces.
+Tiene dos argumentos, `x` donde se coloca el valor a repetir y `times`
+donde se define la cantidad de veces.
 
 ```{r}
 rep(x = 3, times = 4) # repetimos 4 veces 3 con rep()
@@ -247,6 +289,7 @@ rep(x = 3, times = 4
     
 Error: Incomplete expression: rep(x = 3, times = 4
 ```
+
 Si nos olvidamos de separar los argumentos con la coma
 
 ```{r, eval=FALSE}
@@ -254,8 +297,9 @@ rep(x =3 times = 4)
 
 Error: unexpected symbol in "rep(x =3 times"
 ```
-Si en lugar de escribir x como primer argumento y escribimos otra letra...
 
+Si en lugar de escribir x como primer argumento y escribimos otra
+letra...
 
 ```{r, eval=FALSE}
 rep(y =3, times = 4)
@@ -263,6 +307,7 @@ rep(y =3, times = 4)
 Error in rep(y = 3, times = 4) : 
   attempt to replicate an object of type 'symbol'
 ```
+
 Si escribimos mal la función...
 
 ```{r, eval=FALSE}
@@ -270,22 +315,29 @@ rop(x =3, times = 4)
 
 Error in rop(x = 3, times = 4) : no se pudo encontrar la función "rop"
 ```
-Esta última posibilidad es similar a un "objeto no encontrado" por **error de sintaxis**.
 
-Los mensajes de error en general y sobre todo al principio pueden parecer extraños y difíciles de entender, pero con un poco de práctica podemos inferir donde está el problema.
+Esta última posibilidad es similar a un "objeto no encontrado" por
+**error de sintaxis**.
 
-Los errores de **objetos no encontrados** pueden tener una de varias causas:
+Los mensajes de error en general y sobre todo al principio pueden
+parecer extraños y difíciles de entender, pero con un poco de práctica
+podemos inferir donde está el problema.
 
-- el nombre no se escribió correctamente (p.ej.: sintaxis, mayúsculas / minúsculas)
-- el paquete o archivo que contiene el objeto no ha sido cargado
-- olvidamos poner comillas en un lugar que corresponde 
-- otros motivos posibles
+Los errores de **objetos no encontrados** pueden tener una de varias
+causas:
+
+-   el nombre no se escribió correctamente (p.ej.: sintaxis, mayúsculas
+    / minúsculas)
+-   el paquete o archivo que contiene el objeto no ha sido cargado
+-   olvidamos poner comillas en un lugar que corresponde
+-   otros motivos posibles
 
 Volvamos al ejemplo anterior, ahora repitiendo un valor tipo character
 
 ```{r}
 rep(x = "A", times = 4) # repetimos 4 veces "A" con rep()
 ```
+
 Si olvidamos las comillas...
 
 ```{r, eval=FALSE}
@@ -296,9 +348,13 @@ Error: objeto 'A' no encontrado
 
 **Advertencias**
 
-Una advertencia no es algo tan serio, como un error, o al menos no lo parece, ya que esta permite que la función se ejecute igual. Pero puede ocurrir que ignorar una advertencia llegue a ser algo muy serio, si esto implica que la salida de la función es equivocada.
+Una advertencia no es algo tan serio, como un error, o al menos no lo
+parece, ya que esta permite que la función se ejecute igual. Pero puede
+ocurrir que ignorar una advertencia llegue a ser algo muy serio, si esto
+implica que la salida de la función es equivocada.
 
-Por lo tanto, es una buena política entender los mensajes de advertencia para ver si indican problemas para preocuparnos o no.
+Por lo tanto, es una buena política entender los mensajes de advertencia
+para ver si indican problemas para preocuparnos o no.
 
 Resumiendo:
 
@@ -306,12 +362,12 @@ Resumiendo:
 knitr::include_graphics("errores_advertencias.PNG")
 ```
 
-
 \newpage
 
-## Creación de objetos 
+## Creación de objetos
 
-Todas las declaraciones donde se crean objetos, tienen este símbolo de asignación `<-`. 
+Todas las declaraciones donde se crean objetos, tienen este símbolo de
+asignación `<-`.
 
 ```{r, eval=F}
 nombre_objeto <- valor
@@ -323,7 +379,8 @@ Veámoslo en un ejemplo:
 a <- 1
 ```
 
-En este caso asignamos el valor 1 al objeto `a`. El objeto `a` es un vector de una posición (un solo valor).
+En este caso asignamos el valor 1 al objeto `a`. El objeto `a` es un
+vector de una posición (un solo valor).
 
 Si llamasemos al objeto `a`, el interprete nos devuelve el valor
 asignado previamente.
@@ -332,8 +389,9 @@ asignado previamente.
 a
 ```
 
-Observemos que además de devolvernos el valor aparece delante un 1 entre corchetes `[1]`.Este número es la ubicación o índice del comienzo del objeto, que en este caso tiene una sola posición. 
-
+Observemos que además de devolvernos el valor aparece delante un 1 entre
+corchetes `[1]`.Este número es la ubicación o índice del comienzo del
+objeto, que en este caso tiene una sola posición.
 
 ## Estructuras de datos
 
@@ -351,7 +409,6 @@ datos:
 knitr::include_graphics("tipo_datos.jpg")
 ```
 
-
 Sin embargo, cada una de estas clases de datos no se encuentran de
 manera aislada, sino encapsulados dentro de la clase de objeto
 operacional más básica del lenguaje a la que se denomina **vector**.
@@ -359,8 +416,8 @@ operacional más básica del lenguaje a la que se denomina **vector**.
 Rstudio utiliza un sistema de colores para ayudar a diferenciar los
 tipos de valores, donde azul oscuro son números, celeste palabras
 reservadas como valores especiales y lógicos, verde para caracteres y
-negro para objetos (en el theme = Textmate que viene por defecto. En otros temas los colores cambian pero se diferencian entre sí).
-
+negro para objetos (en el theme = Textmate que viene por defecto. En
+otros temas los colores cambian pero se diferencian entre sí).
 
 **Vector**
 
@@ -447,11 +504,11 @@ Respecto al tipo de dato si usamos la función `class()` tendremos:
 class(vec3)
 ```
 
-
 **Factor**
 
 Un factor es un objeto especialmente diseñado para contener datos
-categóricos y se asocia particularmente con las *variables cualitativas*.
+categóricos y se asocia particularmente con las *variables
+cualitativas*.
 
 En su estructura interna está compuesto por dos vectores, en uno
 almacena índices enteros y el segundo es un vector de caracteres que
@@ -475,16 +532,14 @@ En el ejemplo, creamos el objeto factor1 con 6 elementos caracteres y
 tres niveles sin orden.
 
 Por ultimo diremos del factor, que además de su practicidad, en muchos
-casos algunos argumentos de funciones de R exigen que las variables se encuentren
-en este formato.
-
+casos algunos argumentos de funciones de R exigen que las variables se
+encuentren en este formato.
 
 **Dataframe**
 
 Un dataframe es un objeto cuya finalidad es contener conjuntos de datos.
-Se asemeja a una tabla que tiene filas y columnas (dos
-dimensiones), donde cada columna puede almacenar
-elementos de diferentes tipos.
+Se asemeja a una tabla que tiene filas y columnas (dos dimensiones),
+donde cada columna puede almacenar elementos de diferentes tipos.
 
 Además las columnas suelen tener nombres únicos y podemos referenciarlas
 por estos nombres, como si fueran variables del conjunto de datos.
@@ -515,13 +570,14 @@ clinica, la edad y el sexo. Luego mediante la función `data.frame()`
 "unimos" esos vectores en forma vertical para formar un dataframe de 3
 variables y 4 observaciones.
 
-Existen otras estructuras de datos que aparecen en la siguiente figura. Las más habituales en nuestro trabajo son los vectores y los dataframes. Los factores serán necesarios cuando tengamos que especificar distintos órdenes de niveles.
-
+Existen otras estructuras de datos que aparecen en la siguiente figura.
+Las más habituales en nuestro trabajo son los vectores y los dataframes.
+Los factores serán necesarios cuando tengamos que especificar distintos
+órdenes de niveles.
 
 ```{r,echo=F,  fig.align='center', out.width = "50%"}
 knitr::include_graphics("objetos_R.png")
 ```
-
 
 ## Operadores en R
 
@@ -573,7 +629,6 @@ a * a
 knitr::include_graphics("op_relacionales.jpg")
 ```
 
-
 Habitualmente estos operadores se utilizan asiduamente en expresiones
 para indicar relaciones entre valores.
 
@@ -603,7 +658,6 @@ a != 8
 knitr::include_graphics("op_logicos.jpg")
 ```
 
-
 Cuando queremos conectar algunas de las expresiones relacionales hacemos
 uso de estos operadores lógicos típicos (AND, OR, NOT).
 
@@ -627,7 +681,6 @@ en R, entre ellos encontramos los valores NA, NaN, Inf y NULL.
 ```{r,echo=F,  fig.align='center', out.width = "60%"}
 knitr::include_graphics("valores_esp.jpg")
 ```
-
 
 El más relevante de estos valores especiales es el NA que sirve para
 indicar que no hay valor en esa posición o elemento de un objeto.
@@ -675,7 +728,6 @@ rep(x = 2, times = 5)
 rep(1:4, 5)  # combinada con el operador :
 rep(c(4.5, 6.8, 7.2), 2) # combinada con la función c()
 ```
-
 
 ## Índices
 
@@ -725,7 +777,6 @@ Cuando los aplicamos a estructuras de dos dimensiones como matrices
 
 > nombre[índice de fila , índice de columna]
 
-
 ## Gestión de factores
 
 Cuando presentamos las distintas estructuras de datos deciamos que a los
@@ -738,8 +789,8 @@ Para entenderlo partamos de un vector con datos categóricos:
 respuesta <- c("Si", "No", "No", "Si", "Si", "Si", "No")
 ```
 
-Creamos un vector llamado **respuesta** con 7 elementos del tipo caracter donde
-se repiten las categorías No y Si.
+Creamos un vector llamado **respuesta** con 7 elementos del tipo
+caracter donde se repiten las categorías No y Si.
 
 Podemos confirmar que estamos frente a un vector y que el contenido es
 character:
@@ -762,8 +813,8 @@ respuesta
 En la salida observamos que además de los siete elementos aparecen los
 niveles asumidos automáticamente bajo el título *Levels*.
 
-Si queremos comprobar el tipo de objeto en que se convirtió `respuesta``,
-encontraremos:
+Si queremos comprobar el tipo de objeto en que se convirtió
+\`respuesta\`\`, encontraremos:
 
 ```{r}
 is.vector(respuesta) # preguntamos si respuesta es un vector
@@ -780,9 +831,9 @@ str(respuesta)
 ```
 
 Ejecutando la function `str()`, que nos devuelve la estructura de los
-objetos, podemos ver que respuesta tiene dos niveles y los valores internos
-de los elementos son todos números 1 y 2, donde 1 corresponde a No
-y 2 a Si.
+objetos, podemos ver que respuesta tiene dos niveles y los valores
+internos de los elementos son todos números 1 y 2, donde 1 corresponde a
+No y 2 a Si.
 
 Esto significa que la estructura de los factores está compuesta por dos
 vectores, uno numérico que funciona como índice de enteros, que
@@ -796,8 +847,10 @@ Para ver solo los niveles o categorías del factor podemos usar:
 levels(respuesta)
 ```
 
-En estos factores nominales donde no importa el orden, la función `factor()` implementa el orden alfabético para determinar a qué índice numérico pertenece cada categoría. Es claro en
-el ejemplo que a *No* le asigna el 1 y a *Si* el 2.
+En estos factores nominales donde no importa el orden, la función
+`factor()` implementa el orden alfabético para determinar a qué índice
+numérico pertenece cada categoría. Es claro en el ejemplo que a *No* le
+asigna el 1 y a *Si* el 2.
 
 Pero si nos encontramos frente a una variable cualitativa ordinal vamos
 a necesitar indicarle a la función cual es el orden de las categorías.
@@ -851,19 +904,20 @@ nivsalud
 ```
 
 Al sumar `ordered=T` le estamos diciendo que los niveles tienen orden y
-estos se pueden ver en los **Levels** donde Mala es \< a Regular y este es
-\< a Buena y así, hasta el nivel Muy buena.
-
+estos se pueden ver en los **Levels** donde Mala es \< a Regular y este
+es \< a Buena y así, hasta el nivel Muy buena.
 
 ## Gestión de dataframes
 
 La estructura de datos, usada dentro del lenguaje, para almacenar datos
 leídos de fuentes externas (archivos separados por comas, planillas de
-calculo, etc) es el dataframe. 
+calculo, etc) es el dataframe.
 
-Vamos a crear un dataframe llamado `datos` con 4 variables de 5 registros, la primera será un identificador ID numérico entero correlativo, la segunda variable EDAD, la tercera SEXO codificada como V para varón y M para mujer y la tercera TRABAJA de formato
-lógica donde T (TRUE) corresponde a "Si trabaja" y F (FALSE) a "No
-trabaja":
+Vamos a crear un dataframe llamado `datos` con 4 variables de 5
+registros, la primera será un identificador ID numérico entero
+correlativo, la segunda variable EDAD, la tercera SEXO codificada como V
+para varón y M para mujer y la tercera TRABAJA de formato lógica donde T
+(TRUE) corresponde a "Si trabaja" y F (FALSE) a "No trabaja":
 
 ```{r}
 id <- 1:5     # construimos el vector id
@@ -917,8 +971,8 @@ datos$sexo
 
 Nos muestra los 5 valores que tiene cargado.
 
-En cuanto al sistema de indexación podemos acceder a elementos internos del dataframe de las
-siguientes formas:
+En cuanto al sistema de indexación podemos acceder a elementos internos
+del dataframe de las siguientes formas:
 
 ```{r}
 datos[,3]   # pedimos la tercer variable (sexo)
@@ -946,9 +1000,12 @@ names(datos)
 
 ## Fórmulas
 
-En R las fórmulas son utilizadas generalmente para describir modelos, formato que  vamos a utilizar durante toda la cursada.
+En R las fórmulas son utilizadas generalmente para describir modelos,
+formato que vamos a utilizar durante toda la cursada.
 
-Estas formulas se escriben con operadores como **\~** , **+** , **\***, etc. y se emplean para especificar regresiones, anovas y contrastes de hipótesis, además de algunos gráficos.
+Estas formulas se escriben con operadores como **\~** , **+** , **\***,
+etc. y se emplean para especificar regresiones, anovas y contrastes de
+hipótesis, además de algunos gráficos.
 
 **Formula genérica:**
 
@@ -962,8 +1019,8 @@ explicativas o independientes. El esquema general es el siguiente:
 El símbolo "`~`" (virgulilla) debería leerse como *"es modelado por"* o
 *"es modelado como una función de"*.
 
-Por ejemplo, en una regresión lineal se utiliza la función base `lm()` y el
-argumento principal de esta función es una formula:
+Por ejemplo, en una regresión lineal se utiliza la función base `lm()` y
+el argumento principal de esta función es una formula:
 
 > regresion_lineal \<- lm(variable.de.respuesta \~
 > variables.explicativas, data = DataFrame)
@@ -975,17 +1032,20 @@ realizar la regresión.
 La siguiente tabla muestra los usos de los los operadores más comunes
 dentro de una formula:
 
-| **Operador** | **Ejemplo** |                    **Interpretación**                    |
-|:--------:|:-------:|:----------------------------------------------------:|
-|     +    |   + x   | Incluye la variable x                                |
-|     -    |   - x   | Excluye la variable x                                |
-| :        | x : z   | Incluye la interacción de la variable x con z        |
-|     *    |  x * z  | Incluye ambas variables y la interacción entre ellas |
+| **Operador** | **Ejemplo** |                  **Interpretación**                  |
+|:-----------:|:-----------:|:--------------------------------------------:|
+|      \+      |    \+ x     |                Incluye la variable x                 |
+|      \-      |    \- x     |                Excluye la variable x                 |
+|      :       |    x : z    |    Incluye la interacción de la variable x con z     |
+|      \*      |   x \* z    | Incluye ambas variables y la interacción entre ellas |
 
 ## Nota final
 
-Estos materiales, que forman parte del modulo 1 del **Curso de Epidemiología Avanzada**, no pretenden abarcar todos los temas relevantes que encontraríamos en un curso de lenguaje R, sino que persigue el fin de mostrar solo los más relevantes y necesarios del lenguaje para su aplicación en los módulos siguientes.
+Estos materiales, que forman parte del modulo 1 del **Curso de
+Epidemiología Avanzada**, no pretenden abarcar todos los temas
+relevantes que encontraríamos en un curso de lenguaje R, sino que
+persigue el fin de mostrar solo los más relevantes y necesarios del
+lenguaje para su aplicación en los módulos siguientes.
 
-
-<br>
+<br> 
 <br>
