@@ -1,0 +1,245 @@
+---
+pagetitle: "Introducción al Lenguaje R"
+format: 
+  revealjs:
+    width: 1600
+    height: 900
+    transition: fade
+    slide-number: true
+    theme: [simple, custom.scss]
+    logo: logo_INE.PNG
+    footer: "Instituto Nacional de Epidemiología"
+editor: visual
+---
+
+##  {#intro-r-title data-menu-title="Introducción al Lenguaje R"}
+
+![](assets/R.png){.absolute bottom="30" left="850" width="1000"}
+
+[Introducción al Lenguaje R]{.custom-title}
+
+[Epidemiología Nivel Avanzado]{.custom-subtitle}
+
+[05/07/2024]{.custom-author}
+
+
+[artwork por allison horst]{.custom-artwork}
+
+
+
+
+## Objetivo de esta Unidad {.title-top}
+
+<br>
+
+> Introducir y nivelar al grupo de estudiantes del curso de **Epidemiología Nivel Avanzado** en el lenguaje R, con el fin de aplicarlo en el proceso de análisis de la siguientes unidades.
+
+<br>
+<br>
+
+. . . 
+
+::: callout-warning   
+## Aclaración 
+
+> Este **NO es un curso de R**, solo lo usaremos como una herramienta para la cursada
+:::
+
+---
+
+## Set mímino de herramientas {.title-top}
+
+![](assets/Tools.PNG){.absolute bottom="0" left="600" width="1000"}
+
+<br>
+
+> Buscamos que todxs lxs estudiantes cuenten al menos con un set mínimo de herramientas para utilizarlas durante el año.
+
+. . . 
+
+> Además de las bases que mostremos en esta dos semanas, iremos viendo nuevas herramientas durante las siguientes unidades.
+
+
+---
+
+## Competencias a lograr {.title-top}
+
+<br>
+
+. . .
+
+- Instalar R + RStudio + Rtools
+
+. . .
+
+- Gestionar proyectos de RStudio
+
+. . .
+
+- Entender los fundamentos del lenguaje R y tidyverse
+
+. . .
+
+- Gestionar paquetes (instalación y activación)
+
+. . .
+
+- Utilizar herramientas de RStudio]
+
+. . .
+
+- Leer tablas de datos
+
+. . .
+
+- Realizar análisis exploratorios de datos (básico)
+
+
+---
+
+## De donde partimos... {.title-top}
+
+
+
+---
+
+## Dificultades {.title-top}
+
+<br>
+
+Algunas de las dificultades que nos vamos a encontrar en el camino:
+
+<br>
+
+::: {.fragment .fade-in-then-semi-out}
+
+**R** es un lenguaje de *línea de comandos* por lo que su **curva de aprendizaje es lenta**
+
+:::
+
+<br>
+
+::: {.fragment .fade-in-then-semi-out}
+
+Hay muchas funciones y muchos paquetes. Es fácil **confundirse** y no recordar
+
+:::
+
+<br>
+
+::: {.fragment .fade-in-then-semi-out}
+
+Muchas veces la Ayuda no es clara
+
+:::
+
+<br>
+
+::: {.fragment .fade-in-then-semi-out}
+
+Hay que aprender a lidiar con los errores y no frustarse
+
+:::
+
+![](assets/error2.PNG){.absolute bottom="20" left="995" width="690"}
+
+<br>
+
+::: {.fragment .fade-in-then-semi-out}
+
+Muchas veces los errores tampoco son claros
+
+:::
+
+---
+
+## Consejos
+
+<br>
+
+> La practica vale más que la teoría. Cuanto mas horas de uso le dedique al lenguaje mejor.
+
+. . . 
+
+<br>
+
+> Pida ayuda cuando se vea extraviado o confundido (el foro de ayuda está permanentemente abierto)
+
+. . . 
+
+<br>
+
+> Aprenda a utilizar las herramientas de autocompletado de RStudio (va a minimizar la tasa de error de sintaxis)
+
+---
+
+## Cómo vamos a trabajar en la práctica?
+
+<br>
+
+- En cada unidad vamos a tener actividades prácticas. 
+
+- En cada una de ellas el esquema de trabajo será similar:
+
+. . . 
+
+
+1. Descarga de una carpeta comprimida (archivo **zip**)
+
+2. Descompresión del archivo y almacenar su contenido en la computadora
+
+::: callout-warning  
+## Cuidado
+
+No trabaje dentro del archivo comprimido porque perderá sus avances.
+
+:::
+
+
+3. Abrir proyecto de R incluido en la carpeta
+
+4. Abrir y ejecutar el script de R guiado o crear script (si la consigna lo pide)
+
+---
+
+## Durante el curso
+
+<br>
+
+**No vamos a tener que hacer...**
+
+  - trabajos en limpieza y organización de tablas de datos.
+  
+  - manipular datos y explorar exhaustivamente
+
+
+**Habitualmente vamos a...**
+
+  - leer archivos de datos (texto plano -txt- y Excel)
+
+  - recategorizar variables, convertirlas a factor y configurar niveles.
+
+  - aplicar funciones básicas de tidyverse 
+  
+  - aplicar funciones estadísticas específicas 
+
+  - utilizar sintaxis fórmula en los modelos de regresión
+
+---
+
+## Temario del encuentro de hoy
+
+<br>
+
+- Crear, abrir y cerrar proyectos de RStudio
+
+- Crear, abrir y guardar scripts
+
+- Leer datos (archivos texto plano)
+
+- Usar autocompletado de RStudio, búsqueda y ayuda
+
+- Instalar y gestionar paquetes
+
+- Responder preguntas, aclarar dudas, etc...
+
