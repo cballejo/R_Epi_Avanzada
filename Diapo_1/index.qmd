@@ -186,7 +186,7 @@ Muchas veces los errores tampoco son claros
 
 1. Descarga de una carpeta comprimida (archivo **zip**)
 
-2. Descompresión del archivo y almacenar su contenido en la computadora
+2. Descompresión del archivo (almacenar su contenido en la computadora)
 
 ::: callout-warning  
 ## Cuidado
@@ -208,18 +208,18 @@ No trabaje dentro del archivo comprimido porque perderá sus avances.
 
 **No vamos a tener que hacer...**
 
-  - trabajos en limpieza y organización de tablas de datos.
+  - trabajos de limpieza y organización de tablas de datos.
   
-  - manipular datos y explorar exhaustivamente
+  - manipular datos y exploración exhaustiva
 
 
 **Habitualmente vamos a...**
 
-  - leer archivos de datos (texto plano -txt- y Excel)
+  - leer archivos de datos (texto plano -txt- o Excel)
 
   - recategorizar variables, convertirlas a factor y configurar niveles.
 
-  - aplicar funciones básicas de tidyverse 
+  - aplicar funciones comunes de tidyverse 
   
   - aplicar funciones estadísticas específicas 
 
