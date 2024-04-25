@@ -23,7 +23,7 @@ showtext::showtext_opts (dpi = 300)
 
 <center>
 
-*Este material es parte de la* ***Unidad 2 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS***
+*Este material es parte de la* ***Unidad 2 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS v2024***
 
 </center>
 
@@ -58,16 +58,16 @@ El gráfico por excelencia para evaluar normalidad es el Cuantil-Cuantil (Q-Q Pl
 
 Cuanto más se aproximen los datos a una normal, más alineados están los puntos entorno a la recta.
 
-En el lenguaje R hay varios paquetes que tienen funciones para construirlos. Uno de los vistos previamente fue `` de **dlookr**. 
+En el lenguaje R hay varios paquetes que tienen funciones para construirlos. Uno de los vistos previamente fue ` plot_normality()` de **dlookr**. 
 
 ```{r, echo= F, message=F, warning=F}
-datos <- read.csv2("datos_normalidad.csv")
-```
-
-```{r, fig.asp = 0.7, fig.width = 5, fig.align="center",message=F, warning=F}
 library(tidyverse)
 library(dlookr)
 
+datos <- read_csv2("datos_normalidad.csv")
+```
+
+```{r, fig.asp = 0.7, fig.width = 5, fig.align="center",message=F, warning=F}
 datos %>%
   plot_normality(peso) 
 ```
@@ -129,10 +129,10 @@ Estas características de las distribuciones también se pueden ver mediante his
 
 ```{r, fig.asp = 0.7, fig.width = 5, fig.align="center",message=F, warning=F}
 datos %>% 
-  plot_normality(edad) 
+  plot_normality(edad, col = "forestgreen") 
 
 datos %>% 
-  plot_normality(peso) 
+  plot_normality(peso, col = "royalblue") 
 ```
 Los histogramas que se acerquen a la clásica "campana de gauss" tendrán curtosis y asimetrías alrededor del valor cero.
 
