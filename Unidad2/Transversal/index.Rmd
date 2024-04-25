@@ -16,6 +16,7 @@ theme: lumen
 
 ```{r, message=FALSE, echo=F}
 knitr::opts_chunk$set(comment=NA, dpi = 300)
+showtext::showtext_opts (dpi = 300)
 ```
 
 <br>
@@ -752,12 +753,12 @@ knitr::include_graphics("test3.PNG")
 
 **Ejemplo:** 
 
-En el archivo  “bebe1” encontrarán una muestra aleatoria de los pesos al nacer de 186 bebés. 
+En el archivo  *“bebe1”* la tabla de datos consiste en una muestra aleatoria de los pesos al nacer de 186 bebés. 
 
 Estos bebés son hijos de madres que no consumieron cocaína durante el embarazo. 
 
 a.	Calcule el IC del 99% del peso medio al nacer de estos bebés.
-b.	En el archivo “bebe2”, encontrará  una muestra aleatoria de 190 bebés cuyas madres manifestaron haber consumido cocaína durante el embarazo. De acuerdo a estos resultados: ¿el consumo de cocaína afecta el peso que tiene un bebé al nacer?
+b.	En el archivo *“bebe2”*, hay  una muestra aleatoria de 190 bebés cuyas madres manifestaron haber consumido cocaína durante el embarazo. De acuerdo a estos resultados: ¿el consumo de cocaína afecta el peso que tiene un bebé al nacer?
 
 Para resolver el inciso A podemos hacerlo de varias formas:
 
@@ -772,10 +773,15 @@ Rta: El peso medio al nacer de los bebés oscila entre  2970,86 g - 3233,13 g ($
 
 En R, lo podemos hacer con la función `z.test()` del paquete **TeachingDemos** que trabaja con valores z de la distribución normal o con la función `t.test()` de R base que utiliza la distribución $t$ *de Student*.
 
+::: {.b--gray .ba .bw2 .ma2 .pa4 .shadow-1}
+Para esta etapa donde conectamos elementos teóricos y prácticos mostramos la distribución z aplicada, en cambio verán que a lo largo de curso y en el uso cotidiano de estos métodos se utiliza la distribución $t$ *de Student* - t.test(). 
+:::
+
 ```{r, message=F, warning=F}
+library(tidyverse)
 library(TeachingDemos)
 
-bebe1 <- read.csv2("bebe1.csv")
+bebe1 <- read_csv2("bebe1.csv")
 
 z.test(x = bebe1$peso, 
        sd = sd(bebe1$peso), 
@@ -790,18 +796,17 @@ Para hacer el inciso b, la metodología apropiada sería un test de comparación
 
 Primeramente, deberemos chequear normalidad para seleccionar el test apropiado:
 
-```{r, message=F, warning=F, fig.align='center', out.width = "60%"}
-bebe2 <- read.csv2("bebe2.csv")
+```{r, message=F, warning=F, fig.align='center', fig.asp = 0.7, fig.width = 5}
+bebe2 <- read_csv2("bebe2.csv")
 
-library(DataExplorer)
+library(dlookr)
 
-plot_qq(data = bebe1$peso, 
-        title = "QQ-plot Peso Bebe1",
-        geom_qq_args = list(color = "firebrick4") )
+bebe1 %>% 
+  plot_normality(peso, col = "firebrick4")
 
-plot_qq(data = bebe2$peso, 
-        title = "QQ-plot Peso Bebe2",
-        geom_qq_args = list(color = "olivedrab") )
+bebe2 %>% 
+  plot_normality(peso, col = "olivedrab")
+
 ```
 
 ```{r}
@@ -852,25 +857,25 @@ Script completo de R para resolver el ejemplo:
 ```{r, eval = F}
 ## Activamos paquetes
 
+library(tidyverse)
 library(TeachingDemos)
-library(DataExplorer)
+library(dlookr)
 
 ## Leemos los datos
 
-bebe1 <- read.csv2("bebe1.csv")
-bebe2 <- read.csv2("bebe2.csv")
+bebe1 <- read_csv2("bebe1.csv")
+bebe2 <- read_csv2("bebe2.csv")
 
 ## Intervalo de confianza para bebe1
 
-##Resumimos la variable peso
+## Resumimos la variable peso
 
-summary(bebe1$peso)
+describe(bebe1$peso)
 
 ##Contraste de normalidad y qqplot
 
-plot_qq(data = bebe1$peso, 
-        title = "QQ-plot Peso Bebe1",
-        geom_qq_args = list(color = "firebrick4") )
+bebe1 %>% 
+  plot_normality(peso, col = "firebrick4")
 
 shapiro.test(bebe1$peso)
 
@@ -891,18 +896,19 @@ t.test(x = bebe1$peso,
 ## Contraste de hipotesis
 
 ##Resumimos la variable peso
-summary(bebe2$peso)
+
+describe(bebe2$peso)
 
 ##Contraste de normalidad y qqplot
-plot_qq(data = bebe2$peso, 
-        title = "QQ-plot Peso Bebe2",
-        geom_qq_args = list(color = "olivedrab") )
+
+bebe2 %>% 
+  plot_normality(peso, col = "olivedrab")
 
 shapiro.test(bebe2$peso)
 
 ## Test de homogeneidad de varianzas
 var.test(x = bebe1$peso, 
-         y=bebe2$peso)
+         y = bebe2$peso)
 
 ## Test de comparación de medias con varianzas iguales
 
@@ -949,11 +955,14 @@ unilateral cola izquierda
 
 **Lectura y análisis de supuestos**
 
-```{r}
-enfermos <- read.csv2("enfermos.csv") # leemos los datos
+```{r, message=F, warning=F}
+enfermos <- read_csv2("enfermos.csv") # leemos los datos
 
-mean(enfermos$V1)                     # calculamos la media
-sd(enfermos$V1)                       # calculamos el desvío estandar
+enfermos %>%
+  summarise(media = mean(V1), # calculamos la media
+            desvio = sd(V1)) # calculamos el desvío estandar
+
+ 
 shapiro.test(enfermos$V1)             # verificamos normalidad
 ```
 
@@ -966,7 +975,7 @@ __Prueba de hipótesis__
 ## ejecutamos el test de contraste para una población
 t.test(x = enfermos$V1, 
        alternative = "less", 
-       mu=165, 
+       mu = 165, 
        conf.level = 0.95)
 ```
 
@@ -998,7 +1007,7 @@ Glantz S. Bioestadística. 6° Edición. McGraw Hill. México, 2006.
 
 Epidat: Material de ayuda programa para análisis epidemiológico de datos. Versión 4.2, julio 2016. Consellería de Sanidade, Xunta de Galicia, España; Organización Panamericana de la salud (OPS-OMS); Universidad CES, Colombia.
 
-R Core Team (2021). R: A language and environment for statistical
+R Core Team (2023). R: A language and environment for statistical
 computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
 
 Juliane Manitz, contributions by Mark Hempelmann, Goeran Kauermann, Helmut Kuechenhoff, Shuai Shao, Cornelia Oberhauser, Nina Westerheide and Manuel Wiesenfarth (2017). samplingbook: Survey Sampling Procedures. R package version 1.2.2. https://CRAN.R-project.org/package=samplingbook
@@ -1006,8 +1015,7 @@ Juliane Manitz, contributions by Mark Hempelmann, Goeran Kauermann, Helmut Kuech
 Greg Snow (2020). TeachingDemos: Demonstrations for Teaching and
 Learning. R package version 2.12. https://CRAN.R-project.org/package=TeachingDemos
 
-Boxuan Cui (2020). DataExplorer: Automate Data Exploration and Treatment.
-R package version 0.8.2. https://CRAN.R-project.org/package=DataExplorer
+Ryu C (2024). _dlookr: Tools for Data Diagnosis, Exploration, Transformation_. R package version 0.6.3, <https://CRAN.R-project.org/package=dlookr>.
 
 Stephane Champely (2020). pwr: Basic Functions for Power Analysis. R package
 version 1.3-0. https://CRAN.R-project.org/package=pwr
