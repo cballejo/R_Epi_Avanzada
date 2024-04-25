@@ -13,10 +13,11 @@ theme: lumen
 
 ```{r, message=FALSE, echo=F}
 knitr::opts_chunk$set(comment=NA, dpi = 300)
+showtext::showtext_opts (dpi = 300)
 ```
 
 <center>
-*Este material es parte de la* ***Unidad 2 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS***
+*Este material es parte de la* ***Unidad 2 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS v2024***
 </center>
 
 <br>
@@ -33,41 +34,51 @@ Tu Binh Minh de la Universidad Nacional de Vietnam y colaboradores, analizaron l
 Los valores de PCB hallados en las personas estudiadas se encuentran almacenadas en el archivo **_PCB.csv_** y se nos pide realizar los siguientes items:
 
 a. Lea el archivo y explore su contenido
-b. Calcule la media, desviación estándar de la media y percentiles 25 y 75 de estas concentraciones.
+b. Describa estadísticamente las mediciones.
 c. ¿Estos datos parecen tomados de una población de distribución normal?, ¿por qué?
 d. ¿Cuáles son los intervalos de confianza de 90 y 95% para la concentración promedio del difenilpoliclorado (PCB)?
 
 Veamos como llevamos adelante estos pasos mediante el lenguaje R:
 
 a. Lectura y exploración inicial
-```{r}
-pcb <- read.csv2("PCB.csv")
+```{r, message=F, warning=F}
+library(tidyverse) # activamos paquetes
+library(dlookr)
+
+pcb <- read_csv2("PCB.csv")
 ```
 
-Podemos visualizar la estructura de la tabla de datos
+Visualizamos la estructura de la tabla de datos
 
 ```{r}
-str(pcb)
+glimpse(pcb)
 ```
 Tenemos una tabla con 14 observaciones (mediciones en individuos) y la variable de interés se llama *concentracion* (nos informan que está expresada como nanogramo de PCB/gramo de lípido)
 
-b. Calculo de media, DS y percentilos
+b. Describa estadísticamente las mediciones
 
-Con la función `summary()` podemos obtener el mínimo, máximo, percentiles 25 y 75, la media y la mediana.
+Con la función `describe()` de **dlookr** podemos obtener los estadísticos de esta variable cuantitativa continua.
 
-```{r}
-summary(pcb$concentracion)
+```{r, echo=F, message=F, warning=F}
+library(kableExtra)
 ```
 
-Para calcular el desvío estandar usamos la función `sd()`
+```{r, eval=F}
+pcb %>%
+  describe(concentracion)
+```
 
-```{r}
-sd(pcb$concentracion)
+```{r, echo=FALSE}
+pcb %>%
+  describe(concentracion) %>% 
+  kbl(digits = 2) %>% 
+  kable_classic() %>% 
+  scroll_box(width = "100%")
 ```
 
 c. A continuación debemos demostrar si los datos cumplen con una distribución normal.
 
-En el documento [Análisis de normalidad y homocedasticidad](https://cballejo.github.io/R_Epi_Avanzada/Unidad2/Supuestos/) tenemos test estadísticos de R que nos permiten evaluar esta situación y gráficos que nos ayudan a determinar la normalidad.
+En el documento [Análisis de normalidad y homocedasticidad](https://cballejo.github.io/R_Epi_Avanzada/Unidad2/Supuestos/) vimos test estadísticos de R que nos permiten evaluar esta situación y gráficos que nos ayudan a determinar la normalidad.
 
 Test de Shapiro-Wilk
 
@@ -77,15 +88,14 @@ shapiro.test(pcb$concentracion)
 
 Un p-valor mayor a 0,05 habla de un ajuste a la curva normal.
 
-```{r, out.width="60%", fig.align="center"}
-library(DataExplorer)
-
-plot_qq(pcb$concentracion)
+```{r, fig.asp = 0.7, fig.width = 5, fig.align="center"}
+pcb %>%
+  plot_normality(concentracion)
 ```
 
 Si bien son pocos datos, los puntos se desarrollan "alrededor" a la recta de normalidad.
 
-Con estos dos elementos podemos confirmar el cumplimiento del supuesto de "normalidad" necesario para hacer uso de métodos paramétricos.
+Con estos dos elementos podemos confirmar que la distribución se aproxima a la "Normal" y podemos hacer uso de métodos paramétricos.
 
 d. Calculo de IC 
 
@@ -107,7 +117,8 @@ Para este ejemplo debemos utilizar como argumentos:
 - el nivel de confianza con el que necesitamos el IC
 
 ```{r}
-t.test(pcb$concentracion, conf.level=0.95)
+t.test(x = pcb$concentracion, 
+       conf.level=0.95)
 ```
 
 En la lista de resultados devuelta debemos observar los valores que figuran debajo de "95 percent confidence interval:". En este caso, el resultado es de una media de 1709,3 IC95%: 1233.0-2185.5 ng/g   
@@ -115,6 +126,8 @@ En la lista de resultados devuelta debemos observar los valores que figuran deba
 Si cambiamos el argumento conf.level a 0.90 obtendremos el IC 90%:
 
 ```{r}
-t.test(pcb$concentracion, conf.level=0.90)
+t.test(x = pcb$concentracion, 
+       conf.level=0.90)
 ```
+Este va de 1318,9 a 2099,7 ng/g, lógicamente más estrecho que el anterior porque redujimos el intervalo de confianza. 
 
