@@ -23,7 +23,7 @@ showtext::showtext_opts (dpi = 300)
 
 <center>
 
-*Este material es parte de la* ***Unidad 2 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS***
+*Este material es parte de la* ***Unidad 2 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS v2024***
 
 </center>
 
