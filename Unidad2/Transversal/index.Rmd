@@ -29,7 +29,7 @@ showtext::showtext_opts (dpi = 300)
 
 <br>
 
-<center><p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Unidad2/Transversal/">Diseño de corte transversal</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://www.ine.gov.ar">Andrea Silva</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"></a></p></center>
+<center><p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Unidad2/Transversal/">Diseño de corte transversal</a> por <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://www.ine.gov.ar">Andrea Silva</a> bajo licencia <a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"></a></p></center>
 
 <br> 
 
@@ -781,7 +781,7 @@ Para esta etapa donde conectamos elementos teóricos y prácticos mostramos la d
 library(tidyverse)
 library(TeachingDemos)
 
-bebe1 <- read_csv2("bebe1.csv")
+bebe1 <- read_csv2("bebe1.txt")
 
 z.test(x = bebe1$peso, 
        sd = sd(bebe1$peso), 
@@ -797,7 +797,7 @@ Para hacer el inciso b, la metodología apropiada sería un test de comparación
 Primeramente, deberemos chequear normalidad para seleccionar el test apropiado:
 
 ```{r, message=F, warning=F, fig.align='center', fig.asp = 0.7, fig.width = 5}
-bebe2 <- read_csv2("bebe2.csv")
+bebe2 <- read_csv2("bebe2.txt")
 
 library(dlookr)
 
@@ -863,8 +863,8 @@ library(dlookr)
 
 ## Leemos los datos
 
-bebe1 <- read_csv2("bebe1.csv")
-bebe2 <- read_csv2("bebe2.csv")
+bebe1 <- read_csv2("bebe1.txt")
+bebe2 <- read_csv2("bebe2.txt")
 
 ## Intervalo de confianza para bebe1
 
@@ -956,7 +956,7 @@ unilateral cola izquierda
 **Lectura y análisis de supuestos**
 
 ```{r, message=F, warning=F}
-enfermos <- read_csv2("enfermos.csv") # leemos los datos
+enfermos <- read_csv2("enfermos.txt") # leemos los datos
 
 enfermos %>%
   summarise(media = mean(V1), # calculamos la media

@@ -1,4 +1,4 @@
-"grupo";"hdl"
+grupo;hdl
 "Sedentario";14,7
 "Sedentario";34,6
 "Sedentario";61,6
