@@ -605,9 +605,9 @@ ambientales que poseen una serie de efectos nocivos para la salud, como
 deterioro intelectual en los niños que se exponen en el utero. Además,
 los PCB forman parte de los contaminantes más abundantes en la grasa del
 ser humano.</p>
-<p>Tu Binh Minh de la Universidad Nacional de Vietnam y colaboradores,
-analizaron la concentración de PCB en la grasa de un grupo de
-adultos.</p>
+<p><em>Tu Binh Minh</em> de la Universidad Nacional de Vietnam y
+colaboradores, analizaron la concentración de PCB en la grasa de un
+grupo de adultos.</p>
 <p>Los valores de PCB hallados en las personas estudiadas se encuentran
 almacenadas en el archivo <strong><em>PCB.txt</em></strong> y se nos
 pide realizar los siguientes items:</p>
@@ -812,8 +812,10 @@ concentracion
 </tbody>
 </table>
 </div>
+<p>La media (1709,29 ng/g) y la mediana (1750,0 ng/g) son cercanas. El
+desvío estandar es de 824,81 ng/g.</p>
 <ol start="3" style="list-style-type: lower-alpha">
-<li>A continuación debemos demostrar si los datos cumplen con una
+<li>A continuación debemos demostrar si los datos se aproximan a una
 distribución normal.</li>
 </ol>
 <p>En el documento <a href="https://cballejo.github.io/R_Epi_Avanzada/Unidad2/Supuestos/">Análisis
@@ -834,13 +836,15 @@ W = 0.95246, p-value = 0.5996</code></pre>
 <p>Si bien son pocos datos, los puntos se desarrollan “alrededor” a la
 recta de normalidad.</p>
 <p>Con estos dos elementos podemos confirmar que la distribución se
-aproxima a la “Normal” y podemos hacer uso de métodos paramétricos.</p>
+acerca a la “Normal” y que la distribución no es demasiado sesgada o
+tiene colas muy pesadas</p>
+<p>Es confiable entonces hacer uso de métodos paramétricos.</p>
 <ol start="4" style="list-style-type: lower-alpha">
 <li>Calculo de IC</li>
 </ol>
 <p>Estamos frente al calculo de IC de una muestra de <span class="math inline">\(n\)</span> = 14 (menor a 30 observaciones) y que
-cumple con el supuesto de normalidad, por lo tanto podemos/debemos
-aplicar un método paramétrico basado en la distribución <span class="math inline">\(t\)</span> de Student.</p>
+cumple con el supuesto de normalidad, por lo tanto debemos aplicar un
+método paramétrico basado en la distribución <span class="math inline">\(t\)</span> de Student.</p>
 <p>La distribución <span class="math inline">\(t\)</span> de Student se
 asemeja en gran medida a la distribución normal. Tiene como parámetros
 la media, la varianza y además incorpora a través de los grados de
@@ -867,7 +871,7 @@ Student.</p>
 <li>el nivel de confianza con el que necesitamos el IC</li>
 </ul>
 <pre class="r"><code>t.test(x = pcb$concentracion, 
-       conf.level=0.95)</code></pre>
+       conf.level = 0.95)</code></pre>
 <pre><code>
     One Sample t-test
 
@@ -881,11 +885,11 @@ mean of x
  1709.286 </code></pre>
 <p>En la lista de resultados devuelta debemos observar los valores que
 figuran debajo de “95 percent confidence interval:”. En este caso, el
-resultado es de una media de 1709,3 IC95%: 1233.0-2185.5 ng/g</p>
+resultado es de una media de 1709,3 IC95%: 1233,0-2185,5 ng/g</p>
 <p>Si cambiamos el argumento conf.level a 0.90 obtendremos el IC
 90%:</p>
 <pre class="r"><code>t.test(x = pcb$concentracion, 
-       conf.level=0.90)</code></pre>
+       conf.level = 0.90)</code></pre>
 <pre><code>
     One Sample t-test
 

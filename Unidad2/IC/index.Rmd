@@ -29,7 +29,7 @@ showtext::showtext_opts (dpi = 300)
 
 Los difenilos policlorados (PCB) son una clase de sustancias químicas ambientales que poseen una serie de efectos nocivos para la salud, como deterioro intelectual en los niños que se exponen en el utero. Además, los PCB forman parte de los contaminantes más abundantes en la grasa del ser humano. 
 
-Tu Binh Minh de la Universidad Nacional de Vietnam y colaboradores, analizaron la concentración de PCB en la grasa de un grupo de adultos. 
+*Tu Binh Minh* de la Universidad Nacional de Vietnam y colaboradores, analizaron la concentración de PCB en la grasa de un grupo de adultos. 
 
 Los valores de PCB hallados en las personas estudiadas se encuentran almacenadas en el archivo **_PCB.txt_** y se nos pide realizar los siguientes items:
 
@@ -41,6 +41,7 @@ d. ¿Cuáles son los intervalos de confianza de 90 y 95% para la concentración 
 Veamos como llevamos adelante estos pasos mediante el lenguaje R:
 
 a. Lectura y exploración inicial
+
 ```{r, message=F, warning=F}
 library(tidyverse) # activamos paquetes
 library(dlookr)
@@ -76,7 +77,9 @@ pcb %>%
   scroll_box(width = "100%")
 ```
 
-c. A continuación debemos demostrar si los datos cumplen con una distribución normal.
+La media (1709,29 ng/g) y la mediana (1750,0 ng/g) son cercanas. El desvío estandar es de 824,81 ng/g.
+
+c. A continuación debemos demostrar si los datos se aproximan a una distribución normal.
 
 En el documento [Análisis de normalidad y homocedasticidad](https://cballejo.github.io/R_Epi_Avanzada/Unidad2/Supuestos/) vimos test estadísticos de R que nos permiten evaluar esta situación y gráficos que nos ayudan a determinar la normalidad.
 
@@ -95,11 +98,13 @@ pcb %>%
 
 Si bien son pocos datos, los puntos se desarrollan "alrededor" a la recta de normalidad.
 
-Con estos dos elementos podemos confirmar que la distribución se aproxima a la "Normal" y podemos hacer uso de métodos paramétricos.
+Con estos dos elementos podemos confirmar que la distribución se acerca a la "Normal" y que la distribución no es demasiado sesgada o tiene colas muy pesadas
+
+Es confiable entonces hacer uso de métodos paramétricos.
 
 d. Calculo de IC 
 
-Estamos frente al calculo de IC de una muestra de $n$ = 14 (menor a 30 observaciones) y que cumple con el supuesto de normalidad, por lo tanto podemos/debemos aplicar un método paramétrico basado en la distribución $t$ de Student.
+Estamos frente al calculo de IC de una muestra de $n$ = 14 (menor a 30 observaciones) y que cumple con el supuesto de normalidad, por lo tanto debemos aplicar un método paramétrico basado en la distribución $t$ de Student.
 
 La distribución $t$ de Student se asemeja en gran medida a la distribución normal. Tiene como parámetros la media, la varianza y además incorpora a través de los grados de libertad una modificación que permite flexibilizar las colas en función del tamaño que tenga la muestra.
 
@@ -118,16 +123,17 @@ Para este ejemplo debemos utilizar como argumentos:
 
 ```{r}
 t.test(x = pcb$concentracion, 
-       conf.level=0.95)
+       conf.level = 0.95)
 ```
 
-En la lista de resultados devuelta debemos observar los valores que figuran debajo de "95 percent confidence interval:". En este caso, el resultado es de una media de 1709,3 IC95%: 1233.0-2185.5 ng/g   
+En la lista de resultados devuelta debemos observar los valores que figuran debajo de "95 percent confidence interval:". En este caso, el resultado es de una media de 1709,3 IC95%: 1233,0-2185,5 ng/g   
 
 Si cambiamos el argumento conf.level a 0.90 obtendremos el IC 90%:
 
 ```{r}
 t.test(x = pcb$concentracion, 
-       conf.level=0.90)
+       conf.level = 0.90)
 ```
+
 Este va de 1318,9 a 2099,7 ng/g, lógicamente más estrecho que el anterior porque redujimos el intervalo de confianza. 
 
