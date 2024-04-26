@@ -82,14 +82,14 @@ Vayamos paso a paso con el código en R:
 
 ### Lectura y exploración de datos
 
-El archivo **_Anova-HDL.csv_** es de texto plano y utiliza el punto y coma (;) como separador.
+El archivo **_Anova-HDL.txt_** es de texto plano y utiliza el punto y coma (;) como separador.
 
 ```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(skimr)
 library(dlookr)
 
-HDL <- read_csv2("Anova-HDL.csv")
+HDL <- read_csv2("Anova-HDL.txt")
 ```
 
 Exploramos con skim de skimr

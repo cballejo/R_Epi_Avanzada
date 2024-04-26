@@ -1571,13 +1571,13 @@ en los diversos grupos.</p>
 <p>Vayamos paso a paso con el código en R:</p>
 <div id="lectura-y-exploración-de-datos" class="section level3">
 <h3>Lectura y exploración de datos</h3>
-<p>El archivo <strong><em>Anova-HDL.csv</em></strong> es de texto plano
+<p>El archivo <strong><em>Anova-HDL.txt</em></strong> es de texto plano
 y utiliza el punto y coma (;) como separador.</p>
 <pre class="r"><code>library(tidyverse)
 library(skimr)
 library(dlookr)
 
-HDL &lt;- read_csv2(&quot;Anova-HDL.csv&quot;)</code></pre>
+HDL &lt;- read_csv2(&quot;Anova-HDL.txt&quot;)</code></pre>
 <p>Exploramos con skim de skimr</p>
 <pre class="r"><code>skim(HDL)</code></pre>
 <table style="width: auto;" class="table table-condensed">
