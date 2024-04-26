@@ -22,11 +22,7 @@ editor: visual
 
 [05/07/2024]{.custom-author}
 
-
 [artwork por allison horst]{.custom-artwork}
-
-
-
 
 ## Objetivo de esta Unidad {.title-top}
 
@@ -34,18 +30,17 @@ editor: visual
 
 > Introducir y nivelar al grupo de estudiantes del curso de **Epidemiología Nivel Avanzado** en el lenguaje R, con el fin de aplicarlo en el proceso de análisis de la siguientes unidades.
 
-<br>
-<br>
+<br> <br>
 
-. . . 
+. . .
 
-::: callout-warning   
-## Aclaración 
+::: callout-warning
+## Aclaración
 
 > Este **NO es un curso de R**, solo lo usaremos como una herramienta para la cursada
 :::
 
----
+------------------------------------------------------------------------
 
 ## Set mímino de herramientas {.title-top}
 
@@ -55,12 +50,11 @@ editor: visual
 
 > Buscamos que todxs lxs estudiantes cuenten al menos con un set mínimo de herramientas para utilizarlas durante el año.
 
-. . . 
+. . .
 
 > Además de las bases que mostremos en esta dos semanas, iremos viendo nuevas herramientas durante las siguientes unidades.
 
-
----
+------------------------------------------------------------------------
 
 ## Competencias a lograr {.title-top}
 
@@ -68,40 +62,37 @@ editor: visual
 
 . . .
 
-- Instalar R + RStudio + Rtools
+-   Instalar R + RStudio + Rtools
 
 . . .
 
-- Gestionar proyectos de RStudio
+-   Gestionar proyectos de RStudio
 
 . . .
 
-- Entender los fundamentos del lenguaje R y tidyverse
+-   Entender los fundamentos del lenguaje R y tidyverse
 
 . . .
 
-- Gestionar paquetes (instalación y activación)
+-   Gestionar paquetes (instalación y activación)
 
 . . .
 
-- Utilizar herramientas de RStudio]
+-   Utilizar herramientas de RStudio\]
 
 . . .
 
-- Leer tablas de datos
+-   Leer tablas de datos
 
 . . .
 
-- Realizar análisis exploratorios de datos (básico)
+-   Realizar análisis exploratorios de datos (básico)
 
-
----
+------------------------------------------------------------------------
 
 ## De donde partimos... {.title-top}
 
-
-
----
+------------------------------------------------------------------------
 
 ## Dificultades {.title-top}
 
@@ -112,33 +103,25 @@ Algunas de las dificultades que nos vamos a encontrar en el camino:
 <br>
 
 ::: {.fragment .fade-in-then-semi-out}
-
 **R** es un lenguaje de *línea de comandos* por lo que su **curva de aprendizaje es lenta**
-
 :::
 
 <br>
 
 ::: {.fragment .fade-in-then-semi-out}
-
 Hay muchas funciones y muchos paquetes. Es fácil **confundirse** y no recordar
-
 :::
 
 <br>
 
 ::: {.fragment .fade-in-then-semi-out}
-
 Muchas veces la Ayuda no es clara
-
 :::
 
 <br>
 
 ::: {.fragment .fade-in-then-semi-out}
-
 Hay que aprender a lidiar con los errores y no frustarse
-
 :::
 
 ![](assets/error2.PNG){.absolute bottom="20" left="995" width="690"}
@@ -146,12 +129,10 @@ Hay que aprender a lidiar con los errores y no frustarse
 <br>
 
 ::: {.fragment .fade-in-then-semi-out}
-
 Muchas veces los errores tampoco son claros
-
 :::
 
----
+------------------------------------------------------------------------
 
 ## Consejos
 
@@ -159,17 +140,38 @@ Muchas veces los errores tampoco son claros
 
 > La practica vale más que la teoría. Cuanto mas horas de uso le dedique al lenguaje mejor.
 
-. . . 
+. . .
 
 <br>
 
 > Pida ayuda cuando se vea extraviado o confundido (el foro de ayuda está permanentemente abierto)
 
-. . . 
+. . .
 
 <br>
 
 > Aprenda a utilizar las herramientas de autocompletado de RStudio (va a minimizar la tasa de error de sintaxis)
+
+------------------------------------------------------------------------
+
+## Consejos
+
+<br>
+
+> Sea prolijo al escribir dentro de los scripts. Deje espacios donde corresponda y saltos de líneas para hacer el código más legible. Visite la hoja de estilo del lenguaje.
+
+. . .
+
+<br>
+
+
+> Documente los pasos que vaya desarrollando utilizando comentarios (#). Le servirá para entender que es lo que hizo cuando reutilice ese script.
+
+. . .
+
+<br>
+
+> Organice una estructura de carpetas con las unidades del curso donde decargue el material y los proyectos de R. Podrá buscar los recursos rápidamente cuando los necesite
 
 ---
 
@@ -177,30 +179,27 @@ Muchas veces los errores tampoco son claros
 
 <br>
 
-- En cada unidad vamos a tener actividades prácticas. 
+-   Cada unidad tiene actividades prácticas.
 
-- En cada una de ellas el esquema de trabajo será similar:
+-   En cada una de ellas el esquema de trabajo será similar:
 
-. . . 
+. . .
 
+1.  Descarga de una carpeta comprimida (archivo **zip**)
 
-1. Descarga de una carpeta comprimida (archivo **zip**)
+2.  Descompresión del archivo (almacenar su contenido en la computadora)
 
-2. Descompresión del archivo (almacenar su contenido en la computadora)
-
-::: callout-warning  
+::: callout-warning
 ## Cuidado
 
 No trabaje dentro del archivo comprimido porque perderá sus avances.
-
 :::
 
+3.  Abrir proyecto de R incluido en la carpeta
 
-3. Abrir proyecto de R incluido en la carpeta
+4.  Abrir y ejecutar el script de R guiado o crear script (si la consigna lo pide)
 
-4. Abrir y ejecutar el script de R guiado o crear script (si la consigna lo pide)
-
----
+------------------------------------------------------------------------
 
 ## Durante el curso
 
@@ -208,38 +207,36 @@ No trabaje dentro del archivo comprimido porque perderá sus avances.
 
 **No vamos a tener que hacer...**
 
-  - trabajos de limpieza y organización de tablas de datos.
-  
-  - manipular datos y exploración exhaustiva
+-   trabajos de limpieza y organización de tablas de datos.
 
+-   manipular datos y exploración exhaustiva
 
 **Habitualmente vamos a...**
 
-  - leer archivos de datos (texto plano -txt- o Excel)
+-   leer archivos de datos (texto plano -txt- o Excel)
 
-  - recategorizar variables, convertirlas a factor y configurar niveles.
+-   recategorizar variables, convertirlas a factor y configurar niveles.
 
-  - aplicar funciones comunes de tidyverse 
-  
-  - aplicar funciones estadísticas específicas 
+-   aplicar funciones comunes de tidyverse
 
-  - utilizar sintaxis fórmula en los modelos de regresión
+-   aplicar funciones estadísticas específicas
 
----
+-   utilizar sintaxis fórmula en los modelos de regresión
+
+------------------------------------------------------------------------
 
 ## Temario del encuentro de hoy
 
 <br>
 
-- Crear, abrir y cerrar proyectos de RStudio
+-   Crear, abrir y cerrar proyectos de RStudio
 
-- Crear, abrir y guardar scripts
+-   Crear, abrir y guardar scripts
 
-- Leer datos (archivos texto plano)
+-   Leer datos (archivos texto plano)
 
-- Usar autocompletado de RStudio, búsqueda y ayuda
+-   Usar autocompletado de RStudio, búsqueda y ayuda
 
-- Instalar y gestionar paquetes
+-   Instalar y gestionar paquetes
 
-- Responder preguntas, aclarar dudas, etc...
-
+-   Responder preguntas, aclarar dudas, etc...
