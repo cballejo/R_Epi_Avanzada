@@ -593,7 +593,7 @@ datos %>%
 
 ### Función **mutate()**
 
-Esta función nos proporciona computar tranformaciones de variables en un conjunto de datos. A menudo, tendremos la necesidad de crear nuevas variables que se calculan a partir de variables existentes, `mutate()` nos ofrece una interface clara para realizar este tipo de operaciones.
+Esta función nos proporciona computar tranformaciones de variables en un conjunto de datos. A menudo, tendremos la necesidad de modificar variables existentes o crear nuevas variables que se calculan a partir de las que tenemos, `mutate()` nos ofrece una interface clara para realizar este tipo de operaciones.
 
 Por ejemplo, nos puede interesar calcular tasas crudas para cada jurisdicción y año, en función de los casos y el total de población.
 
@@ -612,7 +612,13 @@ datos %>%
          tasaxdiez_mil = casos/pob*10000)
 ```
 
-Hay muchas funciones para crear nuevas variables que se pueden usar con `mutate()`. 
+Si necesitemos que estas dos nuevas variables queden dentro de la tabla de datos y no solo mostrarla en consola como hasta ahora, debemos utilizar el operador de asignación:
+
+```{r, eval=F}
+datos <- datos %>% 
+  mutate(tasaxcien_mil = casos/pob*100000, 
+         tasaxdiez_mil = casos/pob*10000)
+```
 
 La propiedad imprescindible es que la función debe poder vectorizar: debe tomar un vector de valores como entrada, y devolver un vector con el mismo número de valores que la salida. 
 
@@ -628,7 +634,7 @@ No hay forma de enumerar todas las funciones posibles que se podría usar, pero 
 
 - Clasificaciones (ranking): hay una serie de funciones de clasificación, por ejemplo `min_rank()`. Genera el tipo de clasificación habitual (1º, 2º, etc). El valor predeterminado relaciona los valores más pequeños a rangos pequeños; podemos usar `desc(x)` para invertir la relación (valores más grandes a rangos más pequeños)
 
-
+Si utilizamos el mismo nombre de una variable incluída dentro de la tabla de datos, estaremos sobrescribiendola (se usa cuando transformamos una variable, por ejemplo: le cambiamos su tipo de `character` a `factor`). Para que la variable sea nueva debe nombrarse con un nombre que no exista previamente dentro de la tabla de datos.
 
 ### Función **summarise()** 
 
