@@ -63,7 +63,7 @@ datos <- datos %>%
 
 Habitualmente decimos que en este proceso dicotomizamos una variable, dado que el resultado posible consta siempre de 2 valores.
 
-Los valores de salida de esta función pueden ser de variado tipo (caracter, numerico o logico) aunque si estamos discretizando una variable cuantitativa generalmente construimos una variable de salida cualitativa ordinal, por lo que es común que la salida sea de tipo `character` (por eso las nuevas categorías van encerradas entre comillas).
+Los valores de salida de esta función pueden ser de variado tipo (caracter, numerico o logico) aunque si estamos discretizando una variable cuantitativa generalmente construimos una variable resultado cualitativa ordinal. Es común que esta variable salida sea tipo `character` (observar que las nuevas categorías van encerradas entre comillas).
 
 Ahora bien, al ser ordinal estas categorías de la variable_nueva deben "ordenarse" en la forma de los valores de la variable, pero el lenguaje R no sabe con que estamos trabajando y respeta siempre el ordenamiento alfanumérico. Por lo tanto, en este ejemplo las categorías se van a estar ordenando al reves del orden numérico natural (de menor a mayor).
 
@@ -123,12 +123,12 @@ Los argumentos obligatorios y opcionales de la función `cut()` son:
 
 - **ordered_result**: [opcional] - determina si el resultado es un factor ordenado. Por defecto vale FALSE (la salida es tipo caracter)
 
-Los argumentos opcionales no son necesarios definirlos si los valores por defecto nos sirven para la tarea buscada.
+Los argumentos opcionales no son necesarios definirlos siempre y cuando los valores por defecto son los que sirven para la tarea.
 
 
 ## Función case_when()
 
-Cuando las condiciones no son simples, es decir, el resultado no es dicotómico, utilizamos la función `case_when()` que es una vectorización de la función anterior (es el equivalente en R del comando CASE WHEN de SQL).
+Cuando las condiciones no son simples, es decir, el resultado no es dicotómico y además los intervalos son irregulares, utilizamos la función `case_when()` que es una vectorización de la función `if_else()`.
 
 Supongamos que no queremos agrupar la variable en dos valores, sino en 3 grupos irregulares.
 
@@ -139,31 +139,31 @@ Esquema básico de funcionamiento:
 
 datos <- datos %>% 
   mutate(grupo_var = case_when( 
-		var1 > 0 & var1 < 25	 ~ 	"Grupo1", 
-		var1 > 24 & var1 < 65  ~ 	"Grupo 2", 
-		var1 >= 65             ~ 	"Grupo 3"))
+    var1 >= 0 & var1 < 25  ~  "Grupo1", 
+    var1 > 24 & var1 < 65  ~ 	"Grupo 2", 
+    var1 >= 65             ~ 	"Grupo 3"))
 ```
 
 Existe una condición por cada grupo creado, como si fuese un `if_else()` donde el valor declarado siempre es el verdadero. Se utilizan operadores de comparación como mayor ( > ), menor ( < ) y/o igual ( = ) y conectores lógicos como & ( AND ). En cada línea va una virgulilla similar a la usada en la sintaxis formula ( ~ ) y luego la etiqueta que tomarán las observaciones que cumplan con esa condición en la nueva variable (grupo_var).
 
 Esta evaluación es secuencial y su funcionamiento provoca que el usuario del lenguaje tenga el control de lo que esta sucediendo, por lo que cualquier mala definición de las condiciones puede provocar resultados incorrectos.
 
-Si incorporamos el argumento .default podemos indicar que valor toma si no se cumple ninguna de las condiciones anteriores.
+Si incorporamos el argumento **.default** podemos indicar que valor toma si no se cumple ninguna de las condiciones anteriores.
 
-Por ejemplo, podríamos tener algun valor perdido (NA) en `var1` y queremos que la variable `grupo_var` etiquete esos valores perdidos como "Sin dato", se puede hacer lo siguiente:
+Por ejemplo, podríamos tener algun valor perdido (NA) en `var1` y queremos que la variable `grupo_var` etiquete esos valores perdidos como "Sin dato":
 
 ```{r, eval=F}
 # var1 es una variable cuantitativa de números enteros con algun valor NA
 
 datos <- datos %>% 
   mutate(grupo_var = case_when( 
-		var1 > 0 & var1 < 25	 ~ 	"Grupo1", 
+		var1 >= 0 & var1 < 25  ~  "Grupo1", 
 		var1 > 24 & var1 < 65  ~ 	"Grupo 2", 
 		var1 >= 65             ~ 	"Grupo 3",
 		.default = "Sin dato"))
 ```
 
-Las salidas son de tipo **_carácter_** (chr) y debemos manejar el ordenamiento de las etiquetas como vimos anteriormente, o por medio de factores o comenzando con caracteres ordenados alfabeticamente.
+Las salidas son de tipo **_carácter_** (chr) y debemos manejar el ordenamiento de las etiquetas como vimos anteriormente, por medio de factores o comenzando con caracteres ordenados alfabeticamente.
 
 Para simplificar el trabajo de estos intervalos de clase irregulares y no provocar errores en la confección de las condiciones, tidyverse tiene a la función `between()`.
 
@@ -178,13 +178,13 @@ Aplicado sobre el ejemplo anterior se vería así:
 
 datos <- datos %>% 
   mutate(grupo_var = case_when( 
-    between(var1, 0, 24)	 ~ 	"Grupo1", 
+    between(var1, 0, 24)   ~  "Grupo1", 
 		between(var1, 25, 64)  ~ 	"Grupo 2", 
 		between(var1, 65, Inf) ~ 	"Grupo 3",
 		.default = "Sin dato"))
 ```
 
-Los valores declarados como límites quedan incluídos siempre dentro del intervalo (son cerrados ambos). También podemos utilizar valores reservados como **Inf** o **-Inf** cuando desconocemos con que valor mínimo o máximo nos vamos a encontrar en la variable cuantitativa original.
+Los valores declarados como límites quedan incluídos siempre dentro del intervalo (son cerrados ambos). También podemos utilizar valores reservados como `Inf` o `-Inf` cuando desconocemos con que valor máximo o mínimo nos vamos a encontrar en la variable cuantitativa original.
 
 ## Ejemplos
 
@@ -239,7 +239,7 @@ datos %>%
   count(grupo_edad1)
 ```
 
-Vemos que en el conteo el formato de la variable ya no es `chr` sino `fctr` y orden de las etiquetas siguen la forma "menor a mayor".
+Vemos que en el conteo el formato de la variable ya no es `chr` sino `fct` y el orden de las etiquetas siguen la forma *"menor a mayor"*.
 
 Otra forma es:
 
@@ -289,7 +289,7 @@ datos <- datos %>%
 datos %>% 
   count(grupo_edad2)
 ```
-Construimos así una variable factor ordenada.
+Construimos así una variable factor ordenada <ord>.
 
 Por último, con el argumento **labels** en `FALSE` hacemos que las etiquetas de los 8 grupos sean numéricas.
 
@@ -303,7 +303,7 @@ datos %>%
   count(grupo_edad2)
 ```
 
-Aplicando `case_when()` discretizamos la edad en 4 grupos irregulares, forzando sus etiquetas para lograr el orden adecuado.
+Otro ejemplo, podría ser aplicando `case_when()` donde discretizamos la edad en 4 grupos irregulares, forzando sus etiquetas para lograr el orden adecuado.
 
 
 ```{r}
@@ -311,8 +311,8 @@ datos <- datos %>%
   mutate(grupo3 = case_when(
     edad < 13              ~ "1.Niño",
     edad > 12 & edad < 26  ~ "2.Adolescente",
-    edad > 25 & edad < 65  ~ "3.Adulto Joven",
-    edad > 64              ~ "4.Adulto mayor"
+    edad > 25 & edad < 65  ~ "3.Adulto_joven",
+    edad > 64              ~ "4.Adulto_mayor"
   ))
 
 datos %>% 
@@ -326,14 +326,14 @@ De la misma forma pero más sencillo y controlado es:
 ```{r}
 datos <- datos %>% 
   mutate(grupo3 = case_when(
-    between(edad, 0, 12) ~ "1.Niño",
-    between(edad, 13, 25) ~ "2.Adolescente",
-    between(edad, 26, 64) ~ "3.Adulto Joven",
-    between(edad, 65, Inf) ~ "4.Adulto mayor"
+    between(edad, 0, 12)   ~ "1.Niño",
+    between(edad, 13, 25)  ~ "2.Adolescente",
+    between(edad, 26, 64)  ~ "3.Adulto_joven",
+    between(edad, 65, Inf) ~ "4.Adulto_mayor"
   ))
 
 datos %>% 
   count(grupo3)  
 ```
 
-Finalmente estas funciones condicionales que estuvimos viendo no se limitan a la tarea de construir agrupamientos de variables cuantitativas sino que sirven para cualquier situación donde a partir de una o más condiciones se produzcan una o más respuestas.
+Estas funciones condicionales que tratamos en este documento no se limitan a la tarea de construir agrupamientos de variables cuantitativas sino que sirven para cualquier situación donde a partir de una o más condiciones se produzcan una o más valores como respuesta.

@@ -1545,10 +1545,10 @@ tomará la nueva variable si esa condición se cumple o no se cumple.</p>
 dado que el resultado posible consta siempre de 2 valores.</p>
 <p>Los valores de salida de esta función pueden ser de variado tipo
 (caracter, numerico o logico) aunque si estamos discretizando una
-variable cuantitativa generalmente construimos una variable de salida
-cualitativa ordinal, por lo que es común que la salida sea de tipo
-<code>character</code> (por eso las nuevas categorías van encerradas
-entre comillas).</p>
+variable cuantitativa generalmente construimos una variable resultado
+cualitativa ordinal. Es común que esta variable salida sea tipo
+<code>character</code> (observar que las nuevas categorías van
+encerradas entre comillas).</p>
 <p>Ahora bien, al ser ordinal estas categorías de la variable_nueva
 deben “ordenarse” en la forma de los valores de la variable, pero el
 lenguaje R no sabe con que estamos trabajando y respeta siempre el
@@ -1614,16 +1614,16 @@ matemáticos)</p></li>
 resultado es un factor ordenado. Por defecto vale FALSE (la salida es
 tipo caracter)</p></li>
 </ul>
-<p>Los argumentos opcionales no son necesarios definirlos si los valores
-por defecto nos sirven para la tarea buscada.</p>
+<p>Los argumentos opcionales no son necesarios definirlos siempre y
+cuando los valores por defecto son los que sirven para la tarea.</p>
 </div>
 </div>
 <div id="función-case_when" class="section level2">
 <h2>Función case_when()</h2>
 <p>Cuando las condiciones no son simples, es decir, el resultado no es
-dicotómico, utilizamos la función <code>case_when()</code> que es una
-vectorización de la función anterior (es el equivalente en R del comando
-CASE WHEN de SQL).</p>
+dicotómico y además los intervalos son irregulares, utilizamos la
+función <code>case_when()</code> que es una vectorización de la función
+<code>if_else()</code>.</p>
 <p>Supongamos que no queremos agrupar la variable en dos valores, sino
 en 3 grupos irregulares.</p>
 <p>Esquema básico de funcionamiento:</p>
@@ -1631,9 +1631,9 @@ en 3 grupos irregulares.</p>
 
 datos &lt;- datos %&gt;% 
   mutate(grupo_var = case_when( 
-        var1 &gt; 0 &amp; var1 &lt; 25     ~  &quot;Grupo1&quot;, 
-        var1 &gt; 24 &amp; var1 &lt; 65  ~    &quot;Grupo 2&quot;, 
-        var1 &gt;= 65             ~    &quot;Grupo 3&quot;))</code></pre>
+    var1 &gt;= 0 &amp; var1 &lt; 25  ~  &quot;Grupo1&quot;, 
+    var1 &gt; 24 &amp; var1 &lt; 65  ~    &quot;Grupo 2&quot;, 
+    var1 &gt;= 65             ~    &quot;Grupo 3&quot;))</code></pre>
 <p>Existe una condición por cada grupo creado, como si fuese un
 <code>if_else()</code> donde el valor declarado siempre es el verdadero.
 Se utilizan operadores de comparación como mayor ( &gt; ), menor ( &lt;
@@ -1645,23 +1645,23 @@ condición en la nueva variable (grupo_var).</p>
 usuario del lenguaje tenga el control de lo que esta sucediendo, por lo
 que cualquier mala definición de las condiciones puede provocar
 resultados incorrectos.</p>
-<p>Si incorporamos el argumento .default podemos indicar que valor toma
-si no se cumple ninguna de las condiciones anteriores.</p>
+<p>Si incorporamos el argumento <strong>.default</strong> podemos
+indicar que valor toma si no se cumple ninguna de las condiciones
+anteriores.</p>
 <p>Por ejemplo, podríamos tener algun valor perdido (NA) en
 <code>var1</code> y queremos que la variable <code>grupo_var</code>
-etiquete esos valores perdidos como “Sin dato”, se puede hacer lo
-siguiente:</p>
+etiquete esos valores perdidos como “Sin dato”:</p>
 <pre class="r"><code># var1 es una variable cuantitativa de números enteros con algun valor NA
 
 datos &lt;- datos %&gt;% 
   mutate(grupo_var = case_when( 
-        var1 &gt; 0 &amp; var1 &lt; 25     ~  &quot;Grupo1&quot;, 
+        var1 &gt;= 0 &amp; var1 &lt; 25  ~  &quot;Grupo1&quot;, 
         var1 &gt; 24 &amp; var1 &lt; 65  ~    &quot;Grupo 2&quot;, 
         var1 &gt;= 65             ~    &quot;Grupo 3&quot;,
         .default = &quot;Sin dato&quot;))</code></pre>
 <p>Las salidas son de tipo <strong><em>carácter</em></strong> (chr) y
 debemos manejar el ordenamiento de las etiquetas como vimos
-anteriormente, o por medio de factores o comenzando con caracteres
+anteriormente, por medio de factores o comenzando con caracteres
 ordenados alfabeticamente.</p>
 <p>Para simplificar el trabajo de estos intervalos de clase irregulares
 y no provocar errores en la confección de las condiciones, tidyverse
@@ -1677,15 +1677,15 @@ y se utiliza dentro de una función de condición tipo
 
 datos &lt;- datos %&gt;% 
   mutate(grupo_var = case_when( 
-    between(var1, 0, 24)     ~  &quot;Grupo1&quot;, 
+    between(var1, 0, 24)   ~  &quot;Grupo1&quot;, 
         between(var1, 25, 64)  ~    &quot;Grupo 2&quot;, 
         between(var1, 65, Inf) ~    &quot;Grupo 3&quot;,
         .default = &quot;Sin dato&quot;))</code></pre>
 <p>Los valores declarados como límites quedan incluídos siempre dentro
 del intervalo (son cerrados ambos). También podemos utilizar valores
-reservados como <strong>Inf</strong> o <strong>-Inf</strong> cuando
-desconocemos con que valor mínimo o máximo nos vamos a encontrar en la
-variable cuantitativa original.</p>
+reservados como <code>Inf</code> o <code>-Inf</code> cuando desconocemos
+con que valor máximo o mínimo nos vamos a encontrar en la variable
+cuantitativa original.</p>
 </div>
 </div>
 <div id="ejemplos" class="section level2">
@@ -1734,8 +1734,8 @@ datos %&gt;%
 1 menor o igual a la mediana    54
 2 mayor a la mediana            52</code></pre>
 <p>Vemos que en el conteo el formato de la variable ya no es
-<code>chr</code> sino <code>fctr</code> y orden de las etiquetas siguen
-la forma “menor a mayor”.</p>
+<code>chr</code> sino <code>fct</code> y el orden de las etiquetas
+siguen la forma <em>“menor a mayor”</em>.</p>
 <p>Otra forma es:</p>
 <pre class="r"><code>datos &lt;- datos %&gt;% 
   mutate(grupo_edad1 = if_else(condition = edad &gt; 56, 
@@ -1818,7 +1818,7 @@ datos %&gt;%
 6 (50,60]        52
 7 (60,70]        27
 8 (70,80]         3</code></pre>
-<p>Construimos así una variable factor ordenada.</p>
+<p>Construimos así una variable factor ordenada <ord>.</p>
 <p>Por último, con el argumento <strong>labels</strong> en
 <code>FALSE</code> hacemos que las etiquetas de los 8 grupos sean
 numéricas.</p>
@@ -1840,14 +1840,15 @@ datos %&gt;%
 6           6    52
 7           7    27
 8           8     3</code></pre>
-<p>Aplicando <code>case_when()</code> discretizamos la edad en 4 grupos
-irregulares, forzando sus etiquetas para lograr el orden adecuado.</p>
+<p>Otro ejemplo, podría ser aplicando <code>case_when()</code> donde
+discretizamos la edad en 4 grupos irregulares, forzando sus etiquetas
+para lograr el orden adecuado.</p>
 <pre class="r"><code>datos &lt;- datos %&gt;% 
   mutate(grupo3 = case_when(
     edad &lt; 13              ~ &quot;1.Niño&quot;,
     edad &gt; 12 &amp; edad &lt; 26  ~ &quot;2.Adolescente&quot;,
-    edad &gt; 25 &amp; edad &lt; 65  ~ &quot;3.Adulto Joven&quot;,
-    edad &gt; 64              ~ &quot;4.Adulto mayor&quot;
+    edad &gt; 25 &amp; edad &lt; 65  ~ &quot;3.Adulto_joven&quot;,
+    edad &gt; 64              ~ &quot;4.Adulto_mayor&quot;
   ))
 
 datos %&gt;% 
@@ -1857,17 +1858,17 @@ datos %&gt;%
   &lt;chr&gt;          &lt;int&gt;
 1 1.Niño             3
 2 2.Adolescente      5
-3 3.Adulto Joven    86
-4 4.Adulto mayor    12</code></pre>
+3 3.Adulto_joven    86
+4 4.Adulto_mayor    12</code></pre>
 <p>Si no hubiesemos etiquetado con los numeros por delante el orden
 alfabético hacía que Niño fuese a parar al final del conteo.</p>
 <p>De la misma forma pero más sencillo y controlado es:</p>
 <pre class="r"><code>datos &lt;- datos %&gt;% 
   mutate(grupo3 = case_when(
-    between(edad, 0, 12) ~ &quot;1.Niño&quot;,
-    between(edad, 13, 25) ~ &quot;2.Adolescente&quot;,
-    between(edad, 26, 64) ~ &quot;3.Adulto Joven&quot;,
-    between(edad, 65, Inf) ~ &quot;4.Adulto mayor&quot;
+    between(edad, 0, 12)   ~ &quot;1.Niño&quot;,
+    between(edad, 13, 25)  ~ &quot;2.Adolescente&quot;,
+    between(edad, 26, 64)  ~ &quot;3.Adulto_joven&quot;,
+    between(edad, 65, Inf) ~ &quot;4.Adulto_mayor&quot;
   ))
 
 datos %&gt;% 
@@ -1877,12 +1878,12 @@ datos %&gt;%
   &lt;chr&gt;          &lt;int&gt;
 1 1.Niño             3
 2 2.Adolescente      5
-3 3.Adulto Joven    86
-4 4.Adulto mayor    12</code></pre>
-<p>Finalmente estas funciones condicionales que estuvimos viendo no se
+3 3.Adulto_joven    86
+4 4.Adulto_mayor    12</code></pre>
+<p>Estas funciones condicionales que tratamos en este documento no se
 limitan a la tarea de construir agrupamientos de variables cuantitativas
 sino que sirven para cualquier situación donde a partir de una o más
-condiciones se produzcan una o más respuestas.</p>
+condiciones se produzcan una o más valores como respuesta.</p>
 </div>
 
 
