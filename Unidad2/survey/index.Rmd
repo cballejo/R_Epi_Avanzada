@@ -20,11 +20,11 @@ knitr::opts_chunk$set(comment=NA, dpi = 300, message = F, warning = F)
 
 <br>
 
-*Este material es parte de la* ***Unidad 2 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS***
+*Este material es parte de la* ***Unidad 2 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS v2024***
 
 <br>
 
-<center><p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Unidad2/survey/">Estimaciones con IC en muestras complejas con R</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://www.ine.gov.ar">Christian Ballejo - Instituto Nacional de Epidemiología</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"></a></p></center>
+<center><p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Unidad2/survey/">Estimaciones con IC en muestras complejas con R</a> por <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://www.ine.gov.ar">Christian Ballejo - Instituto Nacional de Epidemiología</a> bajo licencia <a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"></a></p></center>
 
 
 <br> 
@@ -69,7 +69,7 @@ Los factores de expansión finales son los que se emplean tanto para generar tod
 
 El paquete más conocido y utilizado del lenguaje R para trabajar con datos provenientes de muestreos complejos es **survey**. Desarrollado por *Thomas Lumley* que a su vez es autor del libro *Complex Surveys - A Guide to Analysis Using R (2010)*.
 
-La versión actual publicada en CRAN es la 4.0 y en el siguiente [enlace](http://r-survey.r-forge.r-project.org/survey/index.html) se encuentra información oficial sobre la librería.
+La versión actual publicada en CRAN es la 4.4.2 y en el siguiente [enlace](http://r-survey.r-forge.r-project.org/survey/index.html) se encuentra información oficial sobre la librería.
 
 Se activa, como todos los paquetes, con:
 
@@ -90,7 +90,12 @@ Esta tarea se realiza con la función `svydesign()` que tiene la forma general:
 
 
 ```{r, eval=FALSE}
-svydesign(ids=..., strata=..., data=..., weights=..., nest=..., fpc=...)
+svydesign(ids = ..., 
+          strata = ..., 
+          data = ..., 
+          weights = ..., 
+          nest = ..., 
+          fpc = ...)
 ```
 
 donde:
@@ -104,7 +109,9 @@ Si la muestra no tiene conglomerados definidos se escribe \~1.
 Usualmente, se declara a partir de una variable. Por ejemplo, si la variable ESTRATO define los estratos, sería,
 
 ```{r, eval=FALSE}
-svydesign(..., strata= ~ESTRATO, ...)
+svydesign(..., 
+          strata = ~ESTRATO, 
+          ...)
 ```
 
 - **data**: Dataframe que contiene las variables con los datos muestrales.
@@ -142,11 +149,11 @@ Esta encuesta poblacional se realiza desde 1970 y tiene como fin proporcionar da
 Las tres variables detalladas anteriormente participaran dentro de los argumentos para definir el objeto de diseño muestral de **survey**.
 
 ```{r}
-d <- svydesign(id= ~SDMVPSU,        # conglomerados
-               strata= ~SDMVSTRA,   # estratos
-               weights= ~WTMEC2YR,  # ponderación
-               nest= TRUE,
-               data= nhanes)
+d <- svydesign(id = ~SDMVPSU,        # conglomerados
+               strata = ~SDMVSTRA,   # estratos
+               weights = ~WTMEC2YR,  # ponderación
+               nest = TRUE,          # anidación
+               data = nhanes)        # datos
 
 summary(d) 
 ```
@@ -177,7 +184,10 @@ Los siguientes son los argumentos comunes de la función:
 Aplicamos la función sobre la variable de colesterol.
 
 ```{r}
-colesterol <- svymean(x = ~HI_CHOL, design = d, na.rm = T, deff = T)
+colesterol <- svymean(x = ~HI_CHOL, 
+                      design = d, 
+                      na.rm = T, 
+                      deff = T)
 
 colesterol
 
@@ -210,7 +220,8 @@ Veamos el ejemplo con colesterol que cumple con este requisito (valores 0-1):
 
 ```{r}
 ## formato dejando los valores predeterminados de los argumentos sin declarar
-svyciprop(formula = ~HI_CHOL, design = d)
+svyciprop(formula = ~HI_CHOL, 
+          design = d)
 
 # el código anterior utiliza "logit" como método de cálculo para los IC
 # este médodo ajusta un modelo de regresión logística y calcula un intervalo de 
@@ -218,7 +229,10 @@ svyciprop(formula = ~HI_CHOL, design = d)
 # en la escala de probabilidad.
 
 ## formato indicando el método "mean"
-svyciprop(formula = ~HI_CHOL, design = d, method = "mean", na.rm =T)
+svyciprop(formula = ~HI_CHOL, 
+          design = d, 
+          method = "mean", 
+          na.rm = T)
 
 # el método "mean" es un intervalo en la escala de probabilidad, identico al 
 # calculado por la función confint(syvmean()) vista anteriormente
@@ -239,6 +253,7 @@ La variable **agecat** contiene las siguientes categorías etarias de la poblaci
 
 ```{r}
 class(nhanes$agecat)
+
 levels(nhanes$agecat)
 ```
 Como vemos es de formato factor y posee 4 intervalos de clase para la edad.
@@ -246,16 +261,24 @@ Como vemos es de formato factor y posee 4 intervalos de clase para la edad.
 Para obtener las estimaciones de proporción e IC respetando el diseño del muestreo y sus ponderaciones debemos ejecutar:
 
 ```{r}
-svymean(x = ~agecat, design = d, na.rm = T, deff = T)
+svymean(x = ~agecat, 
+        design = d, 
+        na.rm = T, 
+        deff = T)
 
-confint(svymean(x = ~agecat, design = d, na.rm = T, deff = T))
+confint(svymean(x = ~agecat, 
+                design = d, 
+                na.rm = T, 
+                deff = T))
 ```
+
 Dado que **agecat** es una *variable factor* la función `svymean()` puede correrse sin problemas y devolver los resultados de proporción, el error estandar, el DEFF y los intervalos de confianza de cada categoría.
 
 Si intentasemos lo mismo con la función `svyciprop()` obtendríamos:
 
 ```{r}
-svyciprop(formula = ~agecat, design = d)
+svyciprop(formula = ~agecat, 
+          design = d)
 ```
 Observamos que informa un solo valor que no tiene absoluto sentido y eso sucede porque la estructura interna del factor se compone de números que comienzan en 1 y finalizan en el número correlativo como tantas categorías tenga. En este ejemplo va de 1 a 4.
 
@@ -264,10 +287,14 @@ Entonces cómo debemos proceder en estas situaciones si quisiéramos usar `svyci
 Hay que ejecutar una línea de código por cada categoría, de la siguiente forma:
 
 ```{r}
-svyciprop(formula = ~I(agecat == "(0,19]"), design = d)
-svyciprop(formula = ~I(agecat == "(19,39]"), design = d)
-svyciprop(formula = ~I(agecat == "(39,59]"), design = d)
-svyciprop(formula = ~I(agecat == "(59,Inf]"), design = d)
+svyciprop(formula = ~I(agecat == "(0,19]"), 
+          design = d)
+svyciprop(formula = ~I(agecat == "(19,39]"), 
+          design = d)
+svyciprop(formula = ~I(agecat == "(39,59]"), 
+          design = d)
+svyciprop(formula = ~I(agecat == "(59,Inf]"), 
+          design = d)
 ```
 Nota informativa: la letra **I** dentro de la sintaxis fórmula es una función indicadora, donde vale TRUE, si se cumple la condición entre paréntesis, y FALSE si no se cumple. Es una forma de dicotomizar cada categoría al momento de hacer la estimación.
 
@@ -288,7 +315,12 @@ La forma de especificar fácilmente estimaciones en un subgrupo es utilizando la
 
 Su forma general es:
 ```{r, eval=F}
-svyby(formula=..., by=..., design=..., FUN=..., deff=..., ...)
+svyby(formula = ..., 
+      by = ..., 
+      design = ..., 
+      FUN = ..., 
+      deff = ..., 
+      ...)
 ```
 
 donde:
@@ -325,24 +357,24 @@ En este punto vamos a comparar estimaciones en función de construir objetos de 
 
 ```{r}
 # Diseño complejo y pesos
-d_complejo <- svydesign(id= ~SDMVPSU, 
-                        strata= ~SDMVSTRA, 
-                        weights= ~WTMEC2YR, 
-                        nest= TRUE,
-                        data= nhanes)
+d_complejo <- svydesign(id = ~SDMVPSU, 
+                        strata = ~SDMVSTRA, 
+                        weights = ~WTMEC2YR, 
+                        nest = TRUE,
+                        data = nhanes)
 
 # Diseño sin uso de pesos
 
-d_simple <- svydesign(id= ~1, 
-                        strata= NULL, 
-                        weights= NULL, 
-                        data= nhanes)
+d_simple <- svydesign(id = ~1, 
+                        strata = NULL, 
+                        weights = NULL, 
+                        data = nhanes)
 
 # Diseño con pesos pero sin estructura compleja
-d_ponde <- svydesign(id= ~1, 
-                        strata= NULL, 
-                        weights= ~WTMEC2YR, 
-                        data= nhanes)
+d_ponde <- svydesign(id = ~1, 
+                        strata = NULL, 
+                        weights = ~WTMEC2YR, 
+                        data = nhanes)
 ```
 
 Tenemos tres diseños distintos: un diseño complejo basado en conglomerados, estratos y pesos, un diseño sólo con pesos y un diseño simple sin ponderación.
@@ -360,15 +392,23 @@ d_simple
 Ahora ejecutemos la función `svymean()` para estimar la proporción de **HI_COL** en cada caso.
 
 ```{r}
-col1 <- svymean(~HI_CHOL, d_complejo, deff = T, na.rm = T)
+col1 <- svymean(~HI_CHOL, 
+                d_complejo, 
+                deff = T, 
+                na.rm = T)
 
 col1
 
-col2 <- svymean(~HI_CHOL, d_ponde, deff = T, na.rm = T)
+col2 <- svymean(~HI_CHOL, 
+                d_ponde, 
+                deff = T, 
+                na.rm = T)
 
 col2
 
-col3 <- svymean(~HI_CHOL, d_simple, na.rm = T)
+col3 <- svymean(~HI_CHOL, 
+                d_simple, 
+                na.rm = T)
 
 col3
 ```
@@ -410,227 +450,22 @@ Este criterio debe ser considerado como uno de los más importantes a la hora de
 Para obtener tamaños muestrales ponderados de subgrupos podemos aplicar la función `svytotal()`.
 
 ```{r}
-svytotal(x = ~agecat, design = d)
+svytotal(x = ~agecat, 
+         design = d)
 ```
 
 #### Conteo de casos no ponderado 
 
-Cuando la incidencia de un fenómeno es muy baja y el diseño de la encuesta no lo tuvo en cuenta, entonces es posible que las estimaciones asociadas a tamaños, totales y proporciones sobre este fenómeno no sean confiables. Por ejemplo, *National Research Council (2015)* plantea que si el número de casos no ponderados es menor a 50 unidades entonces la estimación no es publicada.
+Cuando la incidencia de un fenómeno es muy baja y el diseño de la encuesta no lo tuvo en cuenta, entonces es posible que las estimaciones asociadas a tamaños, totales y proporciones sobre este fenómeno no sean confiables. Por ejemplo, *National Research Council (2015)* plantea que si el número de casos no ponderados es menor a 50 unidades entonces la estimación no es publicable.
 
 Conocer este valor es sencillo, por ejemplo usando `count()` de dplyr/tidyverse:
 
 ```{r, message=F, warning=F}
 library(tidyverse)
 
-nhanes %>% count(agecat)
+nhanes %>% 
+  count(agecat)
 ```
-
-
-## Gestión de datos con R
-
-Incorporamos algunas funciones para el manejo de datos relacionadas con la creación de nuevas variables y de transformación de variables cuantitativas a categóricas nominales u ordinales.
-
-Algunas de estas operaciones serán necesarias para cumplimentar los objetivos del trabajo practico grupal de esta unidad y seguramente se utilizarán a lo largo de las siguientes unidades restantes.
-
-Para crear nuevas variables producto de algún cálculo podemos hacerlo de las siguientes formas:
-
-**Sintaxis R base**
-
-```{r, eval = F}
-datos$variable_nueva <- datos$var1 * datos$var2
-
-# los operadores aritmeticos pueden ser +, -, *, /, etc.
-```
-
-Se puede hacer cualquier tipo de cálculo tomando valores de variables de nuestras tablas de datos e incorporando operadores, funciones matemáticas y constantes en las formulas.
-
-Siempre que asignemos la forma:
-
-`<nombre del dataframe>$<nombre de nueva variable> <- formula`
-
-Estaremos creando una nueva variable dentro del dataframe; y si el nombre de la variable existe, estaremos modificando o “pisando” los valores existentes por los nuevos valores asignados.
-
-
-**Sintaxis tidyverse**
-
-La función-verbo para crear variables nuevas o reemplazar existentes es `mutate()`
-
-```{r, eval=F}
-datos <- datos %>%  mutate(variable_nueva = var1 * var2)
-```
-
-
-Respecto a discretizar variables continuas podemos dividir el proceso en salidas dicotómicas o politómicas.
-
-Para salidas dicotómicas el lenguaje R tiene una función condicional `ifelse()` para R base e `if_else()` para tidyverse derivada de la simplificación del **IF condicional** que existe en todos los lenguajes de programación.
-
-Supongamos que creamos una nueva variable dentro del dataframe **datos** que se llama **_variable_nueva_** de tipo cualitativa y queremos que la misma tome valores a partir del cumplimiento de una condición de una variable cuantitativa existente denominada **var1**. 
-
-Si los valores de **var1** son mayores a 10, entonces **variable_nueva**, tomará el valor "> 10", en caso contrario, tomará el valor "<= 10"
-
-La forma general de uso sería:
-
-**Sintaxis R base**
-
-```{r, eval=F}
-datos$variable_nueva <- ifelse(test = datos$var1 > 10, 
-                               yes = "> 10", 
-                               no = "<= 10")
-
-# los operadores de comparación pueden ser ==, !=, >, <, >=, <=
-# se pueden agregar conectores lógicos &, |, etc
-```
-
-Observemos que se necesitan tres argumentos: el test condicional, el valor que toma cuando el test es positivo (yes) y el valor que toma cuando el test es negativo (no).
-
-**Sintaxis tidyverse**
-
-```{r, eval=F}
-datos <- datos %>% 
-  mutate(variable_nueva = if_else(condition = var1 > 10, 
-                                  true = "> 10", 
-                                  false = "<= 10")
-```
-
-Para salidas politómicas tenemos varias opciones dependiendo de si los intervalos de clase de la variable continua son regulares o irregulares.
-
-La función `cut()` de R base sirve para las dos situaciones y la función `case_when()` del tidyverse para condiciones múltiples (generalmente irregulares).
-
-Veamos las formas generales de las dos funciones:
-
-**Función `cut()`**
-```{r, eval=F}
-## intervalos regulares
-datos$var_nueva <- cut(x = datos$var1, 
-                       breaks = seq(0,100, by = 10), 
-                       ordered_result = T)
-
-# En el ejemplo anterior la función seq() genera intervalos de 10 en 10 desde 0 a 100
-# es decir, 10 niveles de un factor ordenado
-
-# las etiquetas son automáticas y utilizan notación matemática, donde los ( implican intervalo abierto que no inlcuye el valor y los [ intervalo cerrado que si incluye el valor
-
-# El argumento ordered_result = T determina que el factor sea ordenado
-
-## intervalos irregulares
-datos$var_nueva <- cut(x = datos$var1, 
-                       breaks = c(-Inf, 18, 65, +Inf),
-                       labels = c("1.grupo", "2.grupo", "3.grupo"),
-                       ordered_result = T)
-
-# Los breaks se construyen con un vector de "cortes" 
-# Es necesario definir labels
-# En este ejemplo, al intervalo entre el valor más bajo y 18 incluído se le asigna la categoría "1.grupo", al intervalo de 19 a 65 incluído "2.grupo" y "3.grupo" a los valores que van de 66 al máximo valor de la variable var1.
-```
-
-Los argumentos obligatorios y opcionales de la función `cut()` son:
-
-- **x**: El conjunto de datos numéricos de entrada (variable cuantitativa continua)
-
-- **breaks**: los puntos de corte de los intervalos (pueden definirse regulares o irregulares)
-
-- **labels**:  las etiquetas de los intervalos (pueden omitirse cuando los intervalos son regulares y surgen de una función `seq()`)
-
-- **include.lowest**:  opcional - indica si se debe incluir el valor más bajo (o más alto
-para rigth = FALSE) de corte. Por defecto vale FALSE
-
-- **right**: opcional - indica si los intervalos son cerrados a la derecha o viceversa. Por
-defecto vale TRUE
-
-- **ordered_result**: opcional - determina si el resultado es un factor ordenado. Por
-defecto vale FALSE
-
-
-**Función `case_when()`**
-
-Ejecuta una vectorización múltiple de funciones if-else. Es el equivalente en R del comando CASE WHEN de SQL.
-
-Esquema de funcionamiento:
-
-```{r, eval=F}
-var_salida = case_when( 
-		var1 > 10 | var2 == TRUE	 ~ 	"categoría1", 
-		var3 == "XX" 	 	           ~ 	"categoría2", 
-		TRUE			                 ~ 	"Otra_categoría")
-
-```
-
-Produce salidas de variables de tipo **_carácter_** (chr) a diferencia de `cut()` donde son **_factores_**.
-
-
-Veamos algunos ejemplos prácticos de las funciones presentadas trabajando con una variable común como **EDAD**. 
-
-```{r, echo=F, message=F, warning=F}
-library(tidyverse)
-datos <- read_csv("ciudad.csv")
-```
-
-**Función `cut()` en sintaxis base**
-
-```{r}
-## Discretizamos con cut() en intervalos regulares cerrados a derecha
-datos$grupo <- cut(x = datos$EDAD, 
-                   breaks = seq(0,100, by = 10),
-                   include.lowest = T,
-                   right = T,          # define cerramiento
-                   ordered_result = T)
-
-table(datos$grupo)  # vemos distribución
-
-class(datos$grupo)  # clase de la nueva variable grupo
-```
-
-
-```{r}
-## Discretizamos con cut() en intervalos regulares cerrados a izquierda
-datos$grupo <- cut(x = datos$EDAD, 
-                   breaks = seq(0,100, by = 10),
-                   include.lowest = T,
-                   right = F,             # define cerramiento
-                   ordered_result = T)
-
-table(datos$grupo) # vemos distribución
-```
-
-```{r}
-## Discretizamos con cut() en intervalos irregulares 
-datos$grupo <- cut(datos$EDAD, 
-                   c(0,12,25,65,+Inf), 
-                   c("Niño", "Adolescente", "Adulto Joven", "Adulto mayor"), 
-                   include.lowest = T,
-                   ordered_result = T)
-
-table(datos$grupo) # vemos distribución
-
-```
-
-**Función `cut()` en sintaxis tidyverse**
-
-```{r}
-## Discretizamos con cut() en intervalos regulares cerrados a derecha
-datos <- datos %>% mutate(grupo = cut(x = EDAD, 
-                   breaks = seq(0,100, by = 10),
-                   include.lowest = T,
-                   right = T,             # define cerramiento
-                   ordered_result = T))
-
-datos %>% count(grupo) # vemos distribución
-```
-
-**Función `case_when()` - sintaxis tidyverse**
-
-```{r}
-## Discretizamos con case_when() en intervalos irregulares 
-datos <- datos %>% mutate(grupo = case_when(
-  EDAD < 13 ~ "1.Niño",
-  EDAD > 12 & EDAD < 26 ~ "2.Adolescente",
-  EDAD > 25 & EDAD < 66 ~ "3.Adulto Joven",
-  EDAD > 64 ~ "4.Adulto mayor"
-))
-
-datos %>% count(grupo)   # vemos distribución
-```
-
 
 ## Bibliografía
 
