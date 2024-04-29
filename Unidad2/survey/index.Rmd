@@ -71,173 +71,263 @@ El paquete más conocido y utilizado del lenguaje R para trabajar con datos prov
 
 La versión actual publicada en CRAN es la 4.4.2 y en el siguiente [enlace](http://r-survey.r-forge.r-project.org/survey/index.html) se encuentra información oficial sobre la librería.
 
-Se activa, como todos los paquetes, con:
-
-```{r, message=F, warning=F}
-library(survey)
-```
-
 Las funciones que lo integran utilizan en sus argumentos la sintaxis fórmula preferentemente y no son compatibles con el universo "ordenado" de tidyverse.
 
 Existe un paquete "wrapper" llamado **srvyr** que incorpora sintaxis *tidy*, haciendo uso de tuberías y funciones tales como `group_by()`, `summarise()`, entre otras. 
 
+Se activa, como todos los paquetes, con:
+
+```{r, message=F, warning=F}
+library(srvyr)
+```
+
 
 ### Especificación del diseño de la muestra
 
-El primer paso para trabajar con las funciones de **survey** es crear un objeto con la información relacionada con el diseño muestral.
+El primer paso para trabajar con las funciones de **srvyr** es crear un objeto con la información relacionada con el diseño muestral.
 
-Esta tarea se realiza con la función `svydesign()` que tiene la forma general:
+Esta tarea se realiza con la función `svydesign()` que tiene estos argumentos principales:
 
 
 ```{r, eval=FALSE}
-svydesign(ids = ..., 
-          strata = ..., 
-          data = ..., 
-          weights = ..., 
-          nest = ..., 
-          fpc = ...)
+datos %>%                       # tabla de datos 
+  as_survey_design(ids = ..., 
+                   strata = ..., 
+                   variables = ...,
+                   fpc = ...,
+                   nest = F,
+                   weights = ...)
 ```
 
 donde:
 
-- **ids**: Fórmula con la o las variables que definen los conglomerados, desde el nivel más alto al más bajo. La expresión comienza con el símbolo \~ y si hay más de un conglomerado se utiliza el símbolo \+ entre las variables.
+- **ids**: Variables que especifican identificadores de conglomerados desde el nivel más grande hasta el nivel más pequeño (dejar el argumento vacío, `NULL`, 1 o 0 indica que no hay conglomerados).
 
-Si la muestra no tiene conglomerados definidos se escribe \~1. 
 
-- **strata**: Fórmula con los estratos. Si no hay estratos, se ignora esta especificación.
+- **strata**: Variables que identifican a los estratos. Si no hay estratos, se ignora esta especificación.
 
 Usualmente, se declara a partir de una variable. Por ejemplo, si la variable ESTRATO define los estratos, sería,
 
 ```{r, eval=FALSE}
-svydesign(..., 
-          strata = ~ESTRATO, 
-          ...)
+datos %>%
+  as_survey_design(..., 
+                   strata = ESTRATO, 
+                   ...)
 ```
 
-- **data**: Dataframe que contiene las variables con los datos muestrales.
+- **variables**: Variables que se incluirán en el diseño. El valor predeterminado es todas las variables de datos.
 
-- **weights**: Fórmula con la variable de ponderación de cada observación.
+- **fpc**: Variables con el factor de corrección por población finita. 
 
 - **nest**: Si es TRUE, re-etiqueta los conglomerados considerando anidamiento dentro de los estratos. Necesario activar cuando las etiquetas de las categorías de los conglomerados en los distintos estratos se llaman igual.
 
-- **fpc**: Fórmula con el factor de corrección por población finita. Puede ser n/N o bien N.
-
+- **weights**: Variables de ponderación de cada observación (inverso a la probabilidad).
 
 Los argumentos mínimos que debemos definir dependerá de la estructura muestral de la base de datos que estemos analizando y de las variables que tengamos a disposición. Habitualmente se tiene referencia de estratos, conglomerados y ponderaciones. También podemos encontrarnos con situaciones donde están definidos los tamaños poblacionales (variable fpc). 
 
-Para ejemplificar vamos a tomar un dataset que viene incluído llamado **_nhanes_** con datos extraídos de la "National Healt and Nutrition Examination Survey 2009-2010" (ver más información en https://wwwn.cdc.gov/nchs/nhanes/search/datapage.aspx?Component=laboratory&CycleBeginYear=2009).
+Para ejemplificar vamos a tomar a la **Encuesta Mundial de Salud Escolar** (EMSE) en su tercera edición que en la Argentina se realizó en 2018. Se puede acceder a sus datos abiertos en [EMSE 2018](http://datos.salud.gob.ar/dataset/base-de-datos-de-la-3-encuesta-mundial-de-salud-escolar-emse-con-resultados-nacionales-argentina)
 
-Leemos el dataset con:
+Fue llevada a cabo por el Ministerio de Salud y Desarrollo Social de la Nación, contó con la colaboración de los Ministerios de Educación Nacional y Provinciales, la OPS/OMS Argentina, OPS/OMS Washington y el CDC.
 
-```{r}
-data("nhanes")
+El diseño de muestreo tuvo dos etapas (selección de escuelas y luego de divisiones al azar) para producir una muestra representativa de alumnos de 1º a 5º año de educación media a nivel nacional (8º EGB a 3º polimodal en el caso de la provincia de Buenos Aires) y provincial. Se relevaron 523 escuelas en todo el país y se encuestaron 57.095 alumnos de los cuales se analizaron 56.981 cuestionarios correspondientes a las edades de 13 a 17 años, con una tasa de respuesta global de 63%.
 
-str(nhanes)
+Leemos el archivo de datos con:
+
+```{r, message=F, warning=F}
+library(tidyverse)
+library(srvyr)
+
+EMSE2018 <- read_csv("EMSE_DatosAbiertos.csv")
+
+dim(EMSE2018) # dimensiones de la tabla de datos
 ```
-Observamos que el dataframe importado consta de 7 variables y 8591 observaciones.
+Observamos que el dataframe original importado consta de 309 variables y 56981 observaciones. (no mostramos en el documento la salida de la estructura brindada por `glimpse()` por su longitud)
 
-Las variables relevantes para el diseño muestral son:
-
-- **SDMVPSU**: Unidades primarias de muestreo (conglomerados)
-
-- **SDMVSTRA**: Estratos del muestreo
-
-- **WTMEC2YR**: Ponderación
-
-Esta encuesta poblacional se realiza desde 1970 y tiene como fin proporcionar datos a nivel nacional sobre salud y enfermedades, y sobre factores de riesgo dietéticos y clínicos. Cada ciclo de cuatro años de NHANES recluta a unas 28000 personas en una muestra de bietápica. Estos participantes reciben una entrevista y un examen clínico, y se les toman muestras de sangre. 
-
-Las tres variables detalladas anteriormente participaran dentro de los argumentos para definir el objeto de diseño muestral de **survey**.
+El total de la muestra expandida es de 2637546 estudiantes.
 
 ```{r}
-d <- svydesign(id = ~SDMVPSU,        # conglomerados
-               strata = ~SDMVSTRA,   # estratos
-               weights = ~WTMEC2YR,  # ponderación
-               nest = TRUE,          # anidación
-               data = nhanes)        # datos
+EMSE2018 %>%
+  summarise(total_expandido = sum(weight))
+```
+
+Existen dos variables cuantitativas donde se registraron la altura (q4) y el peso (q5) de los estudiantes encuestados. Antes de generar el objeto de diseño vamos a construir una nueva variable llamada IMC (Índice de Masa Corporal) producto de su cálculo a partir de estas variables.
+
+```{r}
+EMSE2018 <- EMSE2018 %>% 
+  mutate(IMC = q5/(q4)^2)  # peso sobre talla al cuadrado
+```
+
+
+Las variables relevantes para el diseño muestral que el documento de usuario define son:
+
+- **psu**: Unidades primarias de muestreo (conglomerados)
+
+- **stratum**: Estratos del muestreo
+
+- **weight**: Ponderación
+
+
+Estas son las tres variables que participaran dentro de los argumentos para definir el objeto de diseño muestral de **survey/srvyr**, junto a un pequeño recorte de variables con las que vamos a trabajar.
+
+- **record** = Nro. de registro
+
+- **q2 / texto_q2** = Sexo
+
+- **q3 / texto_q3** = Grado / año een el que se encuentra el estudiante
+
+- **q4** = Estatura sin zapatos (medido en metros)
+
+- **q5** = Peso sin zapatos (medido en kilogramos)
+
+- **q6 / texto_q6** = Pregunta sobre hambre
+
+- **qn24 / texto_qn24** = Pregunta sobre idea suicida
+
+- **IMC** = Índice de Masa Corporal (recién calculada)
+
+```{r}
+d <- EMSE2018 %>%
+  as_survey_design(ids = psu,          # conglomerados
+                   variables = c(record, psu, stratum, weight, q2, texto_q2, q3, texto_q3, q4, q5, q6, texto_q6, qn24, texto_qn24, IMC),      # variables incluidas en el diseño
+                   strata = stratum,   # estratos
+                   weights = weight,   # ponderación
+                   nest = TRUE)        # anidación
 
 summary(d) 
 ```
+
 Con la función `summary()` podemos obtener información sobre el objeto creado y detalles del diseño muestral, tales como tamaño de los estratos y cantidad de conglomerados.
 
 Una vez que tenemos creado el objeto *"survey.design"*, que en nuestro ejemplo se denomina **d**, podemos avanzar en el calculo de las estimaciones.
 
-Tengamos en cuenta que si por algún motivo debemos modificar la estructura de la tabla de datos, ya sea para crear una nueva variable o modificar una existente, debemos volver a generar el objeto con el diseño muestral para poder hacer uso de esos cambios en las estimaciones futuras. Por este motivo, recomendamos realizar todas las operaciones de gestión de variables previamente a utilizar el paquete **survey**.
+Si bien podemos manipular datos dentro de este formato de diseño utilizando algunas de las funciones de tidyverse (select, mutate, filter y rename) lo conveniente es modificar previamente la estructura de la tabla de datos, ya sea para crear una nueva variable, como hicimos recién con IMC o cambiar una existente y luego generar el objeto con el diseño muestral para poder hacer uso de esos cambios en las estimaciones. 
 
 ### Estimaciones
 
-Las variables disponibles en este dataset para realizar estimaciones son pocas dado que está pensado como un recorte de NHANES con el objetivo de ejemplificar el uso de las funciones de **survey**.
+Todos los códigos para las estimaciones comenzaran a partir del objeto de diseño creado inicialmente, llamado **d** en nuestro ejemplo.
 
-En primer lugar tomaremos la variable **HI_CHOL** (Colesterol alto) que tiene formato numérico, donde 1 es mayor o igual a 240 mg/dl y 0 es menor a 240 mg/dl. 
+En primer lugar tomaremos la variable **IMC** que tiene formato numérico.
 
-La función `svymean()` computa estimaciones de medias (si la variable es cuantitativa) o de proporciones (si la variable categórica es dicotómica con valores 0 y 1 o clase *factor*).
+La función `survey_mean()` computa estimaciones de medias en diseños complejos usando la sintaxis de tidyverse.
 
 Los siguientes son los argumentos comunes de la función:
 
-- **x**: Formato fórmula con la o las variables. 
-
-- **design**: Objeto "survey.design" creado anteriormente
+- **x**: Variable o expresión o vacía. 
 
 - **na.rm**: Si es TRUE, omite los valores NA de la variable
 
+- **vartype**: Obtiene la variabilidad como uno o más estimadores: error estándar ("se", predeterminado), intervalo de confianza ("ci"), varianza ("var") o coeficiente de variación ("cv").
+
+- **level**: Nivel de confianza (solo se usa si el anterior es "ci")
+
 - **deff**: Si es TRUE, calcula el efecto de diseño para la estimación
 
-Aplicamos la función sobre la variable de colesterol.
+Aplicamos la función sobre la variable de IMC dentro de summarise() de tidyverse:
 
 ```{r}
-colesterol <- svymean(x = ~HI_CHOL, 
-                      design = d, 
-                      na.rm = T, 
-                      deff = T)
-
-colesterol
+d %>%
+  summarise(IMC = survey_mean(x = IMC,
+              na.rm = T,
+              vartype = c("se", "ci", "var", "cv"),
+              level = 0.95))
 
 ```
-El objeto colesterol (de clase *svystat*) contiene la estimación puntual de proporción de colesterol alto (11,2 %), el error estandar y el DEFF.
+El resultado muestra una media de IMC de 22,14, un error estándar de 0,09, un intervalo de confianza al 95% de (21,97-22,31), una varianza de 0,007 y un coeficiente de variación de 0,4 %.
 
-Mediante la función `confint()` podemos obtener el límite inferior y superior del intervalo de confianza al 95% (valor por defecto).
+Como nos informan que hubo no respuesta en la encuesta y la faltante de información en altura y/o peso provoca observaciones perdidas en la variable IMC, vamos a ver cuantos de estos valores perdidos tenemos en la variable.
 
+Si deseamos calcular totales, es decir a cuantos estudiantes representa estos valores perdidos podemos usar la función `survey_total()`. 
 
 ```{r}
-confint(colesterol) # IC 95 %
-
-confint(colesterol) * 100  # valores porcentuales
-
-round(confint(colesterol) * 100,2)  # valores porcentuales redondeados
-
-confint(colesterol, level = 0.99) # IC 99 %
-
-deff(colesterol) ## la función deff() muestra el efecto de diseño de la estimación
-
+d %>% 
+  filter(is.na(IMC)) %>%  # filtramos los NA en IMC
+  summarise(IMC_na = survey_total(vartype = "ci"))
 ```
-Si bien `svymean()` se puede utilizar para medias y para proporciones (teniendo en cuenta las formas técnicas de la variable categórica antes mencionada), el paquete también posee una función específica para estimación de proporciones e intervalos de confianza denominada 
-`svyciprop()` que computa intervalos utilizando una variedad de métodos que pueden ser más precisos cuando los valores de proporción se encuentran cercanos al 0 o al 1.
+Hay aproximadamente 976.104 IC 95% (87.820-1.074.088) estudiantes sin valor en la variable IMC del total de la población de 2.637.546 (37 %). 
 
-Su aplicación es similar a `svymean()` pero tiene mayores exigencias a la hora del formato de la variable que incluimos como argumento principal.
-
-Mientras `svymean()` se adapta a variables categóricas tipo factor o dicotomizadas 0-1, `svyciprop()` exige que la variable tenga este último formato y por lo tanto en situación de multiples categorías debemos "dummificar" (proceso por el cual se convierte en tantas variable dummy 0-1 como categorías tenga la variable en cuestión.)
-
-Veamos el ejemplo con colesterol que cumple con este requisito (valores 0-1):
+Si en lugar de la media quisieramos la mediana podemos cambiar la función y usar `survey_median()`.
 
 ```{r}
-## formato dejando los valores predeterminados de los argumentos sin declarar
-svyciprop(formula = ~HI_CHOL, 
-          design = d)
+d %>%
+  summarise(IMC = survey_median(x = IMC,
+              na.rm = T,
+              vartype = c("se", "ci", "var", "cv"),
+              level = 0.95))
 
-# el código anterior utiliza "logit" como método de cálculo para los IC
-# este médodo ajusta un modelo de regresión logística y calcula un intervalo de 
-# tipo Wald en la escala logarítmica de probabilidades, que luego se transforma 
-# en la escala de probabilidad.
-
-## formato indicando el método "mean"
-svyciprop(formula = ~HI_CHOL, 
-          design = d, 
-          method = "mean", 
-          na.rm = T)
-
-# el método "mean" es un intervalo en la escala de probabilidad, identico al 
-# calculado por la función confint(syvmean()) vista anteriormente
 ```
-En este documento no vamos a profundizar en los métodos que la función ofrece, solo mencionaremos las otras posibilidades permitidas según la ayuda del paquete.
+Podemos estratificar estas estimaciones haciendo uso del `group_by()`, por ejemplo con la variable sexo del estudiante:
+
+```{r}
+d %>% 
+  group_by(texto_q2) %>%  # sexo
+  summarise(media_IMC = survey_mean(IMC, 
+                                    vartype = "ci", 
+                                    na.rm = T))
+```
+
+Como hay datos perdidos en la variable sexo nos aparece una categoría más en los resultados. Al estar vacía en las estimaciones (evidentemente son no respuestas completas) podemos deshacernos de esa línea con un `filter()`.
+
+```{r}
+d %>% 
+  filter(!is.na(q2)) %>% 
+  group_by(texto_q2) %>% 
+  summarise(media_IMC = survey_mean(IMC, 
+                                    vartype = "ci", 
+                                    na.rm = T))
+```
+
+Esta tabla muestra las estimaciones de IMC según sexo con sus intervalos de confianza.
+
+Otra variable de la encuesta es la respuesta a la pregunta "Durante los últimos 30 días ¿con qué frecuencia te quedaste con hambre porque no había suficiente comida en tu hogar?". Las categorías válidas fueron: Nunca - Rara vez - Algunas veces - Casi siempre - Siempre y Dato perdido si no hubo respuesta.
+
+Para abordar estas variables cualitativas donde queremos obtener proporciones el paquete tiene a la función `survey_prop()` que se utiliza luego de declarar la variable de interes en un `group_by()`:
+
+```{r}
+d %>% 
+  group_by(texto_q6) %>% # variable para la estimacion
+  summarise(prop_hambre = survey_prop(vartype = "ci")*100) # usamos 100 para %
+```
+
+El resultado muestra las categorías desordenadas en relación a lo que significa cada una respecto a la definición de la pregunta, es decir a la ordinalidad de la variables, aunque si está ordenada respecto a la forma en que lo hace el lenguaje R (alfabético).
+
+Para darle el orden adecuado, deberíamos convertir la variable texto_q6 a factor y declarar correctamente sus niveles. Conviene hacer esto previo a la creación del objeto de diseño pero el paquete también lo permite una vez creado.
+
+```{r}
+d <- d  %>%
+  mutate(texto_q6 = factor(texto_q6, 
+                           levels = c("Nunca", "Rara vez", "Algunas veces", "Casi siempre", "Siempre", "Dato perdido")))
+```
+
+Repetimos el código anterior
+
+```{r}
+d %>% 
+  group_by(texto_q6) %>% # variable para la estimacion
+  summarise(prop_hambre = survey_prop(vartype = "ci")*100) # usamos 100 para %
+```
+El ordenamiento de las categorías ahora es el correcto producto de la transformación a factor.
+
+Para estratificar estas proporciones lo único que debemos hacer es incorporar la variable de agrupamiento dentro del `group_by()`.
+
+```{r}
+d %>% 
+  group_by(texto_q2, texto_q6) %>% # variable de estratificación y estimacion
+  summarise(prop_hambre = survey_prop(vartype = "ci")*100) # usamos 100 para %
+```
+
+Este esquema de agrupamientos/estratificaciones se anidan en el orden en que se declaran dentro del `group_by()` siendo la última variable la de estimación. Por ende, los porcentajes también salen anidados, tomando el 100 % de las categorías cada categoría de **texto_q2** para el ejemplo anterior.
+
+Podemos hacer que para el calculo de los porcentajes se tome como denominador el total general de la siguiente forma:
+
+```{r}
+d %>% 
+  group_by(interact(texto_q2, texto_q6)) %>% # agregamos función interact()
+  summarise(prop_hambre = survey_prop(vartype = "ci")*100) # usamos 100 para %
+```
+
+Un argumento incluido dentro de las posibilidades de `survey_prop()` es el método para su calculo (prop_method). 
+
+En este documento no vamos a profundizar en los métodos que la función ofrece, solo mencionaremos las posibilidades permitidas según la ayuda del paquete.
 
 El método de `"likelihood"` utiliza la distribución de chi-cuadrado escalada (Rao-Scott) para la loglikelihood de una distribución binomial. 
 
@@ -245,111 +335,63 @@ El método `"asin"` usa la transformación estabilizadora de la varianza para la
 
 El método `"beta"` usa la función beta incompleta como en `binom.test`, con una tamaño de muestra efectivo basado en la varianza estimada de la proporción. (Korn y Graubard, 1998) 
 
-El método `"xlogit"` utiliza una transformación logit de la media y luego se retrotransforma a la escala de probabilidad. Este parece ser el método utilizado por los software SUDAAN y SPSS COMPLEX SAMPLES. 
+El método `"mean"` utiliza un intervalo tipo Wald en la escala de probabilidad, igual que `confint()`
 
-Ahora tomaremos otra variable del dataset que no cumple con el requisito técnico de ser dicotómica con valores 0-1 para mostrar las diferencias de procesamiento.
+De forma predeterminada el argumento toma el método "logit" que ajusta un modelo de regresión logística y calcula un intervalo tipo Wald en la escala logarítmica de probabilidades, que luego se transforma a la escala de probabilidad.
 
-La variable **agecat** contiene las siguientes categorías etarias de la población:
-
-```{r}
-class(nhanes$agecat)
-
-levels(nhanes$agecat)
-```
-Como vemos es de formato factor y posee 4 intervalos de clase para la edad.
-
-Para obtener las estimaciones de proporción e IC respetando el diseño del muestreo y sus ponderaciones debemos ejecutar:
+Otra función útil es `survey_count()` que estima el conteo poblacional de las observaciones según categoría.
 
 ```{r}
-svymean(x = ~agecat, 
-        design = d, 
-        na.rm = T, 
-        deff = T)
-
-confint(svymean(x = ~agecat, 
-                design = d, 
-                na.rm = T, 
-                deff = T))
+d %>% 
+  survey_count(texto_q6,
+               vartype = "ci") 
 ```
 
-Dado que **agecat** es una *variable factor* la función `svymean()` puede correrse sin problemas y devolver los resultados de proporción, el error estandar, el DEFF y los intervalos de confianza de cada categoría.
+Aquí lo usamos acompañando con el intervalo de confianza del 95% (predeterminado).
 
-Si intentasemos lo mismo con la función `svyciprop()` obtendríamos:
+Ahora tomaremos otra variable de EMSE2018 llamada **qn24** que refiere a la pregunta: "Durante los últimos 12 meses, ¿alguna vez consideraste seriamente la posibilidad de intentar suicidarte?". Sus posibles respuestas son "Si", "No" y el habitual "Dato perdido".
+
+Estimaremos su proporción para toda la población pero también para una subpoblación en particular "3er año/12vo grado nivel Polimodal o 5to año nivel Secundario".
+
+Como es habitual que necesitemos obtener estimaciones en subgrupos o subpoblaciones determinados por categorías definidas de una variable, debemos tener cuidado e interpretar los elementos del muestro para que esas subpoblaciones hayan sido consideradas y por lo tanto estén declaradas como **dominio de estimación**. 
+
+Estos subgrupos requeridos pueden no coincidir con los estratos de la muestra compleja generando un inconveniente para las estimaciones, dado que las ponderaciones muestrales serían correctas pero la probabilidad de muestreo seguramente no, lo que produce estimaciones puntuales correctas con errores estándar incorrectos.
+
+Las funciones del paquete **srvyr** maneja estos detalles sin ningún esfuerzo especial por parte del analista siempre y cuando utilice la muestra completa para definir el objeto de diseño de la encuesta pero no asegura que los resultados tengan la calidad necesaria.
+
+Mostremos el código entonces:
 
 ```{r}
-svyciprop(formula = ~agecat, 
-          design = d)
+d %>% 
+  group_by(texto_qn24) %>% 
+  summarise(prop_suicidio = survey_prop(vartype = c("ci", "cv"))*100) 
 ```
-Observamos que informa un solo valor que no tiene absoluto sentido y eso sucede porque la estructura interna del factor se compone de números que comienzan en 1 y finalizan en el número correlativo como tantas categorías tenga. En este ejemplo va de 1 a 4.
-
-Entonces cómo debemos proceder en estas situaciones si quisiéramos usar `svyciprop()`? 
-
-Hay que ejecutar una línea de código por cada categoría, de la siguiente forma:
 
 ```{r}
-svyciprop(formula = ~I(agecat == "(0,19]"), 
-          design = d)
-svyciprop(formula = ~I(agecat == "(19,39]"), 
-          design = d)
-svyciprop(formula = ~I(agecat == "(39,59]"), 
-          design = d)
-svyciprop(formula = ~I(agecat == "(59,Inf]"), 
-          design = d)
-```
-Nota informativa: la letra **I** dentro de la sintaxis fórmula es una función indicadora, donde vale TRUE, si se cumple la condición entre paréntesis, y FALSE si no se cumple. Es una forma de dicotomizar cada categoría al momento de hacer la estimación.
-
-
-Para las situaciones propuestas dentro del curso vamos a utilizar la forma de la función `svymean()`, aplicada para estimaciones de medias y proporciones con sus IC.
-
-### Subgrupos
-
-Es habitual que necesitemos obtener estimaciones en subgrupos o subpoblaciones determinados por categorías definidas de una variable. 
-
-Los subgrupos requeridos pueden no coincidir con los estratos de la muestra compleja generando un inconveniente para las estimaciones, dado que las ponderaciones muestrales serían correctas pero la probabilidad de muestreo seguramente no, lo que produce estimaciones puntuales correctas con errores estándar incorrectos.
-
-El problema de la estimación en subpoblaciones también se denomina estimación de dominio en la literatura de encuestas. Afortunadamente, el paquete **survey** maneja estos detalles sin ningún esfuerzo especial por parte del analista. 
-
-Siempre que se utilice la muestra completa para definir el objeto de diseño de la encuesta, se pueden calcular estimaciones para cualquier subpoblación de interés. 
-
-La forma de especificar fácilmente estimaciones en un subgrupo es utilizando la función `svyby()`. 
-
-Su forma general es:
-```{r, eval=F}
-svyby(formula = ..., 
-      by = ..., 
-      design = ..., 
-      FUN = ..., 
-      deff = ..., 
-      ...)
+d %>% 
+  filter(q3 == 5) %>%   # codigo 5 de q3 es la subpoblación seleccionada
+  group_by(texto_qn24) %>% 
+  summarise(prop_suicidio = survey_prop(vartype = c("ci", "cv"))*100)
 ```
 
-donde:
+Un 21,0 % IC95%(20,3-21,7) del total de estudiantes dicen haber considerado un intento de suicidio en el último año, mientras que un 18,9 % IC95%(17,5-20,4) dice lo mismo en el grupo de 3er año/12vo grado nivel Polimodal o 5to año nivel Secundario.
 
-- **formula**: Fórmula donde se especifica la variable donde se aplicará la función (FUN)
+Agregamos a los resultados algo importante, que va a garantizar la calidad de la estimaciones y evitar estar informando valores poco confiables para los cuales el muestreo quizás no esté preparado. Este es el **coeficiente de variación** (CV).
 
-- **by**: Fórmula especificando el factor que define los subgrupos.
+Comparativamente vamos a encontrar en la medida que se agreguen filtro o agrupamiento anidados que reduzcan la muestra en la estimación valores más elevados de CV.
 
-- **design**: Objeto con el diseño muestral
-
-- **FUN**: Función a aplicar
-
-- **deff**: Si es TRUE, calcula el efecto de diseño para las estimaciones
-
-Para ver su implementación y resultados la utilizaremos para estimar las proporciones de colesterol alto (**HI_CHOL**) según las categorías de grupos de edad (**agecat**) en el _dataset_ **_nhanes_**.
-
+Que pasa si filtramos y nos quedamos además solo con las mujeres que respondieron .
 
 ```{r}
-col_x_gEdad <- svyby(formula = ~HI_CHOL,  # variable ppal
-                     by = ~agecat,        # factor que define los grupos
-                     design = d,          # objeto diseño muestral
-                     FUN = svymean,       # función que se aplica
-                     deff = T,            # activa calculo deff
-                     na.rm = TRUE)        # omite valores NA en el cálculo de IC
-
-col_x_gEdad
-
-confint(col_x_gEdad)  # intervalos de confianza
+d %>% 
+  filter(q3 == 5, q2 == 2, q6 == 3) %>%   # codigo 5 de q3 es la subpoblación seleccionada
+  group_by(texto_qn24) %>% 
+  summarise(prop_suicidio = survey_prop(vartype = c("ci", "cv"))*100)
 ```
+
+
+
+
 
 ## Errores estándar según efecto del diseño
 

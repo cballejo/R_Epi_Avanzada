@@ -1,0 +1,367 @@
+---
+title: "**Intervalos de confianza en muestras complejas con R**"
+author: ""
+date: ""
+output:
+  html_document:
+    css: style.css
+    toc: false
+number_sections: true
+anchor_sections: true
+theme: lumen
+---
+
+```{r, message=FALSE, echo=F}
+knitr::opts_chunk$set(comment=NA, dpi = 300, message = F, warning = F)
+```
+
+*Este material es parte de la* ***Unidad 2 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS***
+
+
+## Introducción
+
+En los estudios epidemiológicos de corte transversal, muchas veces se utilizan encuestas poblacionales para estimar la frecuencia de determinadas características de salud o de factores de riesgo en la población.
+
+Estas encuestas enfrentan restricciones prácticas que hacen que el muestreo aleatorio simple (MAS) no sea factible o no sea conveniente y por tanto sea necesario recurrir a otras alternativas de muestreo, como la estratificación, la selección en etapas, la formación de conglomerados o el empleo de probabilidades de selección desiguales. 
+
+Los diseños muestrales que incorporan combinaciones de estas estrategias se denominan complejos, por contraste con el MAS, en el que las unidades muestrales se seleccionan independientemente unas de otras y todas tienen igual probabilidad de selección y distribución.
+
+Un ejemplo cercano son las cuatro Encuestas Nacionales de Factores de Riesgo (**ENFR**) que se vienen llevando a cabo en Argentina desde el año 2005, ejecutadas entre el *Ministerio de Salud de la Nación* y el *INDEC*.
+
+El análisis de los datos obtenidos mediante estos diseños muestrales complejos puede resultar más complicado por la posible existencia de una correlación entre las observaciones de un mismo conglomerado, lo que lleva a que el conjunto de datos no siga la hipótesis de independencia y distribución idéntica, requerida en este contexto para sostener el supuesto de normalidad.  
+
+Realizar estimaciones acompañadas de sus intervalos de confianza (IC) en estas bases de datos sin tener en cuenta el efecto del diseño muestral, los dominios de estimación y los factores de expansión puede producir resultados erróneos.
+
+En este documento trabajaremos con los datos de la tercera ENFR del año 2009, aplicando y comparando distintas funciones del lenguaje R.
+
+## Encuesta Nacional de Factores de Riesgo (ENFR) 
+
+Leamos sobre los items relevantes de la estructura de la encuesta y su muestreo, poniendo énfasis sobre los elementos necesarios a la hora de su análisis.
+
+### Objetivos generales de la ENFR 
+
+Las enfermedades no transmisibles (enfermedades cardiovasculares, lesiones y cáncer) constituyen las causas más importantes de muerte en nuestro país. Para poder realizar actividades de promoción de la salud y prevención de estas enfermedades, es necesario actuar sobre sus determinantes, los llamados factores de riesgo.
+
+Esta encuesta tiene por objetivos:
+
+- Conocer la distribución de los factores de riesgo en la población de 18 años y más.
+- Estimar su prevalencia.
+- Determinar el perfil de la población bajo riesgo a través de sus características sociodemográficas, socioeconómicas, educativas y del entorno familiar social. 
+
+
+### Población objetivo y dominios de estimación
+
+La población objetivo para esta encuesta comprende las personas de 18 años y más
+que residen en hogares particulares en localidades de 5.000 y más habitantes de la
+República Argentina.
+
+La encuesta permite considerar los siguientes dominios de estimación:
+
+- Total país.
+- Cuatro agrupamientos según tamaño de la localidad (cantidad de habitantes).
+- Seis regiones:
+  - GBA: Ciudad Autónoma de Buenos Aires y Partidos del Conurbano Bonaerense.
+  - Pampeana: La Pampa, Córdoba, Entre Ríos, Buenos Aires (sin incluir los Partidos del Conurbano Bonaerense) y Santa Fe
+  - NOA: Catamarca, Jujuy, La Rioja, Salta, Santiago del Estero y Tucumán
+  - NEA: Corrientes, Chaco, Formosa y Misiones.
+  - Cuyo: Mendoza, San Juan y San Luis
+  - Patagónica: Chubut, Neuquén, Río Negro, Santa Cruz y Tierra del Fuego.
+- División política (24 jurisdicciones).
+- Siete aglomerados urbanos de mas de 500.000 habitantes (GBA, Gran Rosario, Gran Córdoba, Gran La Plata, Mar del Plata-Batán, Gran Mendoza, Gran San Miguel de Tucumán y Gran Salta). 
+
+Los dominio de estimación se definen como subconjuntos de la población objetivo cuyos elementos pueden ser identificados en el marco muestral sin ambigüedad, y que en los que permite desagregar los resultados de la encuesta.
+
+>Es aconsejable respetar estos dominios de estimación y no realizar inferencia de parámetros de interés para otros dominios no previstos que conlleva estimaciones inválidas.
+
+### Factor de expansión 
+
+Dentro de las variables de la base de datos se encuentra el factor de expansión final bajo el nombre de PONDERACION.
+
+El factor de expansión o ponderación es el valor asociado a cada unidad elegible y que responde a la muestra, que se construye a partir de la inversa de la probabilidad de inclusión de cada unidad o peso muestral inicial.
+
+Puede incluir distintos tipos de ajustes, para disminuir en lo posible los errores de cobertura y de no respuesta que afectan a la encuesta, y ser tratados por un proceso de calibración que lleva en general a ganar eficiencia y precisión en las estimaciones. 
+
+Los factores de expansión finales son los que se emplean tanto para generar todas las estimaciones de una encuesta, como en los cálculos del error muestral al determinar la precisión alcanzada.
+
+### Efecto de diseño 
+
+El efecto del diseño (**DEFF** por sus siglas en inglés) mide la pérdida en precisión al utilizar un diseño muestral complejo en lugar de un diseño aleatorio simple, por ejemplo, un efecto de diseño de 1,5 indica que la varianza del diseño complejo es 1,5 veces más grande que la varianza de un diseño aleatorio simple, en otras palabras se dio un aumento en la varianza de un 50%.
+
+Al momento del análisis y para el cálculo correcto de las estimaciones es necesario conocer el efecto de diseño de la muestra. La ENFR 2009 considera un DEFF de 1,5 según [Daniel Ferrante et al. 2009](https://www.rasp.msal.gov.ar/index.php/rasp/article/view/402).
+
+## Paquetes y funciones de R
+
+El paquete más conocido y utilizado del lenguaje R para trabajar con datos provenientes de muestreos complejos es **survey**. Desarrollado por *Thomas Lumley* que a su vez es autor del libro *Complex Surveys - A Guide to Analysis Using R*.
+
+El inconveniente de este abordaje es que para estimar los errores de muestreos se necesita tener incluído en la base de datos una serie de datos muestrales tales como: probabilidades de conglomerados, definición de estratos, etc.
+
+el problema de estimar los errores de muestreo
+cuando la base de datos únicamente incorporan los factores de expansión y omite la información de las
+unidades primarias de muestreo y de los estratos
+
+La base ENFR 2009 únicamente incorpora los factores de expansión y omite la información de las unidades primarias de muestreo y de los estratos y por lo tanto no podemos utilizar este paquete. Por otra parte, la complejidad y especialización requerida en el tema excede la propuesta de este curso.
+
+Una alternativa posible para este ejemplo y más sencilla es aplicar la función `epi.conf()` del paquete **epiR** publicado bajo la descripción *"Tools for the Analyisis of Epidemiological Data"* en CRAN por Mark Stevenson y colaboradores.
+
+## Aplicación práctica
+
+Inicialmente leemos la base de datos que se encuentra en el archivo *"ENFR-2009 Base Usuario.txt"* descargado previamente del [sitio web del INDEC](https://www.indec.gob.ar/ftp/cuadros/menusuperior/enfr/ENFR2009_baseusuario.rar) 
+
+Los datos del archivo se presentan con las siguientes características:
+
+Tipo de archivo: texto plano.
+Delimitador: "|" (pipe, barra vertical, ASCII 124).
+Encabezado en la primera línea: sí.
+Codificación: UTF-8.
+
+Por lo tanto, utilizaremos la función `read_delim()` indicando que el separador es "|". 
+
+```{r}
+library(tidyverse)
+
+ENFR <- read_delim("ENFR-2009 Base Usuario.txt", delim = "|")
+
+dim(ENFR)
+```
+
+Una rápida exploración nos dice que la tabla de datos tiene 34732 observaciones y 236 variables.
+
+Nosotros queremos estimar la prevalencia de diabetes para los dominios país, CABA y Santiago del Estero con sus respectivos intervalos de confianza.
+
+La variable construida en función del relevamiento de prevalencia de diabetes autoreferida se llama `PRV_DIA`. Las otras variables relevantes para nuestro ejercicio son `PONDERACION` `BHCH04` (código para sexo de lxs encuestadxs) y `PRVNC` (códigos de las provincias).
+
+
+```{r}
+ENFR %>%  count(PRV_DIA)
+
+ENFR <- ENFR %>% 
+  select(PRVNC, BHCH04, PRV_DIA, PONDERACION) %>% 
+  filter(PRV_DIA != 9) %>% 
+  mutate(DB = if_else(PRV_DIA == 1, "Si", "No"))
+
+ENFR %>%  count(DB) %>% 
+  mutate(porc = round(100*n/sum(n),1))
+```
+
+Exploramos `PRV_DIA` para ver su frecuencia. Las categorías están codificadas como 1 = SI, 2 = NO y 9 = S/D. A continuación seleccionamos solo las variables necesarias, eliminamos los S/D y creamos DB con categorías tipo caracter ("Si" y "No")
+
+La función `epi.conf()` de **epiR** contiene los algoritmos y fórmulas para calcular intervalos de confianza de una variada gama de estimaciones, entre ellos se encuentra las prevalencias.
+
+Los argumentos obligatorios que necesitamos definir son:
+
+- dat: datos en forma de matriz de 2 columnas. La primera columna especifica el número de positivos, la segunda columna especifica el número total de observaciones.
+- ctype: palabra que indica el tipo de intervalo de confianza. En este ejemplo: `prevalence`
+- method: palabra que indica el método utilizado para los IC. En este ejemplo: `wilson`. El formuleo se basa en la propuesta de Rothman (2002).
+- design: valor que representa el efecto de diseño de la muestra (DEFF). En este ejemplo: `1.5`
+- conf.level: nivel de confianza para el intervalo
+
+Activemos el paquete (debe ser instalado previamente) y utilicemos la función con los datos leídos.
+
+```{r}
+library(epiR)
+
+ENFR %>%  
+  summarise(DB = sum(PONDERACION[DB == "Si"]),
+            Total = sum(PONDERACION)) %>% 
+  as.matrix() %>% 
+  epi.conf(ctype = "prevalence", method = "wilson", design = 1.5, conf.level = 0.95)
+```
+
+La prevalencia de diabetes estimada para Argentina basada en la ENFR 2009 es de 9,64 % con un IC95% 7,78-11,49.
+
+Hacemos lo mismo para los otros dominios propuestos. El código 2 en la variable `PRVNC` representa a CABA y el 86 a Santiago del Estero.
+
+```{r}
+ENFR %>%  
+  filter(PRVNC == 2) %>% 
+  summarise(DB = sum(PONDERACION[DB == "Si"]),
+            Total = sum(PONDERACION)) %>% 
+  as.matrix() %>% 
+  epi.conf(ctype = "prevalence", method = "wilson", design = 1.5, conf.level = 0.95)
+```
+
+La prevalencia de diabetes estimada para CABA basada en la ENFR 2009 es de 7,4 % con un IC95% 4,27-10,53.
+
+
+```{r}
+ENFR %>%  
+  filter(PRVNC == 86) %>% 
+  summarise(DB = sum(PONDERACION[DB == "Si"]),
+            Total = sum(PONDERACION)) %>% 
+  as.matrix() %>% 
+  epi.conf(ctype = "prevalence", method = "wilson", design = 1.5, conf.level = 0.95)
+```
+
+La prevalencia de diabetes estimada para Santiago del Estero basada en la ENFR 2009 es de 15,62 % con un IC95% 9,69-21,54.
+
+
+### Comparación con estimaciones considerando un MAS
+
+Supongamos que desconocemos o consideramos que el muestreo de la ENFR es un MAS. Aplicaremos la misma función pero sin el argumento `design = 1.5`, lo que deja el valor predeterminado de 1 que es el factor utilizado para un MAS.
+
+```{r}
+ENFR %>%  
+  summarise(DB = sum(PONDERACION[DB == "Si"]),
+            Total = sum(PONDERACION)) %>% 
+  as.matrix() %>% 
+  epi.conf(ctype = "prevalence", method = "wilson", conf.level = 0.95)
+
+ENFR %>%  
+  filter(PRVNC == 2) %>% 
+  summarise(DB = sum(PONDERACION[DB == "Si"]),
+            Total = sum(PONDERACION)) %>% 
+  as.matrix() %>% 
+  epi.conf(ctype = "prevalence", method = "wilson", conf.level = 0.95)
+
+ENFR %>%  
+  filter(PRVNC == 86) %>% 
+  summarise(DB = sum(PONDERACION[DB == "Si"]),
+            Total = sum(PONDERACION)) %>% 
+  as.matrix() %>% 
+  epi.conf(ctype = "prevalence", method = "wilson", conf.level = 0.95)
+```
+
+Comparamos los resultados para todos los dominios en la siguiente tabla:
+
+<center><style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-7btt{border-color:inherit;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+.tg .tg-dvpl{border-color:inherit;text-align:right;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-7btt">Dominio</th>
+    <th class="tg-7btt">DEFF</th>
+    <th class="tg-7btt">Prevalencia<br>Diabetes</th>
+    <th class="tg-7btt">IC<br>límite inferior</th>
+    <th class="tg-7btt">IC<br>límite superior</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-7btt" rowspan="2">Argentina</td>
+    <td class="tg-0pky">1,5</td>
+    <td class="tg-dvpl">9,64</td>
+    <td class="tg-dvpl">7,78</td>
+    <td class="tg-dvpl">11,49</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">MAS</td>
+    <td class="tg-dvpl">9,64</td>
+    <td class="tg-dvpl">8,12</td>
+    <td class="tg-dvpl">11,15</td>
+  </tr>
+  <tr>
+    <td class="tg-7btt" rowspan="2">CABA</td>
+    <td class="tg-0pky">1,5</td>
+    <td class="tg-dvpl">7,40</td>
+    <td class="tg-dvpl">4,28</td>
+    <td class="tg-dvpl">10,53</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">MAS</td>
+    <td class="tg-dvpl">7,40</td>
+    <td class="tg-dvpl">4,85</td>
+    <td class="tg-dvpl">9,95</td>
+  </tr>
+  <tr>
+    <td class="tg-7btt" rowspan="2">Santiago del <br>Estero</td>
+    <td class="tg-0pky">1,5</td>
+    <td class="tg-dvpl">15,62</td>
+    <td class="tg-dvpl">9,69</td>
+    <td class="tg-dvpl">21,54</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">MAS</td>
+    <td class="tg-dvpl">15,62</td>
+    <td class="tg-dvpl">10,78</td>
+    <td class="tg-dvpl">20,46</td>
+  </tr>
+</tbody>
+</table></center>
+
+Se observa claramente que los intervalos de confianza de las estimaciones considerando un MAS son más estrechos (producto de los errores estándar pequeños) en comparación que cuando se asumió el muestro complejo. 
+
+
+## Criterios de calidad en las estimaciones
+
+Todas las estimaciones elaboradas a partir de datos obtenidos por encuestas poblacionales con muestreos complejos están sujetas al error muestral, lo que hace necesario evaluar su validez estadística mediante diversos indicadores de precisión y confiabilidad.
+
+Veamos algunos de estos indicadores de calidad:
+
+### Coeficiente de variación
+
+Esta medida configura un acercamiento al error de muestreo que permite verificar si la inferencia es válida. 
+
+Se caracteriza por ser proporcional a la amplitud del intervalo de confianza, que provee una versión estandarizada y relativa de la precisión alrededor de la estimación puntual.
+
+Un umbral aproximado de CV mayor a 20% puede asumirse como un valor de referencia útil a nivel regional para señalar una cifra de poco confiable, Gutiérrez y otros (2020)
+
+Calculemos el CV comparativo en las prevalencias de diabetes de Argentina, CABA y Santiago de Estero, basandonos en los resultados obtenidos por `epi.conf()`.
+
+```{r}
+## Argentina
+
+pais <- ENFR %>%  
+  summarise(DB = sum(PONDERACION[DB == "Si"]),
+            Total = sum(PONDERACION)) %>% 
+  as.matrix() %>% 
+  epi.conf(ctype = "prevalence", method = "wilson", design = 1.5, conf.level = 0.95)
+
+pais$se/pais$est*100
+
+## CABA
+
+CABA <- ENFR %>%  
+  filter(PRVNC == 2) %>% 
+  summarise(DB = sum(PONDERACION[DB == "Si"]),
+            Total = sum(PONDERACION)) %>% 
+  as.matrix() %>% 
+  epi.conf(ctype = "prevalence", method = "wilson", design = 1.5, conf.level = 0.95)
+
+CABA$se/CABA$est*100
+
+SgoEstero <- ENFR %>%  
+  filter(PRVNC == 86) %>% 
+  summarise(DB = sum(PONDERACION[DB == "Si"]),
+            Total = sum(PONDERACION)) %>% 
+  as.matrix() %>% 
+  epi.conf(ctype = "prevalence", method = "wilson", design = 1.5, conf.level = 0.95)
+
+SgoEstero$se/SgoEstero$est*100
+
+```
+El CV para la prevalencia de diabetes a nivel país y de las provincias elegidas se encuentran debajo o en torno al 20% 
+
+```{r}
+## Argentina
+
+pais_mujer <- ENFR %>%  
+  filter(PRVNC == 2, BHCH04 == 2) %>% 
+  summarise(DB = sum(PONDERACION[DB == "Si"]),
+            Total = sum(PONDERACION)) %>% 
+  as.matrix() %>% 
+  epi.conf(ctype = "prevalence", method = "wilson", design = 1.5, conf.level = 0.95)
+
+pais_mujer$se/pais_mujer$est*100
+```
+
+
+
+
+
+
+
+
+
+## Bibliografía
+
+A. Gutiérrez y otros, “Criterios de calidad en la estimación de indicadores a partir de
+encuestas de hogares: una aplicación a la migración internacional” serie Estudios Estadísticos, N° 101 (LC/TS.2020/52),
+Santiago, Comisión Económica para América Latina y el Caribe (CEPAL), 2020.
