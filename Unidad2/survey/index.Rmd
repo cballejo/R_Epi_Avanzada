@@ -65,7 +65,7 @@ Los factores de expansión finales son los que se emplean tanto para generar tod
 **Efecto de diseño (DEFF por sus siglas en inglés)**: mide la pérdida en precisión al utilizar un diseño muestral complejo en lugar de un diseño aleatorio simple, por ejemplo, un efecto de diseño de 1,5 indica que la varianza del diseño complejo es 1,5 veces más grande que la varianza de un diseño aleatorio simple, en otras palabras se dio un aumento en la varianza de un 50%.
 
 
-## Paquete survey de R
+## Paquete survey y srvyr de R
 
 El paquete más conocido y utilizado del lenguaje R para trabajar con datos provenientes de muestreos complejos es **survey**. Desarrollado por *Thomas Lumley* que a su vez es autor del libro *Complex Surveys - A Guide to Analysis Using R (2010)*.
 
@@ -73,7 +73,9 @@ La versión actual publicada en CRAN es la 4.4.2 y en el siguiente [enlace](http
 
 Las funciones que lo integran utilizan en sus argumentos la sintaxis fórmula preferentemente y no son compatibles con el universo "ordenado" de tidyverse.
 
-Existe un paquete "wrapper" llamado **srvyr** que incorpora sintaxis *tidy*, haciendo uso de tuberías y funciones tales como `group_by()`, `summarise()`, entre otras. 
+Con el objetivo de hacer compatible estas funciones crearon un paquete "wrapper" (envoltorio) llamado **srvyr** que incorpora sintaxis *tidy*, haciendo uso de tuberías y funciones tales como `group_by()`, `summarise()`, entre otras. 
+
+Durante este documento vamos a aprovechar las bondades de estas funciones que [srvyr](http://gdfe.co/srvyr/index.html) en su versión 1.2 ofrece.
 
 Se activa, como todos los paquetes, con:
 
@@ -86,7 +88,7 @@ library(srvyr)
 
 El primer paso para trabajar con las funciones de **srvyr** es crear un objeto con la información relacionada con el diseño muestral.
 
-Esta tarea se realiza con la función `svydesign()` que tiene estos argumentos principales:
+Esta tarea se realiza con la función `as_survey_design()` que tiene estos argumentos principales:
 
 
 ```{r, eval=FALSE}
@@ -222,7 +224,7 @@ Los siguientes son los argumentos comunes de la función:
 
 - **deff**: Si es TRUE, calcula el efecto de diseño para la estimación
 
-Aplicamos la función sobre la variable de IMC dentro de summarise() de tidyverse:
+Aplicamos la función con todas las posibles salidas de varianza sobre la variable de IMC dentro de summarise() de tidyverse:
 
 ```{r}
 d %>%
@@ -282,7 +284,7 @@ Otra variable de la encuesta es la respuesta a la pregunta "Durante los últimos
 
 Para abordar estas variables cualitativas donde queremos obtener proporciones el paquete tiene a la función `survey_prop()` que se utiliza luego de declarar la variable de interes en un `group_by()`:
 
-```{r}
+```{r, warning=F, message=F}
 d %>% 
   group_by(texto_q6) %>% # variable para la estimacion
   summarise(prop_hambre = survey_prop(vartype = "ci")*100) # usamos 100 para %
@@ -378,90 +380,113 @@ Un 21,0 % IC95%(20,3-21,7) del total de estudiantes dicen haber considerado un i
 
 Agregamos a los resultados algo importante, que va a garantizar la calidad de la estimaciones y evitar estar informando valores poco confiables para los cuales el muestreo quizás no esté preparado. Este es el **coeficiente de variación** (CV).
 
-Comparativamente vamos a encontrar en la medida que se agreguen filtro o agrupamiento anidados que reduzcan la muestra en la estimación valores más elevados de CV.
+Comparativamente vamos a encontrar valores más elevados de CV, en la medida que se agreguen filtros o agrupamientos anidados que reduzcan la muestra en la estimación.
 
-Que pasa si filtramos y nos quedamos además solo con las mujeres que respondieron .
+Que pasa si filtramos y nos quedamos además solo con las mujeres que respondieron se quedaron con hambre "algunas veces".
 
 ```{r}
 d %>% 
-  filter(q3 == 5, q2 == 2, q6 == 3) %>%   # codigo 5 de q3 es la subpoblación seleccionada
+  filter(q3 == 5, q2 == 2, q6 == 3) %>%   
   group_by(texto_qn24) %>% 
   summarise(prop_suicidio = survey_prop(vartype = c("ci", "cv"))*100)
 ```
 
+Los CV de las estimaciones siguen creciendo, por ejemplo en el caso de la respuesta Si a un 12,6 % en comparación de la población completa que partía con un 1,6 %.
 
+Este aumento tiene que ver sobre todo con el tamaño muestral que nos queda luego de tantos filtros.
 
+```{r}
+d %>% 
+  survey_count(texto_qn24)
+
+d %>% 
+  filter(q3 == 5, q2 == 2, q6 == 3) %>%   
+  survey_count(texto_qn24)
+```
+
+Solo 6.347 estudiantes expandidos que respondieron que Si sobre los 553.934 totales que lo hicieron. Y cuantos respecto a la muestra sin expandir?
+
+Podemos verlo así:
+
+```{r}
+d %>% 
+  group_by(texto_qn24) %>%
+  summarise(n = unweighted(n()))
+
+d %>% 
+  filter(q3 == 5, q2 == 2, q6 == 3) %>%   
+  group_by(texto_qn24) %>%
+  summarise(n = unweighted(n()))
+```
+
+194 estudiantes de la muestra sin expandir respondieron que Si sobre 11962 sin aplicar los filtros.
 
 
 ## Errores estándar según efecto del diseño
 
-En este punto vamos a comparar estimaciones en función de construir objetos de diseños muestrales diferentes sobre la misma base de datos **nhanes**.
+En este punto vamos a comparar estimaciones en función de construir objetos de diseños muestrales diferentes sobre la misma base de datos **EMSE2018**.
 
 ```{r}
-# Diseño complejo y pesos
-d_complejo <- svydesign(id = ~SDMVPSU, 
-                        strata = ~SDMVSTRA, 
-                        weights = ~WTMEC2YR, 
-                        nest = TRUE,
-                        data = nhanes)
+# Diseño complejo y pesos (igual al que hicimos)
+d_complejo <- EMSE2018 %>%
+  as_survey_design(ids = psu,          
+                   variables = c(record, psu, stratum, weight, q2, texto_q2, q3, texto_q3, q4, q5, q6, texto_q6, qn24, texto_qn24, IMC),    
+                   strata = stratum,   
+                   weights = weight,   
+                   nest = TRUE) 
 
 # Diseño sin uso de pesos
 
-d_simple <- svydesign(id = ~1, 
-                        strata = NULL, 
-                        weights = NULL, 
-                        data = nhanes)
+d_simple <- EMSE2018 %>%
+  as_survey_design(ids = psu,          
+                   variables = c(record, psu, stratum, weight, q2, texto_q2, q3, texto_q3, q4, q5, q6, texto_q6, qn24, texto_qn24, IMC),    
+                   strata = NULL,   
+                   weights = NULL,   
+                   nest = TRUE) 
 
 # Diseño con pesos pero sin estructura compleja
-d_ponde <- svydesign(id = ~1, 
-                        strata = NULL, 
-                        weights = ~WTMEC2YR, 
-                        data = nhanes)
+d_ponde <- EMSE2018 %>%
+  as_survey_design(ids = psu,          
+                   variables = c(record, psu, stratum, weight, q2, texto_q2, q3, texto_q3, q4, q5, q6, texto_q6, qn24, texto_qn24, IMC),    
+                   strata = NULL,   
+                   weights = weight,   
+                   nest = TRUE) 
 ```
 
 Tenemos tres diseños distintos: un diseño complejo basado en conglomerados, estratos y pesos, un diseño sólo con pesos y un diseño simple sin ponderación.
 
 Sabemos que el primero es el diseño "real" con el que se llevó a cabo la recolección de los datos.
 
-```{r}
-d_complejo
-
-d_ponde
-
-d_simple
-```
-
-Ahora ejecutemos la función `svymean()` para estimar la proporción de **HI_COL** en cada caso.
+Ahora utilicemos la variable q2 / texto_q2 (sexo del/ de la estudiante) para estimar una proporción en cada diseño.
 
 ```{r}
-col1 <- svymean(~HI_CHOL, 
-                d_complejo, 
-                deff = T, 
-                na.rm = T)
+d_complejo %>% 
+  summarise(media_IMC = survey_mean(x = IMC,
+                                    na.rm = T,
+                                    vartype = c("ci", "cv")))
 
-col1
+d_simple %>% 
+  summarise(media_IMC = survey_mean(x = IMC,
+                                    na.rm = T,
+                                    vartype = c("ci", "cv")))
 
-col2 <- svymean(~HI_CHOL, 
-                d_ponde, 
-                deff = T, 
-                na.rm = T)
-
-col2
-
-col3 <- svymean(~HI_CHOL, 
-                d_simple, 
-                na.rm = T)
-
-col3
+d_ponde %>% 
+  summarise(media_IMC = survey_mean(x = IMC,
+                                    na.rm = T,
+                                    vartype = c("ci", "cv")))
 ```
 
-La estimación puntual (11,21 %) es la misma para los análisis que usan el diseño complejo y los que usan sólo pesos. A su vez es diferente (10,03 %) si las estimaciones se llevan a cabo sin considerar el factor de expansión (muestreo simple). 
+La estimación puntual (IMC = 22,14) es la misma para los análisis que usan el diseño complejo y los que usan sólo pesos. A su vez es diferente (10,03 %) si las estimaciones se llevan a cabo sin considerar el factor de expansión (muestreo simple - IMC = 22,23). 
 
 Los errores estándar estimados son diferentes para todos los casos porque además se vinculan con la estructura del muestreo (estratos y conglomerados).
 
 Si no se utilizan pesos en las estimaciones, los estimadores no serán representativos de la población muestreada.
 
-Si solo se utilizan pesos sin considerar el diseño complejo, en general, se infravalorará la dispersión de los estimadores, llevando a intervalos de confianza excesivamente estrechos y a niveles de significación reales mayores que los nominales.
+Si solo se utilizan pesos sin considerar el diseño complejo, en general, se infravalorará la dispersión de los estimadores, llevando a intervalos de confianza excesivamente estrechos y a niveles de significación reales mayores que los nominales (como si se tratase de un MAS).
+
+Basta comparar el resultado correcto IMC 22,14 IC95%(21,97-22,31) frente al producido con el diseño simple IMC 22,23 IC95%(22,16-22,30).
+
+Como se observa el lenguaje R permite que construyamos el objeto de diseño de la muestra compleja con la forma que indiquemos pero esto no siempre es correcto. Debemos conocer previamente la forma en que se diseño el muestreo y como se expresa en las variables de la tabla de datos para hacerlo adecuadamente.
 
 
 ### Criterios de calidad en las estimaciones
@@ -478,36 +503,16 @@ Se caracteriza por ser proporcional a la amplitud del intervalo de confianza, qu
 
 Un umbral aproximado de CV mayor a 20%-30% puede asumirse como un valor de referencia útil a nivel regional para señalar una cifra de poco confiable, *Gutiérrez y otros (2020)*.
 
-Para calcular el coeficiente de variación de las estimaciones en R basta con utilizar la función `cv()` e incluir como argumento el objeto de estimación.
-
-```{r}
-cv(col_x_gEdad)
-```
-Observamos que en el grupo de (0-19) la estimación no es tan confiable (CV 30.8 %)
+Vimos que para calcular el coeficiente de variación de las estimaciones en estas estimaciones basta con incluirlo dentro del argumento **vartype**.
 
 #### Tamaño de muestra
 
 Este criterio debe ser considerado como uno de los más importantes a la hora de decidir la calidad de la estimación. La cobertura de los intervalos de confianza y la distribución de los estimadores dependen de que, tanto el tamaño de la subpoblación como su tamaño de muestra asociado, no sean pequeños. En este espíritu, *Andrés Gutiérrez et al. Cepal (2020)* proponen que todas las estimaciones basadas en un tamaño de muestra menor a 100 unidades deberían ser marcadas como no confiables.
 
-Para obtener tamaños muestrales ponderados de subgrupos podemos aplicar la función `svytotal()`.
-
-```{r}
-svytotal(x = ~agecat, 
-         design = d)
-```
 
 #### Conteo de casos no ponderado 
 
 Cuando la incidencia de un fenómeno es muy baja y el diseño de la encuesta no lo tuvo en cuenta, entonces es posible que las estimaciones asociadas a tamaños, totales y proporciones sobre este fenómeno no sean confiables. Por ejemplo, *National Research Council (2015)* plantea que si el número de casos no ponderados es menor a 50 unidades entonces la estimación no es publicable.
-
-Conocer este valor es sencillo, por ejemplo usando `count()` de dplyr/tidyverse:
-
-```{r, message=F, warning=F}
-library(tidyverse)
-
-nhanes %>% 
-  count(agecat)
-```
 
 ## Bibliografía
 
