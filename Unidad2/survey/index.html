@@ -1507,16 +1507,16 @@ BY-NC
 <h2>Introducción</h2>
 <p>En los estudios epidemiológicos de corte transversal, muchas veces se
 realizan y/o utilizan encuestas poblacionales para estimar la frecuencia
-de determinadas características de salud o de factores de riesgo en la
+de determinadas características de salud y factores de riesgo en la
 población.</p>
 <p>Estas encuestas enfrentan restricciones prácticas que hacen que el
-muestreo aleatorio simple (MAS) no sea factible o no sea conveniente por
-costoso en infraestructura, tiempo y dinero. Por lo tanto resulta
-necesario recurrir a otras alternativas de muestreo, como la
-estratificación, la selección en etapas, la formación de conglomerados o
-el empleo de probabilidades de selección desiguales.</p>
+<strong>Muestreo Aleatorio Simple</strong> (MAS) no sea factible o no
+sea conveniente por costoso en infraestructura, tiempo y dinero. Por lo
+tanto resulta necesario recurrir a otras alternativas de muestreo, como
+la estratificación, la selección en etapas, la formación de
+conglomerados o el empleo de probabilidades de selección desiguales.</p>
 <p>Los diseños muestrales que incorporan combinaciones de estas
-estrategias se denominan complejos, por contraste con el MSA, en el que
+estrategias se denominan complejos, por contraste con el MAS, en el que
 las unidades muestrales se seleccionan independientemente unas de otras
 y todas tienen igual probabilidad de selección y distribución.</p>
 <p>Realizar estimaciones acompañadas de sus intervalos de confianza (IC)
@@ -1541,9 +1541,9 @@ colectivamente exhaustivos.</p>
 <p><strong>Probabilidad de inclusión</strong>: es la probabilidad que
 cada unidad tiene de estar incluida en la muestra. En los muestreos
 complejos polietápicos se obtiene, en general, multiplicando las
-probabilidades asociadas al estrato, a cada unidad primaria de muestreo
-(PSU) dentro del estrato, y a la unidad de segunda etapa dentro cada
-PSU.</p>
+probabilidades asociadas al estrato, a cada <strong>Unidad Primaria de
+Muestreo</strong> (UPM o PSU en inglés) dentro del estrato, y a la
+unidad de segunda etapa dentro cada UPM.</p>
 <p><strong>Dominios de estimación</strong>: se definen como subconjuntos
 de la población objetivo cuyos elementos pueden ser identificados en el
 marco muestral sin ambigüedad, y en los que se permite desagregar los
@@ -1577,7 +1577,7 @@ datos provenientes de muestreos complejos es <strong>survey</strong>.
 Desarrollado por <em>Thomas Lumley</em> que a su vez es autor del libro
 <em>Complex Surveys - A Guide to Analysis Using R (2010)</em>.</p>
 <p>La versión actual publicada en CRAN es la 4.4.2 y en el siguiente <a href="http://r-survey.r-forge.r-project.org/survey/index.html">enlace</a>
-se encuentra información oficial sobre la librería.</p>
+se encuentra la información oficial sobre la librería.</p>
 <p>Las funciones que lo integran utilizan en sus argumentos la sintaxis
 fórmula preferentemente y no son compatibles con el universo “ordenado”
 de tidyverse.</p>
@@ -1598,7 +1598,7 @@ versión 1.2 ofrece.</p>
 con el diseño muestral.</p>
 <p>Esta tarea se realiza con la función <code>as_survey_design()</code>
 que tiene estos argumentos principales:</p>
-<pre class="r"><code>datos %&gt;%                       # tabla de datos 
+<pre class="r"><code>datos %&gt;%                       
   as_survey_design(ids = ..., 
                    strata = ..., 
                    variables = ...,
@@ -1662,22 +1662,22 @@ EMSE2018 &lt;- read_csv(&quot;EMSE_DatosAbiertos.csv&quot;)
 
 dim(EMSE2018) # dimensiones de la tabla de datos</code></pre>
 <pre><code>[1] 56981   309</code></pre>
-<p>Observamos que el dataframe original importado consta de 309
-variables y 56981 observaciones. (no mostramos en el documento la salida
-de la estructura brindada por <code>glimpse()</code> por su
+<p>Observamos que el dataframe original importado consta de <em>309
+variables y 56.981 observaciones</em>. (no mostramos en el documento la
+salida de la estructura brindada por <code>glimpse()</code> por su
 longitud)</p>
-<p>El total de la muestra expandida es de 2637546 estudiantes.</p>
+<p>El total de la muestra expandida es de 2.637.546 estudiantes.</p>
 <pre class="r"><code>EMSE2018 %&gt;%
-  summarise(total_expandido = sum(weight))</code></pre>
+  summarise(total_expandido = sum(weight)) # sumatoria de los pesos</code></pre>
 <pre><code># A tibble: 1 × 1
   total_expandido
             &lt;dbl&gt;
 1         2637546</code></pre>
-<p>Existen dos variables cuantitativas donde se registraron la altura
-(q4) y el peso (q5) de los estudiantes encuestados. Antes de generar el
-objeto de diseño vamos a construir una nueva variable llamada IMC
-(Índice de Masa Corporal) producto de su cálculo a partir de estas
-variables.</p>
+<p>Existen dos variables cuantitativas donde se registraron la
+<strong>altura</strong> (q4) y el <strong>peso</strong> (q5) de los
+estudiantes encuestados. Antes de generar el objeto de diseño vamos a
+construir una nueva variable llamada <strong>IMC</strong> (Índice de
+Masa Corporal) producto de su cálculo a partir de estas variables.</p>
 <pre class="r"><code>EMSE2018 &lt;- EMSE2018 %&gt;% 
   mutate(IMC = q5/(q4)^2)  # peso sobre talla al cuadrado</code></pre>
 <p>Las variables relevantes para el diseño muestral que el documento de
@@ -1695,7 +1695,7 @@ con las que vamos a trabajar.</p>
 <ul>
 <li><p><strong>record</strong> = Nro. de registro</p></li>
 <li><p><strong>q2 / texto_q2</strong> = Sexo</p></li>
-<li><p><strong>q3 / texto_q3</strong> = Grado / año een el que se
+<li><p><strong>q3 / texto_q3</strong> = Grado / año en el que se
 encuentra el estudiante</p></li>
 <li><p><strong>q4</strong> = Estatura sin zapatos (medido en
 metros)</p></li>
@@ -1709,201 +1709,16 @@ calculada)</p></li>
 </ul>
 <pre class="r"><code>d &lt;- EMSE2018 %&gt;%
   as_survey_design(ids = psu,          # conglomerados
-                   variables = c(record, psu, stratum, weight, q2, texto_q2, q3, texto_q3, q4, q5, q6, texto_q6, qn24, texto_qn24, IMC),      # variables incluidas en el diseño
+                   variables = c(record, psu, stratum, weight, q2, texto_q2, 
+                                 q3, texto_q3, q4, q5, q6, texto_q6, qn24, 
+                                 texto_qn24, IMC),  # variables que incluimos
                    strata = stratum,   # estratos
                    weights = weight,   # ponderación
-                   nest = TRUE)        # anidación
-
-summary(d) </code></pre>
-<pre><code>Stratified 1 - level Cluster Sampling design (with replacement)
-With (557) clusters.
-Called via srvyr
-Probabilities:
-     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-0.0008386 0.0223314 0.0379219 0.0588006 0.0693481 0.4716981 
-Stratum Sizes: 
-           201801001 201801002 201801003 201801004 201801005 201801006
-obs              185       205       196       181       219       280
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201801007 201801008 201801009 201801010 201801011 201802001
-obs              219       314       205       156        94       268
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201802002 201802003 201802004 201802005 201802006 201802007
-obs              272       293       305       446       174       192
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201802008 201802009 201802010 201803001 201803002 201803003
-obs              230       108       113       261       290       207
-design.PSU         2         2         3         2         2         2
-actual.PSU         2         2         3         2         2         2
-           201803004 201803005 201803006 201803007 201803008 201803009
-obs              166       195       231       203       348       329
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201803010 201803011 201804001 201804002 201804003 201804004
-obs              212       120       194       217       164       243
-design.PSU         2         3         2         2         2         2
-actual.PSU         2         3         2         2         2         2
-           201804005 201804006 201804007 201804008 201804009 201804010
-obs              213       182       210       175       312       219
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201804011 201804012 201805001 201805002 201805003 201805004
-obs              197       163       207       233       289       152
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201805005 201805006 201805007 201805008 201806001 201806002
-obs              211       207       281       254       257       282
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201806003 201806004 201806005 201806006 201806007 201806008
-obs              207       208       235       175       269       234
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201806009 201806010 201807001 201807002 201807003 201807004
-obs              188       103       214       205       179       274
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201807005 201807006 201807007 201807008 201807009 201807010
-obs              263       211       250       231       215       173
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201807011 201807012 201808001 201808002 201808003 201808004
-obs               59        81       179       282       401       256
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201808005 201808006 201808007 201808008 201808009 201808010
-obs              309       302       229       120       153       124
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201808011 201808012 201809001 201809002 201809003 201809004
-obs               87        79       310       216       268       262
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201809005 201810001 201810002 201810003 201810004 201810005
-obs              241       223       220       289       350       250
-design.PSU         3         2         2         2         2         2
-actual.PSU         3         2         2         2         2         2
-           201810006 201810007 201810008 201810009 201810010 201810011
-obs              239       258       305       294       244       261
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201810012 201811001 201811002 201811003 201811004 201811005
-obs              101       188       220       240       223       287
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201811006 201811007 201811008 201812001 201812002 201812003
-obs              233       122       144       189        80       211
-design.PSU         2         2         3         7         5         2
-actual.PSU         2         2         3         7         5         2
-           201812004 201812005 201812006 201812007 201812008 201812009
-obs              195       190       183       148       281       255
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201812010 201812011 201812012 201812013 201813001 201813002
-obs              206       154       120        53       226       279
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201813003 201813004 201813005 201813006 201813007 201813008
-obs              213       223       236       268       249       256
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201813009 201813010 201813011 201813012 201814001 201814002
-obs              198       264       218       337       271       326
-design.PSU         2         2         2         3         2         2
-actual.PSU         2         2         2         3         2         2
-           201814003 201814004 201814005 201814006 201814007 201814008
-obs              255       258       286       258       301       338
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201814009 201814010 201814011 201815001 201815002 201815003
-obs              249       229       138       248       170       222
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201815004 201815005 201815006 201815007 201815008 201815009
-obs              266       189       267       315       209       213
-design.PSU         2         2         2         2         2         3
-actual.PSU         2         2         2         2         2         3
-           201816001 201816002 201816003 201816004 201816005 201816006
-obs              161       167       234       151       151       249
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201816007 201816008 201817001 201817002 201817003 201817004
-obs              268       205       147       236       164       241
-design.PSU         2         3         2         2         2         2
-actual.PSU         2         3         2         2         2         2
-           201817005 201817006 201817007 201817008 201817009 201817010
-obs              221       244       288       197       160       247
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201817011 201817012 201818001 201818002 201818003 201818004
-obs              127        84       195       314       262       164
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201818005 201818006 201818007 201818008 201818009 201818010
-obs              341       170       260       159       160       197
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201818011 201818012 201819001 201819002 201819003 201819004
-obs              128        72       266       219       254       205
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201819005 201819006 201820001 201820002 201820003 201820004
-obs              120       150       272       184       189       212
-design.PSU         2         3         2         2         2         2
-actual.PSU         2         3         2         2         2         2
-           201820005 201820006 201820007 201820008 201820009 201820010
-obs              236       251       242       196       207       274
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201820011 201820012 201821001 201821002 201821003 201821004
-obs              221       246       476       366       371       342
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201821005 201821006 201821007 201821008 201821009 201821010
-obs              413       414       379       374       278       195
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201821011 201822001 201822002 201822003 201822004 201822005
-obs              224       213       323       271       277       323
-design.PSU         3         2         2         2         2         2
-actual.PSU         3         2         2         2         2         2
-           201822006 201822007 201822008 201822009 201822010 201822011
-obs              239       254       331       306       225       132
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201822012 201823001 201823002 201823003 201823004 201823005
-obs               77       179       184       125       102        92
-design.PSU         2        11         9         7         7         5
-actual.PSU         2        11         9         7         7         5
-           201823006 201823007 201823008 201823009 201823010 201823011
-obs              248       179       225       170       206       235
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201823012 201823013 201823014 201824001 201824002 201824003
-obs              214       195       176       247       197       172
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201824004 201824005 201824006 201824007 201824008 201824009
-obs              206       219       160       191       298       200
-design.PSU         2         2         2         2         2         2
-actual.PSU         2         2         2         2         2         2
-           201824010 201824011 201824012
-obs              159       244       245
-design.PSU         2         2         3
-actual.PSU         2         2         3
-Data variables:
- [1] &quot;record&quot;     &quot;psu&quot;        &quot;stratum&quot;    &quot;weight&quot;     &quot;q2&quot;        
- [6] &quot;texto_q2&quot;   &quot;q3&quot;         &quot;texto_q3&quot;   &quot;q4&quot;         &quot;q5&quot;        
-[11] &quot;q6&quot;         &quot;texto_q6&quot;   &quot;qn24&quot;       &quot;texto_qn24&quot; &quot;IMC&quot;       </code></pre>
-<p>Con la función <code>summary()</code> podemos obtener información
-sobre el objeto creado y detalles del diseño muestral, tales como tamaño
-de los estratos y cantidad de conglomerados.</p>
-<p>Una vez que tenemos creado el objeto <em>“survey.design”</em>, que en
-nuestro ejemplo se denomina <strong>d</strong>, podemos avanzar en el
-calculo de las estimaciones.</p>
+                   nest = TRUE)        # anidación</code></pre>
+<p>Una vez que tenemos creado el objeto
+<strong><em>“survey.design”</em></strong>, que en nuestro ejemplo se
+denomina <strong>d</strong>, podemos avanzar en el calculo de las
+estimaciones.</p>
 <p>Si bien podemos manipular datos dentro de este formato de diseño
 utilizando algunas de las funciones de tidyverse (select, mutate, filter
 y rename) lo conveniente es modificar previamente la estructura de la
@@ -1914,11 +1729,15 @@ estimaciones.</p>
 </div>
 <div id="estimaciones" class="section level3">
 <h3>Estimaciones</h3>
+<div class="b--gray ba bw2 ma2 pa4 shadow-1">
 <p>Todos los códigos para las estimaciones comenzaran a partir del
-objeto de diseño creado inicialmente, llamado <strong>d</strong> en
-nuestro ejemplo.</p>
-<p>En primer lugar tomaremos la variable <strong>IMC</strong> que tiene
-formato numérico.</p>
+objeto de diseño creado inicialmente (llamado <strong>d</strong> en
+nuestro ejemplo) y evitando utilizar el nombre de la tabla de datos
+leída que solo tiene los datos de la muestra sin especificar el diseño
+de muestreo.</p>
+</div>
+<p>En primer lugar tomaremos la variable <strong>IMC</strong>, variable
+cuantitativa continua que construimos.</p>
 <p>La función <code>survey_mean()</code> computa estimaciones de medias
 en diseños complejos usando la sintaxis de tidyverse.</p>
 <p>Los siguientes son los argumentos comunes de la función:</p>
@@ -1946,8 +1765,8 @@ la variable de IMC dentro de summarise() de tidyverse:</p>
     IMC IMC_se IMC_low IMC_upp IMC_var  IMC_cv
   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
 1  22.1 0.0869    22.0    22.3 0.00755 0.00392</code></pre>
-<p>El resultado muestra una media de IMC de 22,14, un error estándar de
-0,09, un intervalo de confianza al 95% de (21,97-22,31), una varianza de
+<p>El resultado muestra una media de IMC de 22,1, un error estándar de
+0,09, un intervalo de confianza al 95% de (22,0-22,3), una varianza de
 0,007 y un coeficiente de variación de 0,4 %.</p>
 <p>Como nos informan que hubo no respuesta en la encuesta y la faltante
 de información en altura y/o peso provoca observaciones perdidas en la
@@ -1964,9 +1783,9 @@ representa estos valores perdidos podemos usar la función
     &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
 1 976104.    878120.   1074088.</code></pre>
 <p>Hay aproximadamente 976.104 IC 95% (87.820-1.074.088) estudiantes sin
-valor en la variable IMC del total de la población de 2.637.546 (37
+valor en la variable IMC del total de la población de 2.637.546 (un 37
 %).</p>
-<p>Si en lugar de la media quisieramos la mediana podemos cambiar la
+<p>Si en lugar de la media quisiéramos la mediana podemos cambiar la
 función y usar <code>survey_median()</code>.</p>
 <pre class="r"><code>d %&gt;%
   summarise(IMC = survey_median(x = IMC,
@@ -1978,8 +1797,8 @@ función y usar <code>survey_median()</code>.</p>
   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
 1  21.5 0.0772    21.4    21.7 0.00596 0.00359</code></pre>
 <p>Podemos estratificar estas estimaciones haciendo uso del
-<code>group_by()</code>, por ejemplo con la variable sexo del
-estudiante:</p>
+<code>group_by()</code>, por ejemplo con la variable
+<strong>sexo</strong> del estudiante:</p>
 <pre class="r"><code>d %&gt;% 
   group_by(texto_q2) %&gt;%  # sexo
   summarise(media_IMC = survey_mean(IMC, 
@@ -1992,9 +1811,9 @@ estudiante:</p>
 2 Femenino          22.0          21.8          22.2
 3 Masculino         22.3          22.1          22.5</code></pre>
 <p>Como hay datos perdidos en la variable sexo nos aparece una categoría
-más en los resultados. Al estar vacía en las estimaciones (evidentemente
-son no respuestas completas) podemos deshacernos de esa línea con un
-<code>filter()</code>.</p>
+más en los grupos de los resultados. Al estar vacía en las estimaciones
+(evidentemente son “no respuestas” completas) podemos deshacernos de esa
+línea con un <code>filter()</code>.</p>
 <pre class="r"><code>d %&gt;% 
   filter(!is.na(q2)) %&gt;% 
   group_by(texto_q2) %&gt;% 
@@ -2008,17 +1827,17 @@ son no respuestas completas) podemos deshacernos de esa línea con un
 2 Masculino      22.3          22.1          22.5</code></pre>
 <p>Esta tabla muestra las estimaciones de IMC según sexo con sus
 intervalos de confianza.</p>
-<p>Otra variable de la encuesta es la respuesta a la pregunta “Durante
-los últimos 30 días ¿con qué frecuencia te quedaste con hambre porque no
-había suficiente comida en tu hogar?”. Las categorías válidas fueron:
-Nunca - Rara vez - Algunas veces - Casi siempre - Siempre y Dato perdido
-si no hubo respuesta.</p>
+<p>Otra variable de la encuesta es la respuesta a la pregunta
+<em>“Durante los últimos 30 días ¿con qué frecuencia te quedaste con
+hambre porque no había suficiente comida en tu hogar?”</em>. Las
+categorías válidas fueron: Nunca - Rara vez - Algunas veces - Casi
+siempre - Siempre, y Dato perdido si no hubo respuesta.</p>
 <p>Para abordar estas variables cualitativas donde queremos obtener
-proporciones el paquete tiene a la función <code>survey_prop()</code>
-que se utiliza luego de declarar la variable de interes en un
-<code>group_by()</code>:</p>
+proporciones el paquete tiene la función <code>survey_prop()</code> que
+se utiliza declarando la variable de interés en un
+<code>group_by()</code> previo:</p>
 <pre class="r"><code>d %&gt;% 
-  group_by(texto_q6) %&gt;% # variable para la estimacion
+  group_by(texto_q6) %&gt;% # variable para la estimación
   summarise(prop_hambre = survey_prop(vartype = &quot;ci&quot;)*100) # usamos 100 para %</code></pre>
 <pre><code># A tibble: 6 × 4
   texto_q6      prop_hambre prop_hambre_low prop_hambre_upp
@@ -2031,18 +1850,19 @@ que se utiliza luego de declarar la variable de interes en un
 6 Siempre             0.627           0.487           0.807</code></pre>
 <p>El resultado muestra las categorías desordenadas en relación a lo que
 significa cada una respecto a la definición de la pregunta, es decir a
-la ordinalidad de la variables, aunque si está ordenada respecto a la
+la ordinalidad de la variable, aunque si está ordenada respecto a la
 forma en que lo hace el lenguaje R (alfabético).</p>
 <p>Para darle el orden adecuado, deberíamos convertir la variable
-texto_q6 a factor y declarar correctamente sus niveles. Conviene hacer
-esto previo a la creación del objeto de diseño pero el paquete también
-lo permite una vez creado.</p>
+<strong>texto_q6</strong> a <em>factor</em> y declarar correctamente sus
+niveles. Conviene hacer esto previo a la creación del objeto de diseño
+pero el paquete también lo permite una vez creado.</p>
 <pre class="r"><code>d &lt;- d  %&gt;%
   mutate(texto_q6 = factor(texto_q6, 
-                           levels = c(&quot;Nunca&quot;, &quot;Rara vez&quot;, &quot;Algunas veces&quot;, &quot;Casi siempre&quot;, &quot;Siempre&quot;, &quot;Dato perdido&quot;)))</code></pre>
+                           levels = c(&quot;Nunca&quot;, &quot;Rara vez&quot;, &quot;Algunas veces&quot;, 
+                                      &quot;Casi siempre&quot;, &quot;Siempre&quot;, &quot;Dato perdido&quot;)))</code></pre>
 <p>Repetimos el código anterior</p>
 <pre class="r"><code>d %&gt;% 
-  group_by(texto_q6) %&gt;% # variable para la estimacion
+  group_by(texto_q6) %&gt;% # variable para la estimación
   summarise(prop_hambre = survey_prop(vartype = &quot;ci&quot;)*100) # usamos 100 para %</code></pre>
 <pre><code># A tibble: 6 × 4
   texto_q6      prop_hambre prop_hambre_low prop_hambre_upp
@@ -2059,7 +1879,7 @@ transformación a factor.</p>
 incorporar la variable de agrupamiento dentro del
 <code>group_by()</code>.</p>
 <pre class="r"><code>d %&gt;% 
-  group_by(texto_q2, texto_q6) %&gt;% # variable de estratificación y estimacion
+  group_by(texto_q2, texto_q6) %&gt;% # variable de estratificación y estimación
   summarise(prop_hambre = survey_prop(vartype = &quot;ci&quot;)*100) # usamos 100 para %</code></pre>
 <pre><code># A tibble: 18 × 5
 # Groups:   texto_q2 [3]
@@ -2086,10 +1906,10 @@ incorporar la variable de agrupamiento dentro del
 <p>Este esquema de agrupamientos/estratificaciones se anidan en el orden
 en que se declaran dentro del <code>group_by()</code> siendo la última
 variable la de estimación. Por ende, los porcentajes también salen
-anidados, tomando el 100 % de las categorías cada categoría de
-<strong>texto_q2</strong> para el ejemplo anterior.</p>
-<p>Podemos hacer que para el calculo de los porcentajes se tome como
-denominador el total general de la siguiente forma:</p>
+anidados, tomando como denominador para el calculo del 100 % al total de
+cada categoría de <strong>texto_q2</strong> en el ejemplo anterior.</p>
+<p>También podemos hacer que para el calculo de los porcentajes se tome
+como denominador el total general de la siguiente forma:</p>
 <pre class="r"><code>d %&gt;% 
   group_by(interact(texto_q2, texto_q6)) %&gt;% # agregamos función interact()
   summarise(prop_hambre = survey_prop(vartype = &quot;ci&quot;)*100) # usamos 100 para %</code></pre>
@@ -2115,8 +1935,8 @@ denominador el total general de la siguiente forma:</p>
 17 Masculino    Siempre            0.333          0.246            0.450 
 18 Masculino    Dato perdido       0.400          0.295            0.543 </code></pre>
 <p>Un argumento incluido dentro de las posibilidades de
-<code>survey_prop()</code> es el método para su calculo
-(prop_method).</p>
+<code>survey_prop()</code> es el método para su calculo (<em>prop_method
+= </em>).</p>
 <p>En este documento no vamos a profundizar en los métodos que la
 función ofrece, solo mencionaremos las posibilidades permitidas según la
 ayuda del paquete.</p>
@@ -2132,10 +1952,10 @@ probabilidad.</p>
 varianza estimada de la proporción. (Korn y Graubard, 1998)</p>
 <p>El método <code>&quot;mean&quot;</code> utiliza un intervalo tipo Wald en la
 escala de probabilidad, igual que <code>confint()</code></p>
-<p>De forma predeterminada el argumento toma el método “logit” que
-ajusta un modelo de regresión logística y calcula un intervalo tipo Wald
-en la escala logarítmica de probabilidades, que luego se transforma a la
-escala de probabilidad.</p>
+<p>De forma predeterminada el argumento toma el método
+<code>&quot;logit&quot;</code> que ajusta un modelo de regresión logística y
+calcula un intervalo tipo Wald en la escala logarítmica de
+probabilidades, que luego se transforma a la escala de probabilidad.</p>
 <p>Otra función útil es <code>survey_count()</code> que estima el conteo
 poblacional de las observaciones según categoría.</p>
 <pre class="r"><code>d %&gt;% 
@@ -2152,19 +1972,19 @@ poblacional de las observaciones según categoría.</p>
 6 Dato perdido    21194.   16920.   25468.</code></pre>
 <p>Aquí lo usamos acompañando con el intervalo de confianza del 95%
 (predeterminado).</p>
-<p>Ahora tomaremos otra variable de EMSE2018 llamada
-<strong>qn24</strong> que refiere a la pregunta: “Durante los últimos 12
-meses, ¿alguna vez consideraste seriamente la posibilidad de intentar
-suicidarte?”. Sus posibles respuestas son “Si”, “No” y el habitual “Dato
-perdido”.</p>
+<p>Ahora tomaremos otra variable de la EMSE2018 llamada
+<strong>qn24</strong> que refiere a la pregunta: <em>“Durante los
+últimos 12 meses, ¿alguna vez consideraste seriamente la posibilidad de
+intentar suicidarte?”</em>. Sus posibles respuestas son “Si”, “No” y el
+habitual “Dato perdido”.</p>
 <p>Estimaremos su proporción para toda la población pero también para
-una subpoblación en particular “3er año/12vo grado nivel Polimodal o 5to
-año nivel Secundario”.</p>
+una subpoblación en particular, por ejemplo para “3er año/12vo grado
+nivel Polimodal o 5to año nivel Secundario”.</p>
 <p>Como es habitual que necesitemos obtener estimaciones en subgrupos o
 subpoblaciones determinados por categorías definidas de una variable,
-debemos tener cuidado e interpretar los elementos del muestro para que
+debemos tener cuidado al interpretar los elementos del muestro para que
 esas subpoblaciones hayan sido consideradas y por lo tanto estén
-declaradas como <strong>dominio de estimación</strong>.</p>
+incluídas como <strong>dominio de estimación</strong>.</p>
 <p>Estos subgrupos requeridos pueden no coincidir con los estratos de la
 muestra compleja generando un inconveniente para las estimaciones, dado
 que las ponderaciones muestrales serían correctas pero la probabilidad
@@ -2205,11 +2025,12 @@ confiables para los cuales el muestreo quizás no esté preparado. Este es
 el <strong>coeficiente de variación</strong> (CV).</p>
 <p>Comparativamente vamos a encontrar valores más elevados de CV, en la
 medida que se agreguen filtros o agrupamientos anidados que reduzcan la
-muestra en la estimación.</p>
+muestra de la estimación.</p>
 <p>Que pasa si filtramos y nos quedamos además solo con las mujeres que
-respondieron se quedaron con hambre “algunas veces”.</p>
+respondieron que se quedaron con hambre “algunas veces” en los últimos
+30 días.</p>
 <pre class="r"><code>d %&gt;% 
-  filter(q3 == 5, q2 == 2, q6 == 3) %&gt;%   
+  filter(q3 == 5, q2 == 2, q6 == 3) %&gt;%   # filtros simultáneos
   group_by(texto_qn24) %&gt;% 
   summarise(prop_suicidio = survey_prop(vartype = c(&quot;ci&quot;, &quot;cv&quot;))*100)</code></pre>
 <pre><code># A tibble: 3 × 5
@@ -2219,8 +2040,8 @@ respondieron se quedaron con hambre “algunas veces”.</p>
 2 No                  63.5             53.7                72.3             7.40
 3 Si                  33.4             25.6                42.2            12.6 </code></pre>
 <p>Los CV de las estimaciones siguen creciendo, por ejemplo en el caso
-de la respuesta Si a un 12,6 % en comparación de la población completa
-que partía con un 1,6 %.</p>
+de la respuesta <strong>Si</strong> a un 12,6 % en comparación de la
+población completa que era de 1,6 %.</p>
 <p>Este aumento tiene que ver sobre todo con el tamaño muestral que nos
 queda luego de tantos filtros.</p>
 <pre class="r"><code>d %&gt;% 
@@ -2240,9 +2061,9 @@ queda luego de tantos filtros.</p>
 1 Dato perdido   600.  356.
 2 No           12084. 1695.
 3 Si            6348.  808.</code></pre>
-<p>Solo 6.347 estudiantes expandidos que respondieron que Si sobre los
-553.934 totales que lo hicieron. Y cuantos respecto a la muestra sin
-expandir?</p>
+<p>Solo 6.347 estudiantes expandidos que respondieron que
+<strong>Si</strong> sobre los 553.934 totales que lo hicieron. Y cuantos
+respecto a la muestra sin expandir?</p>
 <p>Podemos verlo así:</p>
 <pre class="r"><code>d %&gt;% 
   group_by(texto_qn24) %&gt;%
@@ -2263,8 +2084,8 @@ expandir?</p>
 1 Dato perdido     9
 2 No             287
 3 Si             194</code></pre>
-<p>194 estudiantes de la muestra sin expandir respondieron que Si sobre
-11962 sin aplicar los filtros.</p>
+<p>194 estudiantes de la muestra sin expandir respondieron que
+<strong>Si</strong> sobre 11.962 sin aplicar los filtros.</p>
 </div>
 </div>
 <div id="errores-estándar-según-efecto-del-diseño" class="section level2">
@@ -2273,44 +2094,54 @@ expandir?</p>
 objetos de diseños muestrales diferentes sobre la misma base de datos
 <strong>EMSE2018</strong>.</p>
 <pre class="r"><code># Diseño complejo y pesos (igual al que hicimos)
+
 d_complejo &lt;- EMSE2018 %&gt;%
   as_survey_design(ids = psu,          
-                   variables = c(record, psu, stratum, weight, q2, texto_q2, q3, texto_q3, q4, q5, q6, texto_q6, qn24, texto_qn24, IMC),    
+                   variables = c(record, psu, stratum, weight, q2, texto_q2, q3, 
+                                 texto_q3, q4, q5, q6, texto_q6, qn24, 
+                                 texto_qn24, IMC),    
                    strata = stratum,   
                    weights = weight,   
                    nest = TRUE) 
 
-# Diseño sin uso de pesos
+# Diseño sin uso de pesos ni estratos
 
 d_simple &lt;- EMSE2018 %&gt;%
   as_survey_design(ids = psu,          
-                   variables = c(record, psu, stratum, weight, q2, texto_q2, q3, texto_q3, q4, q5, q6, texto_q6, qn24, texto_qn24, IMC),    
+                   variables = c(record, psu, stratum, weight, q2, texto_q2, q3, 
+                                 texto_q3, q4, q5, q6, texto_q6, qn24, 
+                                 texto_qn24, IMC),    
                    strata = NULL,   
                    weights = NULL,   
                    nest = TRUE) 
 
-# Diseño con pesos pero sin estructura compleja
+# Diseño con pesos pero sin estratos
+
 d_ponde &lt;- EMSE2018 %&gt;%
   as_survey_design(ids = psu,          
-                   variables = c(record, psu, stratum, weight, q2, texto_q2, q3, texto_q3, q4, q5, q6, texto_q6, qn24, texto_qn24, IMC),    
+                   variables = c(record, psu, stratum, weight, q2, texto_q2, q3, 
+                                 texto_q3, q4, q5, q6, texto_q6, qn24, 
+                                 texto_qn24, IMC),    
                    strata = NULL,   
                    weights = weight,   
                    nest = TRUE) </code></pre>
 <p>Tenemos tres diseños distintos: un diseño complejo basado en
 conglomerados, estratos y pesos, un diseño sólo con pesos y un diseño
-simple sin ponderación.</p>
+simple sin estratos ni ponderación.</p>
 <p>Sabemos que el primero es el diseño “real” con el que se llevó a cabo
 la recolección de los datos.</p>
-<p>Ahora utilicemos la variable q2 / texto_q2 (sexo del/ de la
-estudiante) para estimar una proporción en cada diseño.</p>
-<pre class="r"><code>d_complejo %&gt;% 
+<p>Ahora volvamos a la variable <strong>IMC</strong> para estimar su
+media en cada diseño.</p>
+<pre class="r"><code>options(pillar.sigfig = 7)
+
+d_complejo %&gt;% 
   summarise(media_IMC = survey_mean(x = IMC,
                                     na.rm = T,
                                     vartype = c(&quot;ci&quot;, &quot;cv&quot;)))</code></pre>
 <pre><code># A tibble: 1 × 4
   media_IMC media_IMC_low media_IMC_upp media_IMC_cv
       &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;
-1      22.1          22.0          22.3      0.00392</code></pre>
+1  22.13994      21.96900      22.31089  0.003923691</code></pre>
 <pre class="r"><code>d_simple %&gt;% 
   summarise(media_IMC = survey_mean(x = IMC,
                                     na.rm = T,
@@ -2318,7 +2149,7 @@ estudiante) para estimar una proporción en cada diseño.</p>
 <pre><code># A tibble: 1 × 4
   media_IMC media_IMC_low media_IMC_upp media_IMC_cv
       &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;
-1      22.2          22.2          22.3      0.00167</code></pre>
+1  22.23472      22.16037      22.30906  0.001669130</code></pre>
 <pre class="r"><code>d_ponde %&gt;% 
   summarise(media_IMC = survey_mean(x = IMC,
                                     na.rm = T,
@@ -2326,14 +2157,14 @@ estudiante) para estimar una proporción en cada diseño.</p>
 <pre><code># A tibble: 1 × 4
   media_IMC media_IMC_low media_IMC_upp media_IMC_cv
       &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;
-1      22.1          22.0          22.3      0.00347</code></pre>
+1  22.13994      21.98614      22.29375  0.003467962</code></pre>
 <p>La estimación puntual (IMC = 22,14) es la misma para los análisis que
 usan el diseño complejo y los que usan sólo pesos. A su vez es diferente
-(10,03 %) si las estimaciones se llevan a cabo sin considerar el factor
-de expansión (muestreo simple - IMC = 22,23).</p>
-<p>Los errores estándar estimados son diferentes para todos los casos
-porque además se vinculan con la estructura del muestreo (estratos y
-conglomerados).</p>
+si las estimaciones se llevan a cabo sin considerar el factor de
+expansión (muestreo simple - IMC = 22,23).</p>
+<p>Los intervalos de confianza estimados son diferentes para todos los
+casos porque la varianza se vincula con la estructura del muestreo
+(estratos y conglomerados).</p>
 <p>Si no se utilizan pesos en las estimaciones, los estimadores no serán
 representativos de la población muestreada.</p>
 <p>Si solo se utilizan pesos sin considerar el diseño complejo, en
@@ -2341,14 +2172,17 @@ general, se infravalorará la dispersión de los estimadores, llevando a
 intervalos de confianza excesivamente estrechos y a niveles de
 significación reales mayores que los nominales (como si se tratase de un
 MAS).</p>
-<p>Basta comparar el resultado correcto IMC 22,14 IC95%(21,97-22,31)
-frente al producido con el diseño simple IMC 22,23
-IC95%(22,16-22,30).</p>
-<p>Como se observa el lenguaje R permite que construyamos el objeto de
+<p>Basta comparar el resultado correcto IMC 22,14 IC95% (21,97-22,31)
+frente al producido con el diseño simple IMC 22,23 IC95%
+(22,16-22,30).</p>
+<p>Como vemos, el lenguaje R permite que construyamos el objeto de
 diseño de la muestra compleja con la forma que indiquemos pero esto no
 siempre es correcto. Debemos conocer previamente la forma en que se
 diseño el muestreo y como se expresa en las variables de la tabla de
-datos para hacerlo adecuadamente.</p>
+datos para hacerlo adecuadamente. <strong>Es fundamental leer
+detenidamente los documentos de utilización de los datos de toda
+encuesta donde se hayan recolectado datos mediante muestreos
+complejos</strong>.</p>
 <div id="criterios-de-calidad-en-las-estimaciones" class="section level3">
 <h3>Criterios de calidad en las estimaciones</h3>
 <p>Todas las estimaciones elaboradas a partir de datos obtenidos por
@@ -2358,6 +2192,8 @@ diversos indicadores de precisión y confiabilidad.</p>
 <p>Veamos algunos de estos indicadores de calidad:</p>
 <div id="coeficiente-de-variación" class="section level4">
 <h4>Coeficiente de variación</h4>
+<p>Como vimos anteriormente es el principal indicador de calidad de una
+estimación.</p>
 <p>Esta medida configura un acercamiento al error de muestreo que
 permite verificar si la inferencia es válida.</p>
 <p>Se caracteriza por ser proporcional a la amplitud del intervalo de
@@ -2366,20 +2202,20 @@ precisión alrededor de la estimación puntual.</p>
 <p>Un umbral aproximado de CV mayor a 20%-30% puede asumirse como un
 valor de referencia útil a nivel regional para señalar una cifra de poco
 confiable, <em>Gutiérrez y otros (2020)</em>.</p>
-<p>Vimos que para calcular el coeficiente de variación de las
-estimaciones en estas estimaciones basta con incluirlo dentro del
-argumento <strong>vartype</strong>.</p>
+<p>Para calcular el coeficiente de variación de las estimaciones en
+estas estimaciones basta con incluirlo dentro del argumento
+<strong>vartype</strong>.</p>
 </div>
 <div id="tamaño-de-muestra" class="section level4">
 <h4>Tamaño de muestra</h4>
-<p>Este criterio debe ser considerado como uno de los más importantes a
-la hora de decidir la calidad de la estimación. La cobertura de los
-intervalos de confianza y la distribución de los estimadores dependen de
-que, tanto el tamaño de la subpoblación como su tamaño de muestra
-asociado, no sean pequeños. En este espíritu, <em>Andrés Gutiérrez et
-al. Cepal (2020)</em> proponen que todas las estimaciones basadas en un
-tamaño de muestra menor a 100 unidades deberían ser marcadas como no
-confiables.</p>
+<p>Este criterio se encuentra generalmente relacionado al anterior y es
+relevante a la hora de decidir la calidad de la estimación. La cobertura
+de los intervalos de confianza y la distribución de los estimadores
+dependen de que, tanto el tamaño de la subpoblación como su tamaño de
+muestra asociado, no sean pequeños. Con este espíritu, <em>Gutiérrez y
+otros (2020)</em> proponen que todas las estimaciones basadas en un
+tamaño de muestra expandida menor a 100 unidades deberían ser marcadas
+como no confiables.</p>
 </div>
 <div id="conteo-de-casos-no-ponderado" class="section level4">
 <h4>Conteo de casos no ponderado</h4>
@@ -2388,7 +2224,7 @@ encuesta no lo tuvo en cuenta, entonces es posible que las estimaciones
 asociadas a tamaños, totales y proporciones sobre este fenómeno no sean
 confiables. Por ejemplo, <em>National Research Council (2015)</em>
 plantea que si el número de casos no ponderados es menor a 50 unidades
-entonces la estimación no es publicable.</p>
+entonces la estimación no sería publicable.</p>
 </div>
 </div>
 </div>
@@ -2423,9 +2259,8 @@ migración internacional” serie Estudios Estadísticos, N° 101
 Caribe (CEPAL).</p>
 <p>T. Lumley (2020), “survey: analysis of complex survey samples”. R
 package version 4.0.</p>
-<p>Greg Freedman Ellis and Ben Schneider (2021). srvyr: ‘dplyr’-Like
-Syntax for Summary Statistics of Survey Data. R package version 1.0.1.
-<a href="https://CRAN.R-project.org/package=srvyr" class="uri">https://CRAN.R-project.org/package=srvyr</a></p>
+<p>Freedman Ellis G, Schneider B (2023). <em>srvyr: ‘dplyr’-Like Syntax
+for Summary Statistics of Survey Data</em>. R package version 1.2.0, <a href="https://CRAN.R-project.org/package=srvyr" class="uri">https://CRAN.R-project.org/package=srvyr</a>.</p>
 </div>
 
 
