@@ -25,9 +25,7 @@ knitr::opts_chunk$set(comment=NA, dpi = 300)
 
 <center>
 
-*Este material es parte de la* ***Unidad 3 del Curso de Epidemiología -
-Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H.
-Jara" - ANLIS***
+*Este material es parte de la* ***Unidad 3 del Curso de Epidemiología - Nivel Avanzado del Instituto Nacional de Epidemiología "Dr. Juan H. Jara" - ANLIS v2024***
 
 </center>
 
@@ -38,9 +36,9 @@ Jara" - ANLIS***
 <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/">
 
 <a property="dct:title" rel="cc:attributionURL" href="https://cballejo.github.io/R_Epi_Avanzada/Unidad3/Ecologico/">Estudios
-ecológicos</a> by
+ecológicos</a> por
 <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="http://www.ine.gov.ar">Andrea
-Silva y Christian Ballejo</a> is licensed under
+Silva y Christian Ballejo</a> bajo licencia
 <a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC
 BY-NC
 4.0<img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" style="height:22px!important;margin-left:3px;vertical-align:text-bottom;"/></a>
@@ -471,7 +469,7 @@ medición, calibración o incluso por mala elección del método.
 :::
 
 Un modelo de regresión contiene una función que "une" a la variable $Y$
-(independiente) con $X$ (dependiente) y el *"error aleatorio"* (también
+(dependiente) con $X$ (independiente) y el *"error aleatorio"* (también
 llamado residuo o error residual). Esta función puede ser lineal o no
 lineal según la naturaleza y distribución de la variable independiente.
 El componente sistemático de la regresión es esta función que deseamos
@@ -557,8 +555,7 @@ modelo:
     los distintos valores de $x$
 4.  Normalidad: $y$ debe tener una distribución normal
 
-**¿Cómo se obtiene la recta de regresión? ¿Cómo se calculan los
-coeficientes de la regresión?**
+**¿Cómo se obtiene la recta de regresión? ¿Cómo se calculan los coeficientes de la regresión?**
 
 Volviendo al ejemplo del peso según edad en niñas menores de 6 meses la
 idea es encontrar una función lineal (que gráficamente es una recta) que
@@ -664,15 +661,14 @@ introducción visual a probabilidad y estadística](https://seeing-theory.brown.
 
 Para llevar a cabo el análisis en R y presentar las funciones y paquetes
 que nos pueden ayudar en la tarea vamos a trabajar con un set de datos
-ficticio llamado **cardio**.
+ficticio llamado **cardiopatias.txt**.
 
-El conjunto de datos contiene datos agregados sobre el porcentaje de
-personas que van en bicicleta al trabajo cada día, y el porcentaje de
-personas con cardiopatías en una muestra imaginaria de 200 ciudades de un país determinado.
+Del conjunto de datos agregados usaremos el porcentaje de personas que van en bicicleta al trabajo cada día, y el porcentaje de personas con cardiopatías en una muestra imaginaria de 200 ciudades de un país determinado.
 
 ```{r, echo=F, message=F, warning=F}
 library(tidyverse)
-cardio <- read_csv2("cardio.csv")
+
+cardio <- read_csv2("cardiopatias.txt")
 ```
 
 La estructura de la tabla es:
@@ -681,63 +677,25 @@ La estructura de la tabla es:
 glimpse(cardio)
 ```
 
-La variable dependiente es el porcentaje de **cardiopatías** y la
+La variable dependiente definida es el porcentaje de **cardiopatías** y la
 independiente **ciclistas**.
 
 ### Diagrama de dispersión
 
-Para dibujar gráficos de dispersión podemos utilizar funciones de R base
-o de ggplot2.
-
-En R base la función `plot()` permite ejecutarlos, tanto con argumentos
-en sintaxis clásica como en sintaxis formula.
+Para dibujar gráficos de dispersión usamos la geométrica de puntos en ggplot2.
 
 ```{r, out.width="60%", fig.align="center"}
-plot(cardio$ciclistas, cardio$cardiopatias)
+cardio %>%
+  ggplot(aes(x = ciclistas, y = cardiopatias)) + 
+  geom_point(color = "maroon")
+
 ```
 
 Los puntos se dibujan en la intersección de los valores que toma cada
-variable ubicada en su correspondiente eje. La estructura de argumentos
-básica coloca una variable detrás de la otra separadas por una coma y
-siempre la primera variable será definida como X y la segunda como Y.
+variable ubicada en su correspondiente eje. 
 
-En cambio, las fórmulas tienen una estructura predefinida
-`variable dependiente ~ variable independiente`, por lo que debemos
-tener definida que variable ocupa cada rol previo a utilizarlas.
 
-```{r, eval=F}
-plot(cardiopatias ~ ciclistas, data = cardio)
-```
-
-Las dos sintaxis para declarar las variables como argumentos posibilitan
-configurar el tipo de puntos y su color. Los argumentos opcionales para
-esta tarea son:
-
-pch = símbolo utilizado como punto (cada símbolo se encuentra asociado a
-un número entero).
-
-col = colores en distintos formatos gráficos permitidos (el modo más
-común es asociado a un número entero).
-
-```{r, out.width="60%", fig.align="center"}
-plot(cardiopatias ~ ciclistas, 
-     data = cardio, 
-     pch = 16,   # punto sólido pequeño
-     col = 2)   # color rojo
-```
-
-Si nos interesa una estética mejorada podemos recurrir a *ggplot*, de la
-siguiente manera:
-
-```{r, out.width="60%", fig.align="center"}
-cardio %>% 
-  ggplot(aes(x = ciclistas, y = cardiopatias)) +
-  geom_point(color = "red")
-```
-
-En todos los casos, lo que observamos en el gráfico es una clara
-relación inversa entre las variables, dado que las ciudades que tienen
-altos valores en porcentajes de ciclistas tiene bajos valores en
+Lo que observamos en el gráfico es una clara relación inversa entre las variables, dado que las ciudades que tienen altos valores en porcentajes de ciclistas tiene bajos valores en
 porcentajes de cardiopatías y viceversa.
 
 ### Correlación
@@ -811,10 +769,12 @@ unidad anterior (ver [ANOVA - Unidad
 
 ```{r, message=F, warning=F, out.width="60%", fig.align="center"}
 library(nortest)
+library(dlookr)
 
 lillie.test(cardio$cardiopatias)
 
-DataExplorer::plot_qq(data = cardio$cardiopatias)
+cardio %>%
+  plot_normality(cardiopatias)
 
 ```
 
@@ -978,12 +938,11 @@ confint(modelo, level = 0.99)
 Retomando la cuestión gráfica, podemos dibujar la recta de regresión lineal sobre el diagrama de dispersión hecho con `plot()` incorporando la función `abline()`. De este modo, podemos visualizar la distancia existente entre los valores observados y los valores que el modelo pronostica.
 
 ```{r, out.width="60%", fig.align="center"}
-plot(cardiopatias ~ ciclistas, 
-     data = cardio, 
-     pch = 16,   
-     col = 2)
+cardio %>%
+  ggplot(aes(x = ciclistas, y = cardiopatias)) + 
+  geom_point(color = "maroon") +
+  geom_smooth(method = "lm", se = F)
 
-abline(modelo,lwd = 2) # recta de regresión
 ```
 
 El argumento **lwd** determina el grosor de la línea dibujada. También se puede agregar el argumento **col** para definir color de línea.
