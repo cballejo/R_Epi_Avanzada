@@ -139,7 +139,7 @@ Leemos el archivo de datos con:
 library(tidyverse)
 library(srvyr)
 
-EMSE2018 <- read_csv("EMSE_DatosAbiertos.csv")
+EMSE2018 <- read_csv2("EMSE_DatosAbiertos.txt")
 
 dim(EMSE2018) # dimensiones de la tabla de datos
 ```
@@ -469,10 +469,12 @@ Sabemos que el primero es el diseño "real" con el que se llevó a cabo la recol
 
 Ahora volvamos a la variable **IMC**  para estimar su media en cada diseño.
 
-```{r}
-
+```{r, echo=F}
 options(pillar.sigfig = 7)
+```
 
+
+```{r}
 d_complejo %>% 
   summarise(media_IMC = survey_mean(x = IMC,
                                     na.rm = T,
