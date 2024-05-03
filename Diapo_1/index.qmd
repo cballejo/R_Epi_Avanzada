@@ -78,7 +78,7 @@ editor: visual
 
 . . .
 
--   Utilizar herramientas de RStudio\]
+-   Utilizar herramientas de RStudio
 
 . . .
 
@@ -164,16 +164,15 @@ Muchas veces los errores tampoco son claros
 
 <br>
 
-
 > Documente los pasos que vaya desarrollando utilizando comentarios (#). Le servirá para entender que es lo que hizo cuando reutilice ese script.
 
 . . .
 
 <br>
 
-> Organice una estructura de carpetas con las unidades del curso donde decargue el material y los proyectos de R. Podrá buscar los recursos rápidamente cuando los necesite
+> Organice una estructura de carpetas con las unidades del curso donde descargue el material y los proyectos de R. Podrá buscar los recursos rápidamente cuando los necesite
 
----
+------------------------------------------------------------------------
 
 ## Cómo vamos a trabajar en la práctica?
 
@@ -233,10 +232,14 @@ No trabaje dentro del archivo comprimido porque perderá sus avances.
 
 -   Crear, abrir y guardar scripts
 
--   Leer datos (archivos texto plano)
-
 -   Usar autocompletado de RStudio, búsqueda y ayuda
 
 -   Instalar y gestionar paquetes
+
+-   Vectores y dataframes
+
+-   Operador de asignación
+
+-   Sintaxis diferenciada (R base, formula y tidyverse)
 
 -   Responder preguntas, aclarar dudas, etc...
