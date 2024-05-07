@@ -20,7 +20,7 @@ editor: visual
 
 [Epidemiología Nivel Avanzado]{.custom-subtitle}
 
-[05/07/2024]{.custom-author}
+[07/05/2024]{.custom-author}
 
 [artwork por allison horst]{.custom-artwork}
 
@@ -40,8 +40,6 @@ editor: visual
 > Este **NO es un curso de R**, solo lo usaremos como una herramienta para la cursada
 :::
 
-
-
 ## Set mímino de herramientas {.title-top}
 
 ![](assets/Tools.PNG){.absolute bottom="0" left="600" width="1000"}
@@ -53,8 +51,6 @@ editor: visual
 . . .
 
 > Además de las bases que mostremos en esta dos semanas, iremos viendo nuevas herramientas durante las siguientes unidades.
-
-
 
 ## Competencias a lograr {.title-top}
 
@@ -88,19 +84,13 @@ editor: visual
 
 -   Realizar análisis exploratorios de datos (básico)
 
-
-
 ## De donde partimos... {.title-top}
-
 
 ![](assets/Encuesta1.PNG)
 
-
 ## De donde partimos... {.title-top}
 
-
 ![](assets/Encuesta2.PNG)
-
 
 ## De donde partimos... {.title-top}
 
@@ -144,8 +134,6 @@ Hay que aprender a lidiar con los errores y no frustarse
 Muchas veces los errores tampoco son claros
 :::
 
-
-
 ## Consejos
 
 <br>
@@ -164,8 +152,6 @@ Muchas veces los errores tampoco son claros
 
 > Aprenda a utilizar las herramientas de autocompletado de RStudio (va a minimizar la tasa de error de sintaxis)
 
-
-
 ## Consejos
 
 <br>
@@ -183,8 +169,6 @@ Muchas veces los errores tampoco son claros
 <br>
 
 > Organice una estructura de carpetas con las unidades del curso donde descargue el material y los proyectos de R. Podrá buscar los recursos rápidamente cuando los necesite
-
-
 
 ## Cómo vamos a trabajar en la práctica?
 
@@ -210,8 +194,6 @@ No trabaje dentro del archivo comprimido porque perderá sus avances.
 
 4.  Abrir y ejecutar el script de R guiado o crear script (si la consigna lo pide)
 
-
-
 ## Durante el curso
 
 <br>
@@ -233,8 +215,6 @@ No trabaje dentro del archivo comprimido porque perderá sus avances.
 -   aplicar funciones estadísticas específicas
 
 -   utilizar sintaxis fórmula en los modelos de regresión
-
-
 
 ## Temario del encuentro de hoy
 
