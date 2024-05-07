@@ -9,6 +9,7 @@ format:
     theme: [simple, custom.scss]
     logo: logo_INE.PNG
     footer: "Instituto Nacional de Epidemiología"
+editor: visual
 ---
 
 ##  {#intro-r-title data-menu-title="Unidad I: Encuentro 2"}
@@ -31,102 +32,118 @@ format:
 
 [Una colección de paquetes de R modernos, que comparten una **gramática** y **filosofía** común, diseñados para resolver los desafíos de la ciencia de datos.]{style="font-size:140%;"}
 
-## Fundamentos de tidyverse{.title-top}
+## Fundamentos principales de tidyverse {.title-top}
 
-. . . 
+. . .
 
 -   **Estructura ordenada de datos (tidy)**
 
-. . . 
-
 ::: {.fragment .fade-in-then-semi-out}
-
 -   Cada *variable* es una *columna* de la tabla de datos
-
 :::
 
 ::: {.fragment .fade-in-then-semi-out}
-
 -   Cada *observación* es una *fila* de la tabla de datos
-
-::: 
-
-::: {.fragment .fade-in-then-semi-out}
-
--   Cada *tabla* responde a una *unidad observacional*
-
 :::
 
-. . . 
+::: {.fragment .fade-in-then-semi-out}
+-   Cada *tabla* responde a una *unidad de análisis*
+:::
+
+. . .
 
 -   **Principios básicos**
 
-. . . 
-
 ::: {.fragment .fade-in-then-semi-out}
-
 -   Reutilizar las estructuras de datos
-
 :::
 
 ::: {.fragment .fade-in-then-semi-out}
-
--   Resolver problemas complejos combinando varias piezas sencillas
-
+-   Resolver problemas complejos combinando (con tuberías) varias piezas sencillas
 :::
 
 ::: {.fragment .fade-in-then-semi-out}
-
--   Diseño para humanos incorporando gramática al lenguaje
-
+-   Diseño de las funciones para humanos incorporando gramática al lenguaje
 :::
 
-## Enfoque "comunicativo"
+## Aprendizaje con enfoque "comunicativo" {.title-top}
 
--   Visto como un lenguaje para ***"comunicarse"*** (similar a un segundo lenguaje como el inglés, francés, etc.)
+![](assets/estudiantes.PNG){.absolute bottom="18" left="500" width="630"}
 
--   R es similar, pues contiene una estructura ***semántica***, ***gramatical*** y ***sintáctica***.
+. . .
 
--   Se busca comenzar a ***"decir cosas con datos"*** y luego profundizar en las estructuras del lenguaje.
+> Abordaje de R como un lenguaje para **"comunicarse"** (similar a un segundo lenguaje como el inglés, francés, etc.)
 
--   Diferencias entre ser ***"usuario"*** y ***"programador"*** (algo así como un linguista de R)
+. . .
 
-## Paquetes nucleo (tidyverse core)
+>  Detectar estructura **semántica**, **gramatical** y **sintáctica**.
 
-La versión actual (*tidyverse 2.0.0*) incluye los paquetes: **ggplot2**, **dplyr**, **tidyr**, **readr**, **purrr**, **tibble**, **stringr**, **forcats** y **lubridate**.
+. . .
 
-Dentro de esta Unidad presentamos, en los materiales y actividades, las funciones principales de estos paquetes:
+>  Se busca comenzar a **"decir cosas con datos"** en vez de profundizar en las estructuras del lenguaje.
 
-## Sintaxis R base vs tidyverse
+. . .
 
--   En la sintaxis del R base el símbolo **\$** es protagonista.
+>  El objetivo es convertirse en **"usuario/a"** del lenguaje y no un/a **"programador/a"**.
+
+
+
+## Sintaxis R base vs tidyverse {.title-top}
+
+-   En la sintaxis del R base el símbolo **$** es protagonista.
 
 Acompaña al nombre de la tabla de datos (dataframe) cuando queremos llamar a las variables contenidas en ella.
 
-```{r, eval=FALSE}
+<br>
 
-datos$x
+```{r}
+#| eval: false
+#| echo: true
 
-función(datos$x, datos$y)
+datos$x                   # variable x en datos
+
+funcion(datos$x, datos$y) # variables x e y en datos
 ```
 
-## Sintaxis R base vs tidyverse
+<br>
 
--   En la sintaxis del ecosistema tidyverse el protagonista es el símbolo **%\>%**.
 
-Es una tubería (*pipe*) que sirve para conectar partes de código.
+La mayoría de las funciones de R base trabajan sobre vectores o variables de dataframes que internamente se parecen a vectores.
 
-Estas estructuras comienzan habitualmente con el llamado a la tabla de datos.
+## Sintaxis R base vs tidyverse {.title-top}
 
-```{r, eval=FALSE}
+-   En la sintaxis del ecosistema tidyverse el protagonista es el símbolo **%>%** o **|>**.
+
+> Es una tubería (*pipe en inglés*) que sirve para **conectar** partes de código.
+
+Estas estructuras de código inician con el llamado a la tabla de datos.
+
+<br>
+
+```{r}
+#| echo: true
+#| eval: false
+
 datos %>% función(x, y)  # el atajo de teclado es Ctrl+Shift+M
 ```
 
--   La diferencia entre las dos formas sintácticas es:\]
 
-## Análisis exploratorio de datos
 
-Los principales objetivos perseguidos por EDA son:
+-   La diferencia entre las dos formas sintácticas es:
+
+![](assets/pipe.png){.absolute bottom="22" left="500" width="650"}
+
+## Lectura de datos
+
+
+
+## Análisis exploratorio de datos {.title-top}
+
+<br>
+
+::: {style="font-size:120%;"}
+
+Los objetivos básicos perseguidos por el análisis exploratorio de datos son:
 
 -   Conocer la estructura de la tabla de datos y sus tipos de variable
 
@@ -138,28 +155,41 @@ Los principales objetivos perseguidos por EDA son:
 
     -   Resumir datos mediante gráficos
 
-    -   Detectar valores atípicos (outlier)\]
+    -   Detectar valores atípicos 
+    
+:::    
 
-### Conocer la estructura de los datos
+## Conocer la estructura de los datos {.title-top}
+
+
+::: {style="font-size:110%;"}
 
 -   Consiste en una exploración técnica asociada a elementos informáticos pero a su vez busca relacionarse con la clasificación estadística de las variables de estudio.
 
 -   Suele realizarse de la mano de un *"diccionario de datos"* producido durante el proceso de recolección.
 
--   Los tipos de datos informáticos que maneja R son: *numéricos enteros* (**integer**), *numéricos reales* (**numeric/double**), *caracter* (**character**), *factor* (**factor**), *lógicos* (**logical**), *fecha* (**date**) y *fecha-hora* (**dttm**).
+-   Los tipos de datos elementales que maneja R son: *numéricos enteros* (**integer**), *numéricos reales* (**numeric/double**), *caracter* (**character**), *factor* (**factor**), *lógicos* (**logical**), *fecha* (**date**) y *fecha-hora* (**dttm**).
 
 -   La clasificación estadística de las variables referida es la clásica: *variables cualitativas* y *cuantitativas*, *continuas* y *discretas*, con escalas *nominales*, *ordinales*, de *intervalo* y de *razón*.
 
-### Detectar observaciones incompletas (valores missing)
+:::
 
--   Identificar los valores faltantes en las variables nos permite conocer con que tamaño muestral estamos trabajando frente a cada estadístico calculado. \]
+## Detectar observaciones incompletas (valores missing) {.title-top}
+
+-   Identificar los valores faltantes en las variables nos permite conocer con que tamaño muestral estamos trabajando frente a cada estadístico calculado.
 
 -   Suele descartarse la variable, cuando la proporción de valores faltantes es alta en el conjunto de observaciones para dicha variable.
 
--   Suele descartarse la observación, cuando la proporción de valores faltantes es alta en el conjunto de variables de dicha observación (en analisis multivariado)
+-   Suele descartarse la observación, cuando la proporción de valores faltantes es alta en el conjunto de variables de dicha observación.
 
-```{r, echo = F, message=F, warning=F, fig.height=5}
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-height: 5
+
 library(dlookr)
+
 SEXO <- c(rep(NA, 6),seq(1,4, length.out = 8))
 EDAD <- c(rep(NA, 3),seq(1,4, length.out = 11))
 EDUCACION <- c(rep(NA, 12),seq(1,4, length.out = 2))  
@@ -167,22 +197,22 @@ datos <- data.frame(SEXO, EDAD, EDUCACION)
 plot_na_pareto(datos)
 ```
 
-## Temario del encuentro de hoy
+## Que vamos a mostrar en R/RStudio hoy {.title-top}
 
 <br>
 
--   Crear, abrir y cerrar proyectos de RStudio
+-   Lectura de datos
 
--   Crear, abrir y guardar scripts
+-   Tuberías y sintaxis
 
--   Usar autocompletado de RStudio, búsqueda y ayuda
+-   Creación de nuevas variables
 
--   Instalar y gestionar paquetes
+-   Conversión de factores
 
--   Vectores y dataframes
+-   Exploración y diagnóstico
 
--   Operador de asignación
+-   Valores perdidos
 
--   Sintaxis diferenciada (R base y tidyverse)
+-   Datos atípicos
 
--   Responder preguntas, aclarar dudas, etc...
+-   Consignas del TP evaluativo
