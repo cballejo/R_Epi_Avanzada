@@ -40,7 +40,7 @@ editor: visual
 > Este **NO es un curso de R**, solo lo usaremos como una herramienta para la cursada
 :::
 
-------------------------------------------------------------------------
+
 
 ## Set mímino de herramientas {.title-top}
 
@@ -54,7 +54,7 @@ editor: visual
 
 > Además de las bases que mostremos en esta dos semanas, iremos viendo nuevas herramientas durante las siguientes unidades.
 
-------------------------------------------------------------------------
+
 
 ## Competencias a lograr {.title-top}
 
@@ -88,11 +88,23 @@ editor: visual
 
 -   Realizar análisis exploratorios de datos (básico)
 
-------------------------------------------------------------------------
+
 
 ## De donde partimos... {.title-top}
 
-------------------------------------------------------------------------
+
+![](assets/Encuesta1.PNG)
+
+
+## De donde partimos... {.title-top}
+
+
+![](assets/Encuesta2.PNG)
+
+
+## De donde partimos... {.title-top}
+
+![](assets/Encuesta3.PNG)
 
 ## Dificultades {.title-top}
 
@@ -132,7 +144,7 @@ Hay que aprender a lidiar con los errores y no frustarse
 Muchas veces los errores tampoco son claros
 :::
 
-------------------------------------------------------------------------
+
 
 ## Consejos
 
@@ -152,7 +164,7 @@ Muchas veces los errores tampoco son claros
 
 > Aprenda a utilizar las herramientas de autocompletado de RStudio (va a minimizar la tasa de error de sintaxis)
 
-------------------------------------------------------------------------
+
 
 ## Consejos
 
@@ -172,7 +184,7 @@ Muchas veces los errores tampoco son claros
 
 > Organice una estructura de carpetas con las unidades del curso donde descargue el material y los proyectos de R. Podrá buscar los recursos rápidamente cuando los necesite
 
-------------------------------------------------------------------------
+
 
 ## Cómo vamos a trabajar en la práctica?
 
@@ -198,7 +210,7 @@ No trabaje dentro del archivo comprimido porque perderá sus avances.
 
 4.  Abrir y ejecutar el script de R guiado o crear script (si la consigna lo pide)
 
-------------------------------------------------------------------------
+
 
 ## Durante el curso
 
@@ -222,7 +234,7 @@ No trabaje dentro del archivo comprimido porque perderá sus avances.
 
 -   utilizar sintaxis fórmula en los modelos de regresión
 
-------------------------------------------------------------------------
+
 
 ## Temario del encuentro de hoy
 
@@ -240,6 +252,6 @@ No trabaje dentro del archivo comprimido porque perderá sus avances.
 
 -   Operador de asignación
 
--   Sintaxis diferenciada (R base, formula y tidyverse)
+-   Sintaxis diferenciada (R base y tidyverse)
 
 -   Responder preguntas, aclarar dudas, etc...
