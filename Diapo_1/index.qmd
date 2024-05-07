@@ -196,9 +196,9 @@ Muchas veces los errores tampoco son claros
 
 . . .
 
-1.  Descarga de una carpeta comprimida (archivo **zip**)
+1.  Descargar una carpeta comprimida (archivo **zip**)
 
-2.  Descompresión del archivo (almacenar su contenido en la computadora)
+2.  Descomprimir el archivo (almacenar su contenido en la computadora)
 
 ::: callout-warning
 ## Cuidado
