@@ -407,6 +407,7 @@
 <section id="fundamentos-principales-de-tidyverse" class="slide level2 title-top">
 <h2>Fundamentos principales de tidyverse</h2>
 <div class="fragment">
+<p><img data-src="assets/tidy.PNG" class="absolute" style="top: 250px; left: 1000px; width: 700px; "></p>
 <ul>
 <li><strong>Estructura ordenada de datos (tidy)</strong></li>
 </ul>
@@ -504,8 +505,38 @@
 </ul>
 <p><img data-src="assets/pipe.png" class="absolute" style="left: 500px; bottom: 22px; width: 650px; "></p>
 </section>
-<section id="lectura-de-datos" class="slide level2">
+<section id="lectura-de-datos" class="slide level2 title-top">
 <h2>Lectura de datos</h2>
+<p><br></p>
+<p>Durante el curso vamos a trabajar con archivos de datos en <em>formato plano</em>, separador <strong>;</strong> y extensión <strong>.txt</strong> generalmente. También podemos llegar a tener que importar datos de algún archivo <strong>Excel</strong> y <em>datasets</em> que ya vienen incorporados en paquetes de R.</p>
+<p>La función de lectura para los archivos planos será <code>read_csv2()</code> del paquete <strong>readr</strong> que integra tidyverse.</p>
+<p><br></p>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb3-2"><a href=""></a></span>
+<span id="cb3-3"><a href=""></a>datos <span class="ot">&lt;-</span> <span class="fu">read_csv2</span>(<span class="st">"nombre_archivo.txt"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br> Siempre que importemos datos debemos recordar asignarlos (<code>&lt;-</code>) a un objeto que se convertirá en el dataframe contenedor de la tabla leída.</p>
+</div>
+</section>
+<section id="lectura-de-datos-1" class="slide level2 title-top">
+<h2>Lectura de datos</h2>
+<p><br></p>
+<p>La función de lectura para los archivos Excel será <code>read_excel()</code> de <strong>readxl</strong> que también es parte de tidyverse, aunque en este caso tenemos que activarlo individualmente porque no es parte del grupo núcleo de paquetes.</p>
+<p><br></p>
+<div class="fragment">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb4-2"><a href=""></a><span class="fu">library</span>(readxl)</span>
+<span id="cb4-3"><a href=""></a></span>
+<span id="cb4-4"><a href=""></a>datos <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"nombre_archivo.xlsx"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p><br></p>
+<div class="fragment">
+<p>El archivo de Excel puede ser <strong>.xlsx</strong> o uno de formato antiguo <strong>.xls</strong>. Siempre que los datos se encuentren en la primera hoja del libro de trabajo de Excel y comience su cabecera en la primera fila, no hace falta configurar ningún argumento más.</p>
+</div>
 </section>
 <section id="análisis-exploratorio-de-datos" class="slide level2 title-top">
 <h2>Análisis exploratorio de datos</h2>
@@ -537,13 +568,26 @@
 </section>
 <section id="detectar-observaciones-incompletas-valores-missing" class="slide level2 title-top">
 <h2>Detectar observaciones incompletas (valores missing)</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <ul>
 <li><p>Identificar los valores faltantes en las variables nos permite conocer con que tamaño muestral estamos trabajando frente a cada estadístico calculado.</p></li>
 <li><p>Suele descartarse la variable, cuando la proporción de valores faltantes es alta en el conjunto de observaciones para dicha variable.</p></li>
 <li><p>Suele descartarse la observación, cuando la proporción de valores faltantes es alta en el conjunto de variables de dicha observación.</p></li>
 </ul>
-
-<img data-src="index_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-5-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
 <section id="que-vamos-a-mostrar-en-rrstudio-hoy" class="slide level2 title-top">
 <h2>Que vamos a mostrar en R/RStudio hoy</h2>
 <p><br></p>
@@ -554,6 +598,7 @@
 <li><p>Conversión de factores</p></li>
 <li><p>Exploración y diagnóstico</p></li>
 <li><p>Valores perdidos</p></li>
+<li><p>Análisis descriptivo</p></li>
 <li><p>Datos atípicos</p></li>
 <li><p>Consignas del TP evaluativo</p></li>
 </ul>
