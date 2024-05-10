@@ -36,7 +36,7 @@ editor: visual
 
 . . .
 
-![](assets/tidy.PNG){.absolute top="250" left="1000" width="700"}
+![](assets/tidy.PNG){.absolute top="250" left="980" width="700"}
 
 -   **Estructura ordenada de datos (tidy)**
 
@@ -250,6 +250,9 @@ plot_na_pareto(datos)
 
 
 ## Que vamos a mostrar en R/RStudio hoy {.title-top}
+
+
+![](assets/contenidos.PNG){.absolute top="250" left="800" width="700"}
 
 <br>
 
