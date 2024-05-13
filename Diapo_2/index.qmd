@@ -54,7 +54,6 @@ editor: visual
 
 . . .
 
-
 -   **Principios básicos**
 
 ::: {.fragment .fade-in-then-semi-out}
@@ -184,12 +183,23 @@ El archivo de Excel puede ser **.xlsx** o uno de formato antiguo **.xls**. Siemp
 
 <br>
 
-::: {style="font-size:120%;"}
+:::: {style="font-size:120%;"}
+
 Los objetivos básicos perseguidos por el análisis exploratorio de datos son:
+
+::: {.fragment .fade-in-then-semi-out}
 
 -   Conocer la estructura de la tabla de datos y sus tipos de variable
 
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
 -   Detectar observaciones incompletas (valores missing)
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
 
 -   Conocer la distribución de las variables de interés a partir de:
 
@@ -199,6 +209,8 @@ Los objetivos básicos perseguidos por el análisis exploratorio de datos son:
 
     -   Detectar valores atípicos
 :::
+
+::::
 
 ## Conocer la estructura de los datos {.title-top}
 
@@ -224,10 +236,7 @@ Los objetivos básicos perseguidos por el análisis exploratorio de datos son:
 :::
 
 ::: {.column width="50%"}
-
-
-
-```{r} 
+```{r}
 #| echo: false 
 #| message: false 
 #| warning: false 
@@ -243,14 +252,10 @@ EDUCACION <- c(rep(NA, 12),seq(1,4, length.out = 2))
 datos <- data.frame(SEXO, EDAD, EDUCACION) 
 plot_na_pareto(datos)
 ```
-
 :::
 :::
-
-
 
 ## Que vamos a mostrar en R/RStudio hoy {.title-top}
-
 
 ![](assets/contenidos.PNG){.absolute top="250" left="800" width="700"}
 
